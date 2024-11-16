@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/JwtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityBeanConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/AuthenticationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/RegistrationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/model/AuthenticationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/model/AuthenticationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authorization/AuthorizationTokenFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/corsconfig/CorsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/PetOwnerDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/PetSitterDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetOwnerEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetSitterEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetOwnerRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetSitterRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetOwnerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/licenta-back.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/README.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2olLi8anM6vekc5c3NittvPrxfI" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "feature/login",
+    "last_opened_file_path": "/Users/nistorcarina/Desktop/LICENTA/licenta-back",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="PawpalFinderApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="pawpal-finder" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.start.pawpal_finder.PawpalFinderApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SwiftWorkspaceSettings">
+    <option name="detectedToolchain" value="true" />
+    <option name="toolchainPathValue" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="" />
+      <created>1731439340621</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731439340621</updated>
+      <workItem from="1731439341723" duration="75000" />
+      <workItem from="1731439428823" duration="9308000" />
+      <workItem from="1731790684237" duration="4069000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
