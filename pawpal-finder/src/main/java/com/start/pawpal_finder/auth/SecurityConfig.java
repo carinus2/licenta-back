@@ -1,50 +1,48 @@
 package com.start.pawpal_finder.auth;
-
-import com.start.pawpal_finder.entity.PetOwnerEntity;
-import com.start.pawpal_finder.entity.PetSitterEntity;
-import com.start.pawpal_finder.service.PetOwnerService;
-import com.start.pawpal_finder.service.PetSitterService;
+import com.start.pawpal_finder.auth.authorization.AuthorizationTokenFilter;
+import com.start.pawpal_finder.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-
-import java.util.Collections;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PetSitterService petSitterService;
-
-    @Autowired
-    private PetOwnerService petOwnerService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+        http
+                .cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
+                //  .requestMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .and()
+                .addFilterBefore(authenticationJwtTokenFilter(), BasicAuthenticationFilter.class);
 
         return http.build();
     }
@@ -55,30 +53,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
-        authProvider.setPasswordEncoder(passwordEncoder);
-        authProvider.setUserDetailsService(username -> {
-            PetSitterEntity petSitter = petSitterService.findByEmail(username);
-            if (petSitter != null) {
-                return new org.springframework.security.core.userdetails.User(
-                        petSitter.getEmail(),
-                        petSitter.getPassword(),
-                        Collections.singleton(new SimpleGrantedAuthority("ROLE_PET_SITTER")));
-            }
-
-            PetOwnerEntity petOwner = petOwnerService.findByEmail(username);
-            if (petOwner != null) {
-                return new org.springframework.security.core.userdetails.User(
-                        petOwner.getEmail(),
-                        petOwner.getPassword(),
-                        Collections.singleton(new SimpleGrantedAuthority("ROLE_PET_OWNER")));
-            }
-
-            throw new UsernameNotFoundException("User not found");
-        });
-
-        return authProvider;
+    public AuthorizationTokenFilter authenticationJwtTokenFilter() {
+        return new AuthorizationTokenFilter();
     }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder);
+    }
+
 }

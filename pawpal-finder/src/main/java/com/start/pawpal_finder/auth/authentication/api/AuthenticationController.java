@@ -3,12 +3,10 @@ package com.start.pawpal_finder.auth.authentication.api;
 import com.start.pawpal_finder.auth.JwtUtil;
 import com.start.pawpal_finder.auth.authentication.model.AuthenticationRequest;
 import com.start.pawpal_finder.auth.authentication.model.AuthenticationResponse;
-import com.start.pawpal_finder.entity.PetOwnerEntity;
-import com.start.pawpal_finder.entity.PetSitterEntity;
-import com.start.pawpal_finder.service.PetOwnerService;
-import com.start.pawpal_finder.service.PetSitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,28 +19,30 @@ import java.util.Collections;
 public class AuthenticationController {
 
     @Autowired
-    private PetSitterService petSitterService;
-
-    @Autowired
-    private PetOwnerService petOwnerService;
-
-    @Autowired
     private JwtUtil jwtUtils;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthenticationController( JwtUtil jwtUtils, AuthenticationManager authenticationManager) {
+
+        this.jwtUtils = jwtUtils;
+        this.authenticationManager = authenticationManager;
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody AuthenticationRequest request) {
-        PetSitterEntity petSitter = petSitterService.findByEmail(request.getUsername());
-        if (petSitter != null && petSitter.getPassword().equals(request.getPassword())) {
-            String jwt = jwtUtils.generateJwtToken(request.getUsername());
-            return ResponseEntity.ok(new AuthenticationResponse(jwt, Collections.singletonList("ROLE_PET_SITTER")));
+    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest request) {
+
+        var authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+
+        if ("admin@email.com".equals(request.getEmail()) && "admin".equals(request.getPassword())) {
+            var jwt = jwtUtils.generateAdminJwtToken(authentication);
+            return ResponseEntity.ok(new AuthenticationResponse(jwt, Collections.emptyList()));
+        } else{
+            var jwt = jwtUtils.generateJwtToken(authentication);
+            return ResponseEntity.ok(new AuthenticationResponse(jwt, Collections.emptyList()));
         }
 
-        PetOwnerEntity petOwner = petOwnerService.findByEmail(request.getUsername());
-        if (petOwner != null && petOwner.getPassword().equals(request.getPassword())) {
-            String jwt = jwtUtils.generateJwtToken(request.getUsername());
-            return ResponseEntity.ok(new AuthenticationResponse(jwt, Collections.singletonList("ROLE_PET_OWNER")));
-        }
-
-        return ResponseEntity.status(401).body("Invalid username or password");
     }
+
+
 }

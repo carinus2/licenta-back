@@ -1,7 +1,12 @@
 package com.start.pawpal_finder.auth.authentication.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class AuthenticationResponse {
 
     public String jwt;
@@ -12,19 +17,4 @@ public class AuthenticationResponse {
         this.roles = roles;
     }
 
-    public String getJwt() {
-        return jwt;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
 }
