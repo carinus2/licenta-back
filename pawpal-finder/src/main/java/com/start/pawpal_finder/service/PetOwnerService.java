@@ -24,9 +24,8 @@ public class PetOwnerService {
     }
 
     public void registerPetOwner(PetOwnerDto petOwnerDto) {
-        // Convert DTO to Entity
         PetOwnerEntity petOwner = Transformer.fromDto(petOwnerDto);
-        petOwner.setPassword(passwordEncoder.encode(petOwner.getPassword()));
+//        petOwner.setPassword(passwordEncoder.encode(petOwner.getPassword()));
         petOwnerRepository.save(petOwner);
     }
 }

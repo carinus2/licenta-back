@@ -37,7 +37,7 @@ public class AuthenticationController {
         if ("admin@email.com".equals(request.getEmail()) && "admin".equals(request.getPassword())) {
             var jwt = jwtUtils.generateAdminJwtToken(authentication);
             return ResponseEntity.ok(new AuthenticationResponse(jwt, Collections.emptyList()));
-        } else{
+        } else {
             var jwt = jwtUtils.generateJwtToken(authentication);
             return ResponseEntity.ok(new AuthenticationResponse(jwt, Collections.emptyList()));
         }

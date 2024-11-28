@@ -20,9 +20,8 @@ public class PetSitterService {
     private PasswordEncoder passwordEncoder;
 
     public void registerPetSitter(PetSitterDto petSitterDto) {
-        // Convert DTO to Entity
         PetSitterEntity petSitter = Transformer.fromDto(petSitterDto);
-        petSitter.setPassword(passwordEncoder.encode(petSitter.getPassword()));
+//        petSitter.setPassword(passwordEncoder.encode(petSitter.getPassword()));
         petSitterRepository.save(petSitter);
     }
 
