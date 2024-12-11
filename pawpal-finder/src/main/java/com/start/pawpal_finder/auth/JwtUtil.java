@@ -30,7 +30,6 @@ public class JwtUtil {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        roles.add("ROLE_USER");
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
@@ -48,7 +47,6 @@ public class JwtUtil {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        roles.add("ROLE_ADMIN");
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -34,12 +34,12 @@ public class AuthenticationController {
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-        if ("admin@email.com".equals(request.getEmail()) && "admin".equals(request.getPassword())) {
+        if ("admin@email.com".equals(request.getEmail()) && "admin1234".equals(request.getPassword())) {
             var jwt = jwtUtils.generateAdminJwtToken(authentication);
-            return ResponseEntity.ok(new AuthenticationResponse(jwt, Collections.emptyList()));
+            return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_ADMIN")));
         } else {
             var jwt = jwtUtils.generateJwtToken(authentication);
-            return ResponseEntity.ok(new AuthenticationResponse(jwt, Collections.emptyList()));
+            return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER")));
         }
 
     }
