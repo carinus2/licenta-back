@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,5 +39,9 @@ public class PetOwnerEntity {
 
     @Column(name = "admin", nullable = false)
     private Boolean admin = false;
+
+    @OneToMany(mappedBy = "petOwner", cascade = CascadeType.ALL)
+    private List<AnimalEntity> animals;
+
 }
 

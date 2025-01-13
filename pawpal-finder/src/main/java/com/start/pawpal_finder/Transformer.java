@@ -1,9 +1,12 @@
 package com.start.pawpal_finder;
 
+import com.start.pawpal_finder.dto.AnimalDto;
 import com.start.pawpal_finder.dto.PetOwnerDto;
 import com.start.pawpal_finder.dto.PetSitterDto;
+import com.start.pawpal_finder.entity.AnimalEntity;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PetSitterEntity;
+import com.start.pawpal_finder.service.AnimalService;
 import com.start.pawpal_finder.service.PetOwnerService;
 import com.start.pawpal_finder.service.PetSitterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +17,14 @@ public class Transformer {
 
     private final PetOwnerService petOwnerService;
     private final PetSitterService petSitterService;
+    private final AnimalService animalService;
 
     @Autowired
-    public Transformer(PetOwnerService petOwnerService, PetSitterService petSitterService){
+    public Transformer(PetOwnerService petOwnerService, PetSitterService petSitterService, AnimalService animalService){
 
         this.petOwnerService = petOwnerService;
         this.petSitterService = petSitterService;
+        this.animalService = animalService;
     }
 
     public static PetOwnerDto toDto(PetOwnerEntity entity) {
@@ -88,5 +93,38 @@ public class Transformer {
         return entity;
     }
 
+    public static AnimalDto toDto(AnimalEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        AnimalDto dto = new AnimalDto();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setStreet(entity.getStreet());
+        dto.setDescription(entity.getDescription());
+        dto.setAge(entity.getAge());
+        dto.setBreed(entity.getBreed());
+        dto.setProfilePicture(entity.getProfilePicture());
+        dto.setPetOwnerId(entity.getPetOwner() != null ? entity.getPetOwner().getId() : null);
+        return dto;
+    }
+
+    public static AnimalEntity fromDto(AnimalDto dto, PetOwnerEntity petOwner) {
+        if (dto == null) {
+            return null;
+        }
+
+        AnimalEntity entity = new AnimalEntity();
+        entity.setId(dto.getId());
+        entity.setName(dto.getName());
+        entity.setStreet(dto.getStreet());
+        entity.setDescription(dto.getDescription());
+        entity.setAge(dto.getAge());
+        entity.setBreed(dto.getBreed());
+        entity.setProfilePicture(dto.getProfilePicture());
+        entity.setPetOwner(petOwner);
+        return entity;
+    }
 
 }
