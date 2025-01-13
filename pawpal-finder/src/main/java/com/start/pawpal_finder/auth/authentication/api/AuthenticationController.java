@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +26,15 @@ public class AuthenticationController {
         this.authenticationManager = authenticationManager;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails) {
+
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        return ResponseEntity.ok(new AuthenticationResponse(null, List.of("ROLE_USER"), userDetails.getUsername()));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest request) {
 
@@ -39,7 +46,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_ADMIN")));
         } else {
             var jwt = jwtUtils.generateJwtToken(authentication);
-            return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER")));
+            return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER"), request.getEmail()));
         }
 
     }

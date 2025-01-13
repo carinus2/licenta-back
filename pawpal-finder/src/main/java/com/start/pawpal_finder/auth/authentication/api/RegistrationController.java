@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class RegistrationController {
@@ -28,7 +30,7 @@ public class RegistrationController {
     public ResponseEntity<?> registerPetSitter(@RequestBody PetSitterDto petSitterDto) {
         try {
             petSitterService.registerPetSitter(petSitterDto);
-            return ResponseEntity.ok("Pet Sitter registered successfully");
+            return ResponseEntity.ok().body(Map.of("message", "Pet Sitter registered successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
@@ -38,7 +40,7 @@ public class RegistrationController {
     public ResponseEntity<?> registerPetOwner(@RequestBody PetOwnerDto petOwnerDto) {
         try {
             petOwnerService.registerPetOwner(petOwnerDto);
-            return ResponseEntity.ok("Pet Owner registered successfully");
+            return ResponseEntity.ok().body(Map.of("message", "Pet Owner registered successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
