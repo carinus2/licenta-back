@@ -20,7 +20,7 @@ public class Transformer {
     private final AnimalService animalService;
 
     @Autowired
-    public Transformer(PetOwnerService petOwnerService, PetSitterService petSitterService, AnimalService animalService){
+    public Transformer(PetOwnerService petOwnerService, PetSitterService petSitterService, AnimalService animalService) {
 
         this.petOwnerService = petOwnerService;
         this.petSitterService = petSitterService;
@@ -110,7 +110,7 @@ public class Transformer {
         return dto;
     }
 
-    public static AnimalEntity fromDto(AnimalDto dto, PetOwnerEntity petOwner) {
+    public static AnimalEntity fromDto(AnimalDto dto, PetOwnerDto petOwner) {
         if (dto == null) {
             return null;
         }
@@ -123,8 +123,7 @@ public class Transformer {
         entity.setAge(dto.getAge());
         entity.setBreed(dto.getBreed());
         entity.setProfilePicture(dto.getProfilePicture());
-        entity.setPetOwner(petOwner);
+        entity.setPetOwner(fromDto(petOwner));
         return entity;
     }
-
 }

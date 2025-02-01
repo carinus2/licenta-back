@@ -2,6 +2,7 @@ package com.start.pawpal_finder.controller;
 
 import com.start.pawpal_finder.service.PetOwnerService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,11 +14,9 @@ public class PetOwnerController {
     public PetOwnerController(PetOwnerService petOwnerService) {
         this.petOwnerService = petOwnerService;
     }
-
-    @GetMapping("/full-name")
-    public ResponseEntity<?> getFullNameByEmail(@RequestParam String email) {
-        return petOwnerService.getFullNameByEmail(email)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/has-animals")
+    public ResponseEntity<Boolean> hasAnimals(@RequestParam String email) {
+        return ResponseEntity.ok(petOwnerService.hasAnimals(email));
     }
+
 }

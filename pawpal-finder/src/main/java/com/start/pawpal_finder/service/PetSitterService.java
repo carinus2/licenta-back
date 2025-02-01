@@ -19,6 +19,10 @@ public class PetSitterService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public boolean hasAnimals(String email) {
+        return petSitterRepository.hasAnimals(email);
+    }
+
     public void registerPetSitter(PetSitterDto petSitterDto) {
         PetSitterEntity petSitter = Transformer.fromDto(petSitterDto);
 //        petSitter.setPassword(passwordEncoder.encode(petSitter.getPassword()));

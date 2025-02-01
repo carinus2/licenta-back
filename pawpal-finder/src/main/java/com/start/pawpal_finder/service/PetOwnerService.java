@@ -1,7 +1,6 @@
 package com.start.pawpal_finder.service;
 
 import com.start.pawpal_finder.Transformer;
-import com.start.pawpal_finder.dto.FullNameProjection;
 import com.start.pawpal_finder.dto.PetOwnerDto;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
@@ -31,7 +30,7 @@ public class PetOwnerService {
         petOwnerRepository.save(petOwner);
     }
 
-    public Optional<FullNameProjection> getFullNameByEmail(String email) {
-        return petOwnerRepository.findFullNameByEmail(email);
+    public boolean hasAnimals(String email) {
+        return petOwnerRepository.hasAnimals(email);
     }
 }

@@ -11,9 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface PetOwnerRepository extends JpaRepository<PetOwnerEntity, Integer> {
-    @Query("SELECT p FROM PetOwnerEntity p WHERE p.email = :email")
     Optional<PetOwnerEntity> findByEmail(@Param("email") String email);
 
-    @Query("SELECT p.firstName, p.lastName FROM PetOwnerEntity p WHERE p.email = :email")
-    Optional<FullNameProjection> findFullNameByEmail(@Param("email") String email);
+    @Query("SELECT COUNT(a) > 0 " +
+            "FROM AnimalEntity a " +
+            "WHERE a.petOwner.email = :email")
+    boolean hasAnimals(@Param("email") String email);
+
 }

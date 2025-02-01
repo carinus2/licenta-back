@@ -1,17 +1,20 @@
 package com.start.pawpal_finder.auth.authentication.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthenticationResponse {
 
     public String jwt;
     public List<String> roles;
     public String email;
+    public String firstName;
+    public String lastName;
+
 
     public AuthenticationResponse(String jwt, List<String> roles, String email) {
         this.jwt = jwt;

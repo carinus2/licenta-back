@@ -33,7 +33,7 @@ public class AnimalService {
             throw new SecurityException("You are not authorized to modify this Pet Owner's animals");
         }
 
-        AnimalEntity animalEntity = Transformer.fromDto(animalDto, petOwner);
+        AnimalEntity animalEntity = Transformer.fromDto(animalDto, Transformer.toDto(petOwner));
 
         AnimalEntity savedAnimal = animalRepository.save(animalEntity);
 
