@@ -12,7 +12,8 @@ public class PetOwnerDto {
     private String lastName;
     private String email;
     private String password;
-    private String address;
+    private String city;
+    private String county;
     private String phoneNumber;
     private Boolean admin;
 }

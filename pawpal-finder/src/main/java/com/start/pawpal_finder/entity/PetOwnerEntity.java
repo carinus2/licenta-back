@@ -31,8 +31,11 @@ public class PetOwnerEntity {
     @Column(name = "password", length = 30, nullable = false)
     private String password;
 
-    @Column(name = "address", length = 50, nullable = false)
-    private String address;
+    @Column(name = "city", length = 50, nullable = false)
+    private String city;
+
+    @Column(name = "county", length = 50, nullable = false)
+    private String county;
 
     @Column(name = "phone_number", length = 11, nullable = false)
     private String phoneNumber;
