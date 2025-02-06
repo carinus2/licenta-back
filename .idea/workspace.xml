@@ -4,13 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="add some modifications and some endpoints">
+    <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="add city and county to pet owner dto and entity">
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/AnimalProjection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/Transformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/Transformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/FullNameProjection.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/PetOwnerDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/PetOwnerDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetOwnerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetOwnerEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetOwnerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetOwnerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/AuthenticationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/model/AuthenticationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/model/AuthenticationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/AnimalController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/AnimalController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/AnimalEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/AnimalEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/AnimalRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/AnimalRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/AnimalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/AnimalService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +25,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -104,7 +109,7 @@
       <workItem from="1735761155406" duration="7022000" />
       <workItem from="1736620446914" duration="4334000" />
       <workItem from="1736801796812" duration="11280000" />
-      <workItem from="1738002234585" duration="24991000" />
+      <workItem from="1738002234585" duration="46178000" />
     </task>
     <task id="LOCAL-00001" summary="add login and register feature">
       <option name="closed" value="true" />
@@ -170,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738435013243</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="add city and county to pet owner dto and entity">
+      <option name="closed" value="true" />
+      <created>1738515464545</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1738515464545</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,6 +208,17 @@
     <MESSAGE value="implemented save animal endpoint" />
     <MESSAGE value="implemented endpoint" />
     <MESSAGE value="add some modifications and some endpoints" />
-    <option name="LAST_COMMIT_MESSAGE" value="add some modifications and some endpoints" />
+    <MESSAGE value="add city and county to pet owner dto and entity" />
+    <option name="LAST_COMMIT_MESSAGE" value="add city and county to pet owner dto and entity" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.nio.file.NoSuchFileException" package="java.nio.file" />
+          <option name="timeStamp" value="41" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

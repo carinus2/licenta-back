@@ -1,7 +1,5 @@
 package com.start.pawpal_finder.auth;
 
-import com.start.pawpal_finder.dto.PetOwnerDto;
-import com.start.pawpal_finder.dto.PetSitterDto;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PetSitterEntity;
 import com.start.pawpal_finder.service.PetOwnerService;
@@ -48,21 +46,23 @@ public class JwtUtil {
         String email = userDetails.getUsername();
         String firstName = "";
         String lastName = "";
-
+        Integer userId = null;
         Optional<PetOwnerEntity> petOwner = petOwnerService.findByEmail(email);
         if (petOwner.isPresent()) {
             firstName = petOwner.get().getFirstName();
             lastName = petOwner.get().getLastName();
+            userId = petOwner.get().getId();
         } else {
             Optional<PetSitterEntity> petSitter = petSitterService.findByEmail(email);
             if (petSitter.isPresent()) {
                 firstName = petSitter.get().getFirstName();
                 lastName = petSitter.get().getLastName();
+                userId = petSitter.get().getId();
             }
         }
 
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(String.valueOf(userId))
                 .claim("roles", roles)
                 .claim("firstName", firstName)
                 .claim("lastName", lastName)

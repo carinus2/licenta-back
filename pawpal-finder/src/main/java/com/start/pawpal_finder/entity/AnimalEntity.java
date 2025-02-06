@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "animal")
+@Table(name = "animal", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 public class AnimalEntity {
 
     @Id
@@ -19,7 +19,7 @@ public class AnimalEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animalGenerator")
     private Integer id;
 
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
     @Column(name = "street", nullable = false, length = 100)

@@ -34,14 +34,6 @@ public class AuthenticationController {
         this.authenticationManager = authenticationManager;
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails) {
-        if (userDetails == null) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-        return ResponseEntity.ok(new AuthenticationResponse(null, List.of("ROLE_USER"), userDetails.getUsername(), null, null));
-    }
-
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest request) {
         var authentication = authenticationManager.authenticate(
@@ -49,20 +41,20 @@ public class AuthenticationController {
 
         if ("admin@email.com".equals(request.getEmail()) && "admin1234".equals(request.getPassword())) {
             var jwt = jwtUtils.generateAdminJwtToken(authentication);
-            return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_ADMIN"), "Admin", null, null));
+            return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_ADMIN"), "Admin", null, null, null));
         } else {
             var petOwner = petOwnerService.findByEmail(request.getEmail());
             if (petOwner.isPresent()) {
                 var owner = petOwner.get();
                 var jwt = jwtUtils.generateJwtToken(authentication);
-                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER"), owner.getEmail(), owner.getFirstName(), owner.getLastName()));
+                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER"), owner.getEmail(), owner.getFirstName(), owner.getLastName(), owner.getId()));
             }
 
             var petSitter = petSitterService.findByEmail(request.getEmail());
             if (petSitter.isPresent()) {
                 var sitter = petSitter.get();
                 var jwt = jwtUtils.generateJwtToken(authentication);
-                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER"), sitter.getEmail(), sitter.getFirstName(), sitter.getLastName()));
+                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER"), sitter.getEmail(), sitter.getFirstName(), sitter.getLastName(), sitter.getId()));
             }
 
             return ResponseEntity.status(401).body(null);

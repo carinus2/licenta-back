@@ -39,7 +39,8 @@ public class SecurityConfig {
                 .cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/animals").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/animals/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "api/pet-owner").authenticated()
                 .requestMatchers(HttpMethod.GET, "api/pet-sitter").authenticated()
                 //  .requestMatchers("/api/**").permitAll()
@@ -78,4 +79,19 @@ public class SecurityConfig {
             return principal.toString();
         }
     }
+
+    public static Integer getAuthenticatedUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof String) {
+            try {
+                return Integer.parseInt((String) principal);
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("Principal is not a valid ID: " + principal, e);
+            }
+        } else {
+            throw new IllegalStateException("Principal is not a valid user ID.");
+        }
+    }
+
 }

@@ -14,7 +14,7 @@ public class AuthenticationResponse {
     public String email;
     public String firstName;
     public String lastName;
-
+    public Integer userId;
 
     public AuthenticationResponse(String jwt, List<String> roles, String email) {
         this.jwt = jwt;
