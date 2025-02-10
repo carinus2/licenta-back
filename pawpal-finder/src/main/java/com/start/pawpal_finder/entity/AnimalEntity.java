@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
 
 import java.util.List;
 
@@ -34,8 +37,9 @@ public class AnimalEntity {
     @Column(name = "breed", nullable = false, length = 50)
     private String breed;
 
-    @Column(name = "profile_picture", nullable = true, columnDefinition = "text")
-    private String profilePicture;
+    @JdbcType(VarbinaryJdbcType.class)
+    @Column(name = "profile_picture", columnDefinition = "BYTEA")
+    private byte[] profilePicture;
 
     @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
     private List<ReviewEntity> reviews;

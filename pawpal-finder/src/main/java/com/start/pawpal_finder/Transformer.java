@@ -12,6 +12,8 @@ import com.start.pawpal_finder.service.PetSitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
+
 @Component
 public class Transformer {
 
@@ -107,7 +109,13 @@ public class Transformer {
         dto.setDescription(entity.getDescription());
         dto.setAge(entity.getAge());
         dto.setBreed(entity.getBreed());
-        dto.setProfilePicture(entity.getProfilePicture());
+
+        if (entity.getProfilePicture() != null) {
+            dto.setProfilePicture("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(entity.getProfilePicture()));
+        } else {
+            dto.setProfilePicture(null);
+        }
+
         dto.setPetOwnerId(entity.getPetOwner() != null ? entity.getPetOwner().getId() : null);
         return dto;
     }
@@ -124,8 +132,8 @@ public class Transformer {
         entity.setDescription(dto.getDescription());
         entity.setAge(dto.getAge());
         entity.setBreed(dto.getBreed());
-        entity.setProfilePicture(dto.getProfilePicture());
         entity.setPetOwner(fromDto(petOwner));
         return entity;
     }
+
 }

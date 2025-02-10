@@ -7,7 +7,7 @@ public interface AnimalProjection {
     String getBreed();
     Integer getAge();
     String getDescription();
-    String getProfilePicture();
+    byte[] getProfilePicture();
     Integer getPetOwnerId();
 }
 

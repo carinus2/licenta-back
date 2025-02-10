@@ -9,12 +9,10 @@ import com.start.pawpal_finder.repository.AnimalRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,23 +44,14 @@ public class AnimalService {
 
         if (profilePicture != null && !profilePicture.isEmpty()) {
             try {
-                byte[] bytes = profilePicture.getBytes();
-
-                Path uploadDir = Paths.get("uploads");
-                if (!Files.exists(uploadDir)) {
-                    Files.createDirectories(uploadDir);
-                }
-
-                Path path = uploadDir.resolve(profilePicture.getOriginalFilename());
-                Files.write(path, bytes);
-
-                animalEntity.setProfilePicture(path.toString());
+                animalEntity.setProfilePicture(profilePicture.getBytes());
+                System.out.println("Profile picture set in entity with size: " + profilePicture.getBytes().length);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to save profile picture", e);
             }
         }
-
         AnimalEntity savedAnimal = animalRepository.save(animalEntity);
+
         return Transformer.toDto(savedAnimal);
     }
 
@@ -70,16 +59,22 @@ public class AnimalService {
         List<AnimalProjection> entities = animalRepository.findByPetOwnerId(petOwnerId);
 
         return entities.stream()
-                .map(entity -> new AnimalDto(
-                        entity.getId(),
-                        entity.getName(),
-                        entity.getStreet(),
-                        entity.getDescription(),
-                        entity.getAge(),
-                        entity.getBreed(),
-                        entity.getProfilePicture(),
-                        entity.getPetOwnerId()
-                ))
+                .map(entity -> {
+                    String base64Image = entity.getProfilePicture() != null
+                            ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(entity.getProfilePicture())
+                            : null;
+
+                    return new AnimalDto(
+                            entity.getId(),
+                            entity.getName(),
+                            entity.getStreet(),
+                            entity.getDescription(),
+                            entity.getAge(),
+                            entity.getBreed(),
+                            base64Image,
+                            entity.getPetOwnerId()
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
