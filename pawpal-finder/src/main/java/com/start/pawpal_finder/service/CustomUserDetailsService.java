@@ -1,5 +1,8 @@
 package com.start.pawpal_finder.service;
 
+import com.start.pawpal_finder.dto.CustomUserDetails;
+import com.start.pawpal_finder.dto.PetOwnerDto;
+import com.start.pawpal_finder.dto.PetSitterDto;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PetSitterEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +28,23 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         PetSitterEntity petSitter = petSitterService.findByEmail(username).orElse(null);
         if (petSitter != null) {
-            return new User(
+            return new CustomUserDetails(
                     petSitter.getEmail(),
                     petSitter.getPassword(),
-                    Collections.singleton(() -> "ROLE_USER"));
+                    Collections.singleton(() -> "ROLE_USER"),
+                    petSitter.getFirstName(),
+                    petSitter.getLastName()
+            );
         }
         PetOwnerEntity petOwner = petOwnerService.findByEmail(username).orElse(null);
         if (petOwner != null) {
-            return new User(
+            return new CustomUserDetails(
                     petOwner.getEmail(),
                     petOwner.getPassword(),
-                    Collections.singleton(() -> "ROLE_USER"));
+                    Collections.singleton(() -> "ROLE_USER"),
+                    petOwner.getFirstName(),
+                    petOwner.getLastName()
+            );
         }
         return new User(
                 "admin@email.com",

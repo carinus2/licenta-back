@@ -1,25 +1,37 @@
 package com.start.pawpal_finder.auth;
 
+import com.start.pawpal_finder.entity.PetOwnerEntity;
+import com.start.pawpal_finder.entity.PetSitterEntity;
+import com.start.pawpal_finder.service.PetOwnerService;
+import com.start.pawpal_finder.service.PetSitterService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.security.core.GrantedAuthority;
-import java.util.stream.Collectors;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
+
+    @Autowired
+    private PetSitterService petSitterService;
+
+    @Autowired
+    private PetOwnerService petOwnerService;
 
     @Value("${secret.key}")
     private final String SECRET_KEY = "ThisIsTheLongestKeyEverOnThePlanetISwear!";
@@ -31,9 +43,30 @@ public class JwtUtil {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
+        String email = userDetails.getUsername();
+        String firstName = "";
+        String lastName = "";
+        Integer userId = null;
+        Optional<PetOwnerEntity> petOwner = petOwnerService.findByEmail(email);
+        if (petOwner.isPresent()) {
+            firstName = petOwner.get().getFirstName();
+            lastName = petOwner.get().getLastName();
+            userId = petOwner.get().getId();
+        } else {
+            Optional<PetSitterEntity> petSitter = petSitterService.findByEmail(email);
+            if (petSitter.isPresent()) {
+                firstName = petSitter.get().getFirstName();
+                lastName = petSitter.get().getLastName();
+                userId = petSitter.get().getId();
+            }
+        }
+
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(String.valueOf(userId))
                 .claim("roles", roles)
+                .claim("firstName", firstName)
+                .claim("lastName", lastName)
+                .claim("email", email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 12 * 60 * 60 * 1000))
                 .signWith(getJwtKey())

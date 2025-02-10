@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -42,5 +43,14 @@ public class PetSitterEntity {
 
     @Column(name = "admin", nullable = false)
     private Boolean admin = false;
+
+    @ManyToMany
+    @JoinTable(
+            name = "pet_sitter_animals",
+            joinColumns = @JoinColumn(name = "pet_sitter_id"),
+            inverseJoinColumns = @JoinColumn(name = "animal_id")
+    )
+    private List<AnimalEntity> animals;
+
 }
 

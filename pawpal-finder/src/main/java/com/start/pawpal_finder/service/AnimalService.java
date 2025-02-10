@@ -1,0 +1,82 @@
+package com.start.pawpal_finder.service;
+
+import com.start.pawpal_finder.Transformer;
+import com.start.pawpal_finder.dto.AnimalDto;
+import com.start.pawpal_finder.entity.AnimalEntity;
+import com.start.pawpal_finder.entity.AnimalProjection;
+import com.start.pawpal_finder.entity.PetOwnerEntity;
+import com.start.pawpal_finder.repository.AnimalRepository;
+import com.start.pawpal_finder.repository.PetOwnerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.start.pawpal_finder.auth.SecurityConfig.getAuthenticatedUserId;
+
+@Service
+public class AnimalService {
+
+    @Autowired
+    private AnimalRepository animalRepository;
+    @Autowired
+    private PetOwnerRepository petOwnerRepository;
+
+    public Long countAnimalsByOwnerId(Integer ownerId) {
+        return animalRepository.countByPetOwnerId(ownerId);
+    }
+
+    public AnimalDto saveAnimal(Integer ownerId, AnimalDto animalDto, MultipartFile profilePicture) {
+        Integer authenticatedUserId = getAuthenticatedUserId();
+
+        PetOwnerEntity petOwner = petOwnerRepository.findById(ownerId)
+                .orElseThrow(() -> new IllegalArgumentException("Pet Owner with ID " + ownerId + " not found"));
+
+        if (!petOwner.getId().equals(authenticatedUserId)) {
+            throw new SecurityException("You are not authorized to modify this Pet Owner's animals");
+        }
+
+        AnimalEntity animalEntity = Transformer.fromDto(animalDto, Transformer.toDto(petOwner));
+
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            try {
+                animalEntity.setProfilePicture(profilePicture.getBytes());
+                System.out.println("Profile picture set in entity with size: " + profilePicture.getBytes().length);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save profile picture", e);
+            }
+        }
+        AnimalEntity savedAnimal = animalRepository.save(animalEntity);
+
+        return Transformer.toDto(savedAnimal);
+    }
+
+    public List<AnimalDto> getAnimalsByOwner(Integer petOwnerId) {
+        List<AnimalProjection> entities = animalRepository.findByPetOwnerId(petOwnerId);
+
+        return entities.stream()
+                .map(entity -> {
+                    String base64Image = entity.getProfilePicture() != null
+                            ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(entity.getProfilePicture())
+                            : null;
+
+                    return new AnimalDto(
+                            entity.getId(),
+                            entity.getName(),
+                            entity.getStreet(),
+                            entity.getDescription(),
+                            entity.getAge(),
+                            entity.getBreed(),
+                            base64Image,
+                            entity.getPetOwnerId()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+}
+

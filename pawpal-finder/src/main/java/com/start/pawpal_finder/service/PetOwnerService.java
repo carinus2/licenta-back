@@ -24,8 +24,13 @@ public class PetOwnerService {
     }
 
     public void registerPetOwner(PetOwnerDto petOwnerDto) {
+
         PetOwnerEntity petOwner = Transformer.fromDto(petOwnerDto);
 //        petOwner.setPassword(passwordEncoder.encode(petOwner.getPassword()));
         petOwnerRepository.save(petOwner);
+    }
+
+    public boolean hasAnimals(String email) {
+        return petOwnerRepository.hasAnimals(email);
     }
 }
