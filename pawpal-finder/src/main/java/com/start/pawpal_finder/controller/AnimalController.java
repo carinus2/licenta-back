@@ -28,6 +28,19 @@ public class AnimalController {
         return ResponseEntity.ok(savedAnimal);
     }
 
+    @PutMapping(value = "/{animalId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public AnimalDto updateAnimal(@PathVariable Integer animalId,
+                                  @RequestPart("animalDto") AnimalDto animalDto,
+                                  @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
+        return animalService.updateAnimal(animalId, animalDto, profilePicture);
+    }
+
+
+    @DeleteMapping("/{animalId}")
+    public void deleteAnimal(@PathVariable Integer animalId) {
+        animalService.deleteAnimal(animalId);
+    }
+
     @GetMapping("/count/{ownerId}")
     public ResponseEntity<Long> getAnimalCount(@PathVariable Integer ownerId) {
         Long count = animalService.countAnimalsByOwnerId(ownerId);
