@@ -119,5 +119,10 @@ public class AnimalService {
         animalRepository.delete(animal);
     }
 
+    public int countAnimalsByOwnerEmail(String email) {
+        return animalRepository.countByOwnerEmail(email);
+    }
+
+
 }
 

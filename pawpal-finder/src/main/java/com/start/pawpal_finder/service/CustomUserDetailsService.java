@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(
                     petSitter.getEmail(),
                     petSitter.getPassword(),
-                    Collections.singleton(() -> "ROLE_USER"),
+                    Collections.singleton(() -> "ROLE_PET_SITTER"),
                     petSitter.getFirstName(),
                     petSitter.getLastName()
             );
@@ -41,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(
                     petOwner.getEmail(),
                     petOwner.getPassword(),
-                    Collections.singleton(() -> "ROLE_USER"),
+                    Collections.singleton(() -> "ROLE_PET_OWNER"),
                     petOwner.getFirstName(),
                     petOwner.getLastName()
             );
