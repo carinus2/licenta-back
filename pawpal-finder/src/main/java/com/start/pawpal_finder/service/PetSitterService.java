@@ -13,11 +13,13 @@ import java.util.Optional;
 @Service
 public class PetSitterService {
 
-    @Autowired
-    private PetSitterRepository petSitterRepository;
+    private final PetSitterRepository petSitterRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public PetSitterService(PetSitterRepository petSitterRepository, PasswordEncoder passwordEncoder) {
+        this.petSitterRepository = petSitterRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public boolean hasAnimals(String email) {
         return petSitterRepository.hasAnimals(email);

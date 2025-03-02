@@ -21,10 +21,14 @@ import static com.start.pawpal_finder.auth.SecurityConfig.getAuthenticatedUserId
 @Service
 public class AnimalService {
 
-    @Autowired
-    private AnimalRepository animalRepository;
-    @Autowired
-    private PetOwnerRepository petOwnerRepository;
+
+    private final AnimalRepository animalRepository;
+    private final PetOwnerRepository petOwnerRepository;
+
+    public AnimalService(AnimalRepository animalRepository, PetOwnerRepository petOwnerRepository) {
+        this.animalRepository = animalRepository;
+        this.petOwnerRepository = petOwnerRepository;
+    }
 
     public Long countAnimalsByOwnerId(Integer ownerId) {
         return animalRepository.countByPetOwnerId(ownerId);

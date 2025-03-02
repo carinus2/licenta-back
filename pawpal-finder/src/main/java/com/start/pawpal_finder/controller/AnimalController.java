@@ -14,9 +14,11 @@ import java.util.List;
 @RequestMapping("/api/animals")
 public class AnimalController {
 
-    @Autowired
-    private AnimalService animalService;
+    private final AnimalService animalService;
 
+    public AnimalController(AnimalService animalService) {
+        this.animalService = animalService;
+    }
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnimalDto> saveAnimal(

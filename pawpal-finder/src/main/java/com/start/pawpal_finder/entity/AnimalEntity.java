@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "animal", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
+@ToString(exclude = "petOwner")
 public class AnimalEntity {
 
     @Id
@@ -50,6 +52,5 @@ public class AnimalEntity {
 
     @ManyToMany(mappedBy = "animals")
     private List<PetSitterEntity> petSitters;
-
 
 }

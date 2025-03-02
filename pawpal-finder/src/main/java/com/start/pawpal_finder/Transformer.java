@@ -1,11 +1,7 @@
 package com.start.pawpal_finder;
 
-import com.start.pawpal_finder.dto.AnimalDto;
-import com.start.pawpal_finder.dto.PetOwnerDto;
-import com.start.pawpal_finder.dto.PetSitterDto;
-import com.start.pawpal_finder.entity.AnimalEntity;
-import com.start.pawpal_finder.entity.PetOwnerEntity;
-import com.start.pawpal_finder.entity.PetSitterEntity;
+import com.start.pawpal_finder.dto.*;
+import com.start.pawpal_finder.entity.*;
 import com.start.pawpal_finder.service.AnimalService;
 import com.start.pawpal_finder.service.PetOwnerService;
 import com.start.pawpal_finder.service.PetSitterService;
@@ -13,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class Transformer {
@@ -136,4 +134,62 @@ public class Transformer {
         return entity;
     }
 
+    public static PostDto toDto(PostEntity post) {
+        return new PostDto(
+                post.getId(),
+                post.getPetOwner().getId(),
+                post.getTitle(),
+                post.getDescription(),
+                post.getStartDate(),
+                post.getEndDate(),
+                post.getStreet(),
+                post.getNumber(),
+                post.getTasks().stream().map(Transformer::toDto).toList(),
+                post.getStatus(),
+                post.getNotes(),
+                post.getAnimals().stream().map(Transformer::toDto).collect(Collectors.toList())
+        );
+    }
+
+    public static PostEntity fromDto(PostDto dto, PetOwnerEntity petOwner, List<AnimalEntity> animals) {
+        List<TaskEntity> taskEntities = dto.getTasks() != null
+                ? dto.getTasks().stream()
+                .map(task -> new TaskEntity(null, task.getTask(), null))
+                .collect(Collectors.toList())
+                : List.of();
+
+        PostEntity post = new PostEntity(
+                dto.getId(),
+                petOwner,
+                dto.getTitle(),
+                dto.getDescription(),
+                dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getNumber(),
+                dto.getStreet(),
+                taskEntities,
+                dto.getStatus(),
+                dto.getNotes(),
+                animals
+        );
+
+        taskEntities.forEach(task -> task.setPost(post));
+
+        return post;
+    }
+
+    public static TaskDto toDto(TaskEntity taskEntity) {
+        return new TaskDto(
+                taskEntity.getId(),
+                taskEntity.getTask()
+        );
+    }
+
+    public static TaskEntity fromDto(TaskDto taskDto) {
+        return new TaskEntity(
+                taskDto.getId(),
+                taskDto.getTask(),
+                null
+        );
+    }
 }

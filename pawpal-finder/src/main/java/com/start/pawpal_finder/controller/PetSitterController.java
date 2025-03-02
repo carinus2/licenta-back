@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/pet-sitter")
 public class PetSitterController {
-    @Autowired
-    private PetSitterService petSitterService;
+
+    private final PetSitterService petSitterService;
+
+    public PetSitterController(PetSitterService petSitterService) {
+        this.petSitterService = petSitterService;
+    }
 
     @GetMapping("/has-animals")
     public ResponseEntity<Boolean> hasAnimals(@RequestParam String email) {
