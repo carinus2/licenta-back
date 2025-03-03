@@ -6,6 +6,7 @@ import com.start.pawpal_finder.dto.PostDto;
 import com.start.pawpal_finder.entity.AnimalEntity;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PostEntity;
+import com.start.pawpal_finder.entity.TaskEntity;
 import com.start.pawpal_finder.repository.AnimalRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
 import com.start.pawpal_finder.repository.PostRepository;
@@ -72,7 +73,16 @@ public class PostService {
         existingPost.setEndDate(postDto.getEndDate());
         existingPost.setNumber(postDto.getNumber());
         existingPost.setStreet(postDto.getStreet());
-        existingPost.setTasks(postDto.getTasks().stream().map(Transformer::fromDto).toList());
+
+        existingPost.getTasks().clear();
+        List<TaskEntity> newTasks = postDto.getTasks().stream()
+                .map(Transformer::fromDto)
+                .toList();
+        newTasks.forEach(task -> {
+            task.setPost(existingPost);
+            existingPost.getTasks().add(task);
+        });
+
         existingPost.setStatus(postDto.getStatus());
         existingPost.setPetOwner(petOwner);
         existingPost.setNotes(postDto.getNotes());
@@ -81,6 +91,7 @@ public class PostService {
         PostEntity updatedPost = postRepository.save(existingPost);
         return Transformer.toDto(updatedPost);
     }
+
 
     public void deletePost(Integer postId) {
         PostEntity post = postRepository.findById(postId)
