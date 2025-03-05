@@ -27,7 +27,7 @@ public class PetSitterService {
 
     public void registerPetSitter(PetSitterDto petSitterDto) {
         PetSitterEntity petSitter = Transformer.fromDto(petSitterDto);
-//        petSitter.setPassword(passwordEncoder.encode(petSitter.getPassword()));
+        petSitter.setPassword(passwordEncoder.encode(petSitterDto.getPassword()));
         petSitterRepository.save(petSitter);
     }
 

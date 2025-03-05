@@ -71,7 +71,8 @@ public class Transformer {
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
         dto.setPassword(entity.getPassword());
-        dto.setAddress(entity.getAddress());
+        dto.setCity(entity.getCity());
+        dto.setCounty(entity.getCounty());
         dto.setPhoneNumber(entity.getPhoneNumber());
         dto.setBirthDate(entity.getBirthDate());
         dto.setAdmin(entity.getAdmin());
@@ -88,7 +89,8 @@ public class Transformer {
         entity.setLastName(dto.getLastName());
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
-        entity.setAddress(dto.getAddress());
+        entity.setCity(dto.getCity());
+        entity.setCounty(dto.getCounty());
         entity.setPhoneNumber(dto.getPhoneNumber());
         entity.setBirthDate(dto.getBirthDate());
         entity.setAdmin(dto.getAdmin());
