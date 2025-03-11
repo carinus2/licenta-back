@@ -58,4 +58,10 @@ public class PostController {
         PostDto updatedPost = postService.updatePost(postId, postDto);
         return ResponseEntity.ok(updatedPost);
     }
+
+    @GetMapping("/city")
+    public ResponseEntity<List<PostDto>> getPostsByCity(@RequestParam String city, @RequestParam String county) {
+        List<PostDto> posts = postService.getPostsByCityAndCounty(city, county);
+        return ResponseEntity.ok(posts);
+    }
 }

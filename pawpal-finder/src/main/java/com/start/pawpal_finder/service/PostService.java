@@ -102,12 +102,15 @@ public class PostService {
 
     public List<PostDto> getActivePostsByUser(Integer petOwnerId) {
         List<PostEntity> activePosts = postRepository.findByPetOwnerIdAndStatus(petOwnerId, "Active");
-        return activePosts.stream().map(Transformer::toDto).collect(Collectors.toList());
+        return activePosts.stream().map(Transformer::toDto).toList();
     }
 
     public Long getActivePostCountByUser(Integer petOwnerId) {
         return postRepository.countByPetOwnerIdAndStatus(petOwnerId, "Active");
     }
 
+    public List<PostDto> getPostsByCityAndCounty(String city, String county) {
+        return postRepository.findByPetOwner_CityAndPetOwner_CountyAndStatus(city, county, "ACTIVE").stream().map(Transformer::toDto).toList();
+    }
 
 }

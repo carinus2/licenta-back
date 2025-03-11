@@ -194,4 +194,53 @@ public class Transformer {
                 null
         );
     }
+
+    public static PostSitterDto toDto(PostSitterEntity entity, List<PostSitterAvailabilityEntity> availability) {
+        return new PostSitterDto(
+                entity.getId(),
+                entity.getPetSitter().getId(),
+                entity.getDescription(),
+                entity.getStatus(),
+                entity.getPostDate(),
+                entity.getTasks(),
+                availability.stream()
+                        .map(Transformer::toDto)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    public static PostSitterEntity toEntity(PostSitterDto dto, PetSitterEntity petSitter) {
+        PostSitterEntity entity = new PostSitterEntity();
+        entity.setId(dto.getId());
+        entity.setDescription(dto.getDescription());
+        entity.setStatus(dto.getStatus());
+        entity.setPostDate(dto.getPostDate());
+        entity.setTasks(dto.getTasks());
+
+        if (!dto.getAvailability().isEmpty()) {
+            entity.setAvailabilityStart(dto.getAvailability().getFirst().getStartTime());
+            entity.setAvailabilityEnd(dto.getAvailability().getLast().getEndTime());
+        }
+
+        entity.setPetSitter(petSitter);
+
+        return entity;
+    }
+
+
+    public static PostSitterAvailabilityDto toDto(PostSitterAvailabilityEntity entity) {
+        return new PostSitterAvailabilityDto(
+                entity.getDayOfWeek(),
+                entity.getStartTime(),
+                entity.getEndTime()
+        );
+    }
+
+    public static PostSitterAvailabilityEntity toEntity(PostSitterAvailabilityDto dto) {
+        PostSitterAvailabilityEntity entity = new PostSitterAvailabilityEntity();
+        entity.setDayOfWeek(dto.getDayOfWeek());
+        entity.setStartTime(dto.getStartTime());
+        entity.setEndTime(dto.getEndTime());
+        return entity;
+    }
 }
