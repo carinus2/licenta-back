@@ -21,10 +21,14 @@ import static com.start.pawpal_finder.auth.SecurityConfig.getAuthenticatedUserId
 @Service
 public class AnimalService {
 
-    @Autowired
-    private AnimalRepository animalRepository;
-    @Autowired
-    private PetOwnerRepository petOwnerRepository;
+
+    private final AnimalRepository animalRepository;
+    private final PetOwnerRepository petOwnerRepository;
+
+    public AnimalService(AnimalRepository animalRepository, PetOwnerRepository petOwnerRepository) {
+        this.animalRepository = animalRepository;
+        this.petOwnerRepository = petOwnerRepository;
+    }
 
     public Long countAnimalsByOwnerId(Integer ownerId) {
         return animalRepository.countByPetOwnerId(ownerId);
@@ -77,6 +81,52 @@ public class AnimalService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public AnimalDto updateAnimal(Integer animalId, AnimalDto animalDto, MultipartFile profilePicture) {
+        Integer authenticatedUserId = getAuthenticatedUserId();
+
+        AnimalEntity existingAnimal = animalRepository.findById(animalId)
+                .orElseThrow(() -> new IllegalArgumentException("Animal with ID " + animalId + " not found"));
+
+        if (!existingAnimal.getPetOwner().getId().equals(authenticatedUserId)) {
+            throw new SecurityException("You are not authorized to edit this animal");
+        }
+
+        existingAnimal.setName(animalDto.getName());
+        existingAnimal.setStreet(animalDto.getStreet());
+        existingAnimal.setDescription(animalDto.getDescription());
+        existingAnimal.setAge(animalDto.getAge());
+        existingAnimal.setBreed(animalDto.getBreed());
+
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            try {
+                existingAnimal.setProfilePicture(profilePicture.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to update profile picture", e);
+            }
+        }
+
+        AnimalEntity updatedAnimal = animalRepository.save(existingAnimal);
+        return Transformer.toDto(updatedAnimal);
+    }
+
+    public void deleteAnimal(Integer animalId) {
+        Integer authenticatedUserId = getAuthenticatedUserId();
+
+        AnimalEntity animal = animalRepository.findById(animalId)
+                .orElseThrow(() -> new IllegalArgumentException("Animal with ID " + animalId + " not found"));
+
+        if (!animal.getPetOwner().getId().equals(authenticatedUserId)) {
+            throw new SecurityException("You are not authorized to delete this animal");
+        }
+
+        animalRepository.delete(animal);
+    }
+
+    public int countAnimalsByOwnerEmail(String email) {
+        return animalRepository.countByOwnerEmail(email);
+    }
+
 
 }
 

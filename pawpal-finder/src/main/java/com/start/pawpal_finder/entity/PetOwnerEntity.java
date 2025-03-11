@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "pet-owner")
+@ToString(exclude = "animals")
 public class PetOwnerEntity {
 
     @Id
@@ -28,7 +30,7 @@ public class PetOwnerEntity {
     @Column(name = "email", length = 60, nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", length = 30, nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "city", length = 50, nullable = false)

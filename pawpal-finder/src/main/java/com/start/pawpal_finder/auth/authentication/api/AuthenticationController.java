@@ -47,14 +47,14 @@ public class AuthenticationController {
             if (petOwner.isPresent()) {
                 var owner = petOwner.get();
                 var jwt = jwtUtils.generateJwtToken(authentication);
-                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER"), owner.getEmail(), owner.getFirstName(), owner.getLastName(), owner.getId()));
+                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_PET_OWNER"), owner.getEmail(), owner.getFirstName(), owner.getLastName(), owner.getId()));
             }
 
             var petSitter = petSitterService.findByEmail(request.getEmail());
             if (petSitter.isPresent()) {
                 var sitter = petSitter.get();
                 var jwt = jwtUtils.generateJwtToken(authentication);
-                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_USER"), sitter.getEmail(), sitter.getFirstName(), sitter.getLastName(), sitter.getId()));
+                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_PET_SITTER"), sitter.getEmail(), sitter.getFirstName(), sitter.getLastName(), sitter.getId()));
             }
 
             return ResponseEntity.status(401).body(null);

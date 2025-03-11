@@ -16,7 +16,8 @@ public class PetSitterDto {
     private String lastName;
     private String email;
     private String password;
-    private String address;
+    private String city;
+    private String county;
     private String phoneNumber;
     private LocalDate birthDate;
     private Boolean admin;

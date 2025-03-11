@@ -1,11 +1,7 @@
 package com.start.pawpal_finder;
 
-import com.start.pawpal_finder.dto.AnimalDto;
-import com.start.pawpal_finder.dto.PetOwnerDto;
-import com.start.pawpal_finder.dto.PetSitterDto;
-import com.start.pawpal_finder.entity.AnimalEntity;
-import com.start.pawpal_finder.entity.PetOwnerEntity;
-import com.start.pawpal_finder.entity.PetSitterEntity;
+import com.start.pawpal_finder.dto.*;
+import com.start.pawpal_finder.entity.*;
 import com.start.pawpal_finder.service.AnimalService;
 import com.start.pawpal_finder.service.PetOwnerService;
 import com.start.pawpal_finder.service.PetSitterService;
@@ -13,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class Transformer {
@@ -73,7 +71,8 @@ public class Transformer {
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
         dto.setPassword(entity.getPassword());
-        dto.setAddress(entity.getAddress());
+        dto.setCity(entity.getCity());
+        dto.setCounty(entity.getCounty());
         dto.setPhoneNumber(entity.getPhoneNumber());
         dto.setBirthDate(entity.getBirthDate());
         dto.setAdmin(entity.getAdmin());
@@ -90,7 +89,8 @@ public class Transformer {
         entity.setLastName(dto.getLastName());
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
-        entity.setAddress(dto.getAddress());
+        entity.setCity(dto.getCity());
+        entity.setCounty(dto.getCounty());
         entity.setPhoneNumber(dto.getPhoneNumber());
         entity.setBirthDate(dto.getBirthDate());
         entity.setAdmin(dto.getAdmin());
@@ -136,4 +136,111 @@ public class Transformer {
         return entity;
     }
 
+    public static PostDto toDto(PostEntity post) {
+        return new PostDto(
+                post.getId(),
+                post.getPetOwner().getId(),
+                post.getTitle(),
+                post.getDescription(),
+                post.getStartDate(),
+                post.getEndDate(),
+                post.getStreet(),
+                post.getNumber(),
+                post.getTasks().stream().map(Transformer::toDto).toList(),
+                post.getStatus(),
+                post.getNotes(),
+                post.getAnimals().stream().map(Transformer::toDto).collect(Collectors.toList())
+        );
+    }
+
+    public static PostEntity fromDto(PostDto dto, PetOwnerEntity petOwner, List<AnimalEntity> animals) {
+        List<TaskEntity> taskEntities = dto.getTasks() != null
+                ? dto.getTasks().stream()
+                .map(task -> new TaskEntity(null, task.getTask(), null))
+                .collect(Collectors.toList())
+                : List.of();
+
+        PostEntity post = new PostEntity(
+                dto.getId(),
+                petOwner,
+                dto.getTitle(),
+                dto.getDescription(),
+                dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getNumber(),
+                dto.getStreet(),
+                taskEntities,
+                dto.getStatus(),
+                dto.getNotes(),
+                animals
+        );
+
+        taskEntities.forEach(task -> task.setPost(post));
+
+        return post;
+    }
+
+    public static TaskDto toDto(TaskEntity taskEntity) {
+        return new TaskDto(
+                taskEntity.getId(),
+                taskEntity.getTask()
+        );
+    }
+
+    public static TaskEntity fromDto(TaskDto taskDto) {
+        return new TaskEntity(
+                taskDto.getId(),
+                taskDto.getTask(),
+                null
+        );
+    }
+
+    public static PostSitterDto toDto(PostSitterEntity entity, List<PostSitterAvailabilityEntity> availability) {
+        return new PostSitterDto(
+                entity.getId(),
+                entity.getPetSitter().getId(),
+                entity.getDescription(),
+                entity.getStatus(),
+                entity.getPostDate(),
+                entity.getTasks(),
+                availability.stream()
+                        .map(Transformer::toDto)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    public static PostSitterEntity toEntity(PostSitterDto dto, PetSitterEntity petSitter) {
+        PostSitterEntity entity = new PostSitterEntity();
+        entity.setId(dto.getId());
+        entity.setDescription(dto.getDescription());
+        entity.setStatus(dto.getStatus());
+        entity.setPostDate(dto.getPostDate());
+        entity.setTasks(dto.getTasks());
+
+        if (!dto.getAvailability().isEmpty()) {
+            entity.setAvailabilityStart(dto.getAvailability().getFirst().getStartTime());
+            entity.setAvailabilityEnd(dto.getAvailability().getLast().getEndTime());
+        }
+
+        entity.setPetSitter(petSitter);
+
+        return entity;
+    }
+
+
+    public static PostSitterAvailabilityDto toDto(PostSitterAvailabilityEntity entity) {
+        return new PostSitterAvailabilityDto(
+                entity.getDayOfWeek(),
+                entity.getStartTime(),
+                entity.getEndTime()
+        );
+    }
+
+    public static PostSitterAvailabilityEntity toEntity(PostSitterAvailabilityDto dto) {
+        PostSitterAvailabilityEntity entity = new PostSitterAvailabilityEntity();
+        entity.setDayOfWeek(dto.getDayOfWeek());
+        entity.setStartTime(dto.getStartTime());
+        entity.setEndTime(dto.getEndTime());
+        return entity;
+    }
 }

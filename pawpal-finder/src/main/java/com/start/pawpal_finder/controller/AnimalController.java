@@ -14,9 +14,11 @@ import java.util.List;
 @RequestMapping("/api/animals")
 public class AnimalController {
 
-    @Autowired
-    private AnimalService animalService;
+    private final AnimalService animalService;
 
+    public AnimalController(AnimalService animalService) {
+        this.animalService = animalService;
+    }
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnimalDto> saveAnimal(
@@ -26,6 +28,19 @@ public class AnimalController {
     ) {
         AnimalDto savedAnimal = animalService.saveAnimal(ownerId, animalDto, profilePicture);
         return ResponseEntity.ok(savedAnimal);
+    }
+
+    @PutMapping(value = "/{animalId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public AnimalDto updateAnimal(@PathVariable Integer animalId,
+                                  @RequestPart("animalDto") AnimalDto animalDto,
+                                  @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
+        return animalService.updateAnimal(animalId, animalDto, profilePicture);
+    }
+
+
+    @DeleteMapping("/{animalId}")
+    public void deleteAnimal(@PathVariable Integer animalId) {
+        animalService.deleteAnimal(animalId);
     }
 
     @GetMapping("/count/{ownerId}")

@@ -17,12 +17,13 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private PetSitterService petSitterService;
+    private final PetSitterService petSitterService;
+    private final PetOwnerService petOwnerService;
 
-    @Autowired
-    private PetOwnerService petOwnerService;
-
+    public CustomUserDetailsService(PetSitterService petSitterService, PetOwnerService petOwnerService) {
+        this.petSitterService = petSitterService;
+        this.petOwnerService = petOwnerService;
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -31,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(
                     petSitter.getEmail(),
                     petSitter.getPassword(),
-                    Collections.singleton(() -> "ROLE_USER"),
+                    Collections.singleton(() -> "ROLE_PET_SITTER"),
                     petSitter.getFirstName(),
                     petSitter.getLastName()
             );
@@ -41,7 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(
                     petOwner.getEmail(),
                     petOwner.getPassword(),
-                    Collections.singleton(() -> "ROLE_USER"),
+                    Collections.singleton(() -> "ROLE_PET_OWNER"),
                     petOwner.getFirstName(),
                     petOwner.getLastName()
             );

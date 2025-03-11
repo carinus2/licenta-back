@@ -1,4 +1,5 @@
 package com.start.pawpal_finder.auth;
+
 import com.start.pawpal_finder.auth.authorization.AuthorizationTokenFilter;
 import com.start.pawpal_finder.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,18 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "api/animals/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.PATCH, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/animals/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "api/pet-owner").authenticated()
                 .requestMatchers(HttpMethod.GET, "api/pet-sitter").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/post-sitter**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/post-sitter**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/post-sitter/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/post-sitter/**").authenticated()
                 //  .requestMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
