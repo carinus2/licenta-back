@@ -243,4 +243,38 @@ public class Transformer {
         entity.setEndTime(dto.getEndTime());
         return entity;
     }
+
+    public static PetOwnerProfileDto toDto(PetOwnerProfileEntity profile) {
+        return new PetOwnerProfileDto(
+                profile.getId(),
+                profile.getPetOwner().getId(),
+                profile.getPetOwner().getFirstName(),
+                profile.getPetOwner().getLastName(),
+                profile.getPetOwner().getEmail(),
+                profile.getPetOwner().getCity(),
+                profile.getPetOwner().getCounty(),
+                profile.getPetOwner().getPhoneNumber(),
+
+                profile.getProfilePictureUrl() != null
+                        ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(profile.getProfilePictureUrl())
+                        : null,
+                profile.getBudget(),
+                profile.getBio(),
+                profile.getNotificationsEnabled(),
+                profile.getPreferredPaymentMethod()
+                );
+    }
+
+
+    public static PetOwnerProfileEntity fromDto(PetOwnerProfileDto dto, PetOwnerEntity petOwner) {
+        return new PetOwnerProfileEntity(
+                dto.getId(),
+                petOwner,
+                dto.getProfilePictureUrl().getBytes(),
+                dto.getBudget(),
+                dto.getBio(),
+                dto.getNotificationsEnabled(),
+                dto.getPreferredPaymentMethod()
+        );
+    }
 }
