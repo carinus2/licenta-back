@@ -50,7 +50,8 @@ public class PetOwnerProfileService {
             dto.setPreferredPaymentMethod(profile.getPreferredPaymentMethod());
 
             if (profile.getProfilePictureUrl() != null) {
-                dto.setProfilePictureUrl("data:image/jpeg;base64," + java.util.Base64.getEncoder().encodeToString(profile.getProfilePictureUrl()));
+                dto.setProfilePictureUrl("data:image/jpeg;base64," +
+                        java.util.Base64.getEncoder().encodeToString(profile.getProfilePictureUrl()));
             }
         }
 
@@ -64,6 +65,11 @@ public class PetOwnerProfileService {
         }
 
         PetOwnerEntity petOwner = petOwnerOpt.get();
+        petOwner.setCity(dto.getCity());
+        petOwner.setCounty(dto.getCounty());
+        petOwner.setPhoneNumber(dto.getPhoneNumber());
+        petOwnerRepository.save(petOwner);
+
         PetOwnerProfileEntity profile = profileRepository.findByPetOwnerId(petOwner.getId())
                 .orElse(new PetOwnerProfileEntity());
 
@@ -85,7 +91,6 @@ public class PetOwnerProfileService {
 
         return Transformer.toDto(savedProfile);
     }
-
 
     public void deleteProfile(Integer ownerId) {
         profileRepository.findByPetOwnerId(ownerId).ifPresent(profileRepository::delete);
