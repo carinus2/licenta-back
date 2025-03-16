@@ -43,9 +43,6 @@ public class AnimalEntity {
     @Column(name = "profile_picture", columnDefinition = "BYTEA")
     private byte[] profilePicture;
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
-    private List<ReviewEntity> reviews;
-
     @ManyToOne
     @JoinColumn(name = "pet_owner_id", nullable = false)
     private PetOwnerEntity petOwner;

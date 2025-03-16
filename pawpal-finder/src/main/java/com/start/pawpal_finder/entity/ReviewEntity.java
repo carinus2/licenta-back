@@ -1,9 +1,7 @@
 package com.start.pawpal_finder.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -13,19 +11,13 @@ import lombok.NoArgsConstructor;
 public class ReviewEntity {
 
     @Id
-    @SequenceGenerator(name = "reviewGenerator", sequenceName = "sq_review_id", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reviewGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "animal_id", nullable = false)
-    private AnimalEntity animal;
+    private Integer rating;      // rating 1..5
+    private String content;      // conținutul review-ului
 
     @ManyToOne
-    @JoinColumn(name = "pet_sitter_id", nullable = false)
-    private PetSitterEntity petSitter;
-
-    @Column(name = "rating", nullable = false)
-    private Integer rating;
-
+    @JoinColumn(name = "pet_sitter_profile_id")
+    private PetSitterProfileEntity petSitterProfile;
 }

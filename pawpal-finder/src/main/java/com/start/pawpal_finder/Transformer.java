@@ -277,4 +277,44 @@ public class Transformer {
                 dto.getPreferredPaymentMethod()
         );
     }
+
+    public static ReviewDto toDto(ReviewEntity reviewEntity) {
+        ReviewDto dto = new ReviewDto();
+        dto.setId(reviewEntity.getId());
+        dto.setRating(reviewEntity.getRating());
+        dto.setContent(reviewEntity.getContent());
+        return dto;
+    }
+
+    public static PetSitterProfileDto toDto(PetSitterProfileEntity entity) {
+        PetSitterProfileDto dto = new PetSitterProfileDto();
+        dto.setId(entity.getId());
+        dto.setPetSitterId(entity.getPetSitter().getId());
+        dto.setFirstName(entity.getPetSitter().getFirstName());
+        dto.setLastName(entity.getPetSitter().getLastName());
+        dto.setEmail(entity.getPetSitter().getEmail());
+        dto.setCity(entity.getPetSitter().getCity());
+        dto.setCounty(entity.getPetSitter().getCounty());
+        dto.setPhoneNumber(entity.getPetSitter().getPhoneNumber());
+        dto.setBirthDate(entity.getPetSitter().getBirthDate());
+        dto.setBio(entity.getBio());
+        dto.setNotificationsEnabled(entity.getNotificationsEnabled());
+        dto.setPreferredPaymentMethod(entity.getPreferredPaymentMethod());
+        dto.setExperience(entity.getExperience());
+
+        if (entity.getProfilePictureUrl() != null) {
+            dto.setProfilePictureUrl("data:image/jpeg;base64," +
+                    Base64.getEncoder().encodeToString(entity.getProfilePictureUrl()));
+        }
+
+        if (entity.getReviews() != null) {
+            dto.setReviews(
+                    entity.getReviews().stream()
+                            .map(Transformer::toDto)
+                            .collect(Collectors.toList())
+            );
+        }
+
+        return dto;
+    }
 }
