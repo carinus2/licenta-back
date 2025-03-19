@@ -38,7 +38,7 @@ public class PetSitterEntity {
     @Column(name = "county", length = 50, nullable = false)
     private String county;
 
-    @Column(name = "phone_number", length = 11, nullable = false)
+    @Column(name = "phone_number", length = 13, nullable = false)
     private String phoneNumber;
 
     @Column(name = "birth_date", nullable = false)

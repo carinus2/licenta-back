@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/pet-sitter-profile")
 public class PetSitterProfileController {
@@ -42,4 +44,10 @@ public class PetSitterProfileController {
         profileService.deleteProfile(sitterId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    public List<PetSitterProfileDto> searchSittersByLocation(@RequestParam String city, @RequestParam String county) {
+        return profileService.findByCityAndCounty(city, county);
+    }
+
 }

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -109,5 +110,11 @@ public class PetSitterProfileService {
 
     public void deleteProfile(Integer sitterId) {
         profileRepository.findByPetSitterId(sitterId).ifPresent(profileRepository::delete);
+    }
+
+    public List<PetSitterProfileDto> findByCityAndCounty(String city, String county) {
+
+        List<PetSitterProfileEntity> sitters = profileRepository.findPetSitterProfileEntitiesByPetSitter_CountyAndPetSitter_City(county, city);
+        return sitters.stream().map(Transformer::toDto).toList();
     }
 }
