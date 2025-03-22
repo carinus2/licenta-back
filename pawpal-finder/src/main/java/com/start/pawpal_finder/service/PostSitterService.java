@@ -1,16 +1,16 @@
 package com.start.pawpal_finder.service;
 
 import com.start.pawpal_finder.Transformer;
+import com.start.pawpal_finder.dto.PostSitterAvailabilityDto;
 import com.start.pawpal_finder.dto.PostSitterDto;
 import com.start.pawpal_finder.entity.PetSitterEntity;
 import com.start.pawpal_finder.entity.PostSitterAvailabilityEntity;
 import com.start.pawpal_finder.entity.PostSitterEntity;
-import com.start.pawpal_finder.repository.PetSitterRepository;
-import com.start.pawpal_finder.repository.PostSitterAvailabilityRepository;
-import com.start.pawpal_finder.repository.PostSitterRepository;
+import com.start.pawpal_finder.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +22,13 @@ public class PostSitterService {
     private final PetSitterRepository petSitterRepository;
 
     private final PostSitterAvailabilityRepository availabilityRepository;
+    private final PostSitterRepositoryCustom postSitterCustom;
 
-    public PostSitterService(PostSitterRepository postSitterRepository, PetSitterRepository petSitterRepository, PostSitterAvailabilityRepository availabilityRepository) {
+    public PostSitterService(PostSitterRepository postSitterRepository, PetSitterRepository petSitterRepository, PostSitterAvailabilityRepository availabilityRepository, PostSitterRepositoryCustom postSitterCustom) {
         this.postSitterRepository = postSitterRepository;
         this.petSitterRepository = petSitterRepository;
         this.availabilityRepository = availabilityRepository;
+        this.postSitterCustom = postSitterCustom;
     }
 
     public PostSitterDto createPostSitter(PostSitterDto postSitterDto) {
@@ -128,5 +130,35 @@ public class PostSitterService {
         postSitterRepository.delete(post);
     }
 
+    public List<PostSitterDto> searchPosts(String keyword, String status, String tasks, String dayOfWeek) {
+        List<PostSitterEntity> posts = postSitterCustom.searchPosts(keyword, status, tasks, dayOfWeek);
+
+        // Convert each PostSitterEntity to PostSitterDto
+        return posts.stream()
+                .map(post -> {
+
+                    List<PostSitterAvailabilityDto> availabilityDtos =
+                            post.getAvailabilities() == null
+                                    ? Collections.emptyList()
+                                    : post.getAvailabilities().stream()
+                                    .map(av -> new PostSitterAvailabilityDto(
+                                            av.getDayOfWeek(),
+                                            av.getStartTime(),
+                                            av.getEndTime()
+                                    ))
+                                    .collect(Collectors.toList());
+
+                    return new PostSitterDto(
+                            post.getId(),
+                            post.getPetSitter() == null ? null : post.getPetSitter().getId(),
+                            post.getDescription(),
+                            post.getStatus(),
+                            post.getPostDate(),
+                            post.getTasks(),
+                            availabilityDtos
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
 }

@@ -1,7 +1,9 @@
 package com.start.pawpal_finder.repository;
 
 import com.start.pawpal_finder.entity.PostSitterEntity;
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -11,6 +13,4 @@ public interface PostSitterRepository extends JpaRepository<PostSitterEntity, In
     List<PostSitterEntity> findByPetSitter_CityAndPetSitter_County(String city, String county);
     List<PostSitterEntity> findByPetSitter_IdAndStatus(Integer sitterId, String status);
     long countByPetSitter_Id(Integer sitterId);
-
-
 }

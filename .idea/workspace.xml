@@ -5,12 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="add edit my profile for sitter">
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostSitterCustomImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostSitterRepositoryCustom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PetSitterProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PetSitterProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetOwnerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetOwnerEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetSitterEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetSitterEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetSitterProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetSitterProfileRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostSitterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostSitterController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PostSitterEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PostSitterEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostSitterRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostSitterRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostSitterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostSitterService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +109,7 @@
       <workItem from="1736620446914" duration="4334000" />
       <workItem from="1736801796812" duration="11280000" />
       <workItem from="1738002234585" duration="58184000" />
-      <workItem from="1741973918177" duration="28560000" />
+      <workItem from="1741973918177" duration="41096000" />
     </task>
     <task id="LOCAL-00001" summary="add login and register feature">
       <option name="closed" value="true" />
@@ -260,7 +263,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742132830977</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="add edit my profile for sitter">
+      <option name="closed" value="true" />
+      <created>1742419230289</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1742419230289</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,6 +316,11 @@
           <properties class="java.nio.file.NoSuchFileException" package="java.nio.file" />
           <option name="timeStamp" value="41" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostSitterController.java</url>
+          <line>72</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

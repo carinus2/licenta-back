@@ -43,6 +43,6 @@ public class PostSitterEntity {
     @Column(name = "task_name")
     private List<String> tasks;
 
-    @OneToMany(mappedBy = "postSitter", cascade = CascadeType.ALL, orphanRemoval = true) // 🔥 Delete availability entries when PostSitter is deleted
+    @OneToMany(mappedBy = "postSitter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostSitterAvailabilityEntity> availabilities;
 }

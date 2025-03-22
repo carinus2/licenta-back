@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "api/posts/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "api/post-sitter/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "api/post-sitter/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/post-sitter/search").authenticated()
                 .requestMatchers(HttpMethod.PUT, "api/post-sitter/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "api/post-sitter/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "api/profile/**").authenticated()

@@ -62,4 +62,15 @@ public class PostSitterController {
         long count = postSitterService.getPostCountBySitter(sitterId);
         return ResponseEntity.ok(count);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PostSitterDto>> searchPosts(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String tasks,
+            @RequestParam(required = false) String dayOfWeek) {
+
+        List<PostSitterDto> posts = postSitterService.searchPosts(keyword, status, tasks, dayOfWeek);
+        return ResponseEntity.ok(posts);
+    }
 }
