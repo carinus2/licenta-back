@@ -55,5 +55,11 @@ public class PetSitterEntity {
     )
     private List<AnimalEntity> animals;
 
+    @OneToOne(mappedBy = "petSitter", cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+    private PetSitterProfileEntity profile;
+
+    public int getExperience() {
+        return (profile == null) ? 0 : profile.getExperience();
+    }
 }
 

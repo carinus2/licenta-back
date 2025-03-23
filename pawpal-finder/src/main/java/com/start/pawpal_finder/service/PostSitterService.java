@@ -7,6 +7,7 @@ import com.start.pawpal_finder.entity.PetSitterEntity;
 import com.start.pawpal_finder.entity.PostSitterAvailabilityEntity;
 import com.start.pawpal_finder.entity.PostSitterEntity;
 import com.start.pawpal_finder.repository.*;
+import com.start.pawpal_finder.representation.SearchPostRepresentation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -130,13 +131,31 @@ public class PostSitterService {
         postSitterRepository.delete(post);
     }
 
-    public List<PostSitterDto> searchPosts(String keyword, String status, String tasks, String dayOfWeek) {
-        List<PostSitterEntity> posts = postSitterCustom.searchPosts(keyword, status, tasks, dayOfWeek);
+    public List<PostSitterDto> searchPosts(SearchPostRepresentation searchPostRepresentation) {
+        List<PostSitterEntity> posts = postSitterCustom.searchPosts(searchPostRepresentation);
 
-        // Convert each PostSitterEntity to PostSitterDto
+        if (searchPostRepresentation.getLevel() != null && !searchPostRepresentation.getLevel().isEmpty()) {
+            posts = posts.stream()
+                    .filter(post -> {
+                        if (post.getPetSitter() == null) {
+                            return false;
+                        }
+                        int experience = post.getPetSitter().getExperience();
+                        String computedLevel;
+                        if (experience <= 1) {
+                            computedLevel = "Junior";
+                        } else if (experience <= 4) {
+                            computedLevel = "Mid";
+                        } else {
+                            computedLevel = "Senior";
+                        }
+                        return searchPostRepresentation.getLevel().equalsIgnoreCase(computedLevel);
+                    })
+                    .collect(Collectors.toList());
+        }
+
         return posts.stream()
                 .map(post -> {
-
                     List<PostSitterAvailabilityDto> availabilityDtos =
                             post.getAvailabilities() == null
                                     ? Collections.emptyList()

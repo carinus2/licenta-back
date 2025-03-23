@@ -27,6 +27,5 @@ public class PetSitterProfileDto {
     private String preferredPaymentMethod;
     private Integer experience;
 
-    // Lista de review-uri (DTO simplu)
     private List<ReviewDto> reviews;
 }

@@ -1,6 +1,7 @@
 package com.start.pawpal_finder.controller;
 
 import com.start.pawpal_finder.dto.PostSitterDto;
+import com.start.pawpal_finder.representation.SearchPostRepresentation;
 import com.start.pawpal_finder.service.PostSitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,14 +64,10 @@ public class PostSitterController {
         return ResponseEntity.ok(count);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<PostSitterDto>> searchPosts(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String tasks,
-            @RequestParam(required = false) String dayOfWeek) {
+    @PostMapping("/search")
+    public ResponseEntity<List<PostSitterDto>> searchPosts(@RequestBody SearchPostRepresentation searchPostRepresentation) {
 
-        List<PostSitterDto> posts = postSitterService.searchPosts(keyword, status, tasks, dayOfWeek);
+        List<PostSitterDto> posts = postSitterService.searchPosts(searchPostRepresentation);
         return ResponseEntity.ok(posts);
     }
 }
