@@ -2,6 +2,7 @@ package com.start.pawpal_finder;
 
 import com.start.pawpal_finder.dto.*;
 import com.start.pawpal_finder.entity.*;
+import com.start.pawpal_finder.representation.PricingModel;
 import com.start.pawpal_finder.service.AnimalService;
 import com.start.pawpal_finder.service.PetOwnerService;
 import com.start.pawpal_finder.service.PetSitterService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -196,6 +198,12 @@ public class Transformer {
     }
 
     public static PostSitterDto toDto(PostSitterEntity entity, List<PostSitterAvailabilityEntity> availability) {
+        List<PostSitterAvailabilityDto> availabilityDtos =
+                entity.getAvailabilities() == null ? Collections.emptyList() :
+                        entity.getAvailabilities().stream()
+                                .map(av -> new PostSitterAvailabilityDto(av.getDayOfWeek(), av.getStartTime(), av.getEndTime()))
+                                .collect(Collectors.toList());
+
         return new PostSitterDto(
                 entity.getId(),
                 entity.getPetSitter().getId(),
@@ -203,9 +211,11 @@ public class Transformer {
                 entity.getStatus(),
                 entity.getPostDate(),
                 entity.getTasks(),
-                availability.stream()
-                        .map(Transformer::toDto)
-                        .collect(Collectors.toList())
+                availabilityDtos,
+                entity.getPricingModel().toString(),
+                entity.getRatePerHour(),
+                entity.getRatePerDay(),
+                entity.getFlatRate()
         );
     }
 
@@ -216,14 +226,16 @@ public class Transformer {
         entity.setStatus(dto.getStatus());
         entity.setPostDate(dto.getPostDate());
         entity.setTasks(dto.getTasks());
+        entity.setPricingModel(PricingModel.valueOf(dto.getPricingModel()));
+        entity.setRatePerHour(dto.getRatePerHour());
+        entity.setRatePerDay(dto.getRatePerDay());
+        entity.setFlatRate(dto.getFlatRate());
 
-        if (!dto.getAvailability().isEmpty()) {
-            entity.setAvailabilityStart(dto.getAvailability().getFirst().getStartTime());
-            entity.setAvailabilityEnd(dto.getAvailability().getLast().getEndTime());
+        if (dto.getAvailability() != null && !dto.getAvailability().isEmpty()) {
+            entity.setAvailabilityStart(dto.getAvailability().get(0).getStartTime());
+            entity.setAvailabilityEnd(dto.getAvailability().get(dto.getAvailability().size() - 1).getEndTime());
         }
-
         entity.setPetSitter(petSitter);
-
         return entity;
     }
 
@@ -316,5 +328,41 @@ public class Transformer {
         }
 
         return dto;
+    }
+
+    public static ReservationDto toDto(ReservationEntity entity) {
+        return new ReservationDto(
+                entity.getId(),
+                // Assuming the postSitter and petOwner are non-null
+                entity.getPostSitter() != null ? entity.getPostSitter().getId() : null,
+                entity.getPetOwner() != null ? entity.getPetOwner().getId() : null,
+                entity.getStatus(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt(),
+                entity.getFinalPrice()
+        );
+    }
+
+    public static ReservationEntity toEntity(ReservationDto dto) {
+        ReservationEntity entity = new ReservationEntity();
+        entity.setId(dto.getId());
+
+        // In a simple conversion, we assume that only the IDs of related entities are available.
+        // In a real scenario you might need to fetch the full entities.
+        if (dto.getPostSitterId() != null) {
+            PostSitterEntity postSitter = new PostSitterEntity();
+            postSitter.setId(dto.getPostSitterId());
+            entity.setPostSitter(postSitter);
+        }
+        if (dto.getPetOwnerId() != null) {
+            PetOwnerEntity petOwner = new PetOwnerEntity();
+            petOwner.setId(dto.getPetOwnerId());
+            entity.setPetOwner(petOwner);
+        }
+        entity.setStatus(dto.getStatus());
+        entity.setCreatedAt(dto.getCreatedAt());
+        entity.setUpdatedAt(dto.getUpdatedAt());
+        entity.setFinalPrice(dto.getFinalPrice());
+        return entity;
     }
 }

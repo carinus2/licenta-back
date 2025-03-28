@@ -85,7 +85,7 @@ public class JwtUtil {
                 .setSubject(userDetails.getUsername())
                 .claim("roles", roles)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 12 * 60 * 60 * 1000)) // 12 ore
+                .setExpiration(new Date(System.currentTimeMillis() + 12 * 60 * 60 * 1000))
                 .signWith(getJwtKey())
                 .compact();
     }

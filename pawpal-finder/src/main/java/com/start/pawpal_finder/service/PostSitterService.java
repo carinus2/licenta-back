@@ -174,7 +174,11 @@ public class PostSitterService {
                             post.getStatus(),
                             post.getPostDate(),
                             post.getTasks(),
-                            availabilityDtos
+                            availabilityDtos,
+                            post.getPricingModel().toString(),
+                            post.getRatePerHour(),
+                            post.getRatePerDay(),
+                            post.getFlatRate()
                     );
                 })
                 .collect(Collectors.toList());

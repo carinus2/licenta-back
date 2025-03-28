@@ -50,6 +50,19 @@ public class PostSitterCustomImpl implements PostSitterRepositoryCustom {
             jpql.append(" AND a.dayOfWeek IN :dayOfWeek");
             params.put("dayOfWeek", days);
         }
+        if (searchPostRepresentation.getMaxPricePerHour() != null) {
+            jpql.append(" AND (p.pricingModel = 'PER_HOUR' AND p.ratePerHour <= :maxPricePerHour)");
+            params.put("maxPricePerHour", searchPostRepresentation.getMaxPricePerHour());
+        }
+        if (searchPostRepresentation.getMaxPricePerDay() != null) {
+            jpql.append(" AND (p.pricingModel = 'PER_DAY' AND p.ratePerDay <= :maxPricePerDay)");
+            params.put("maxPricePerDay", searchPostRepresentation.getMaxPricePerDay());
+        }
+        if (searchPostRepresentation.getMaxFlatRate() != null) {
+            jpql.append(" AND (p.pricingModel = 'FLAT' AND p.flatRate <= :maxFlatRate)");
+            params.put("maxFlatRate", searchPostRepresentation.getMaxFlatRate());
+        }
+
 
         TypedQuery<PostSitterEntity> query = em.createQuery(jpql.toString(), PostSitterEntity.class);
         for (Map.Entry<String, Object> entry : params.entrySet()) {

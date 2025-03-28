@@ -22,4 +22,10 @@ public class SearchPostRepresentation {
     private List<String> dayOfWeek;
     @JsonProperty
     private String level;
+    @JsonProperty
+    private Double maxPricePerHour;
+    @JsonProperty
+    private Double maxPricePerDay;
+    @JsonProperty
+    private Double maxFlatRate;
 }

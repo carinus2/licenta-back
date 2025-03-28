@@ -16,4 +16,8 @@ public class PostSitterDto {
     private LocalDate postDate;
     private List<String> tasks;
     private List<PostSitterAvailabilityDto> availability;
+    private String pricingModel;
+    private Double ratePerHour;
+    private Double ratePerDay;
+    private Double flatRate;
 }

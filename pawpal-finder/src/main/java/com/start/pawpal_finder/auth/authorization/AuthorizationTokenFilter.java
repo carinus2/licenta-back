@@ -1,6 +1,5 @@
 package com.start.pawpal_finder.auth.authorization;
 
-
 import com.start.pawpal_finder.auth.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,8 +23,16 @@ public class AuthorizationTokenFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtils;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
+        // Skip JWT check for WebSocket handshake requests
+        if (request.getRequestURI().startsWith("/ws-notifications")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             var jwt = jwtUtils.getJwtFromRequest(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -39,11 +46,10 @@ public class AuthorizationTokenFilter extends OncePerRequestFilter {
                         .collect(toList());
 
                 var authentication = new UsernamePasswordAuthenticationToken(username, null, entitlements);
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (final Exception e) {
-            System.out.println("Cannot set authentication");
+            System.out.println("Cannot set authentication: " + e.getMessage());
         }
         filterChain.doFilter(request, response);
     }

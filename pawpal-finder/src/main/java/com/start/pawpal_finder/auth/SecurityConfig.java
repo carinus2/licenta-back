@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,6 +64,15 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "api/pet-sitter-profile/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "api/pet-sitter-profile/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "api/pet-sitter-profile/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/reservations/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/reservations/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/reservations/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/reservations/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/notifications/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/notifications/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/notifications/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/notifications/**").authenticated()
+                .requestMatchers("/ws-notifications/**").permitAll()
                 //  .requestMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -73,6 +83,12 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/ws-notifications/**");
+    }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
