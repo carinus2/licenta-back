@@ -331,24 +331,39 @@ public class Transformer {
     }
 
     public static ReservationDto toDto(ReservationEntity entity) {
-        return new ReservationDto(
+        ReservationDto dto = new ReservationDto(
                 entity.getId(),
-                // Assuming the postSitter and petOwner are non-null
                 entity.getPostSitter() != null ? entity.getPostSitter().getId() : null,
                 entity.getPetOwner() != null ? entity.getPetOwner().getId() : null,
                 entity.getStatus(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
-                entity.getFinalPrice()
+                entity.getFinalPrice(),
+                null, // postDescription will be set below
+                null, // availabilityStart will be set below
+                null, // availabilityEnd will be set below
+                null  // petSitterName will be set below
         );
+
+        if (entity.getPostSitter() != null) {
+            dto.setPostDescription(entity.getPostSitter().getDescription());
+            dto.setAvailabilityStart(String.valueOf(entity.getPostSitter().getAvailabilityStart()));
+            dto.setAvailabilityEnd(String.valueOf(entity.getPostSitter().getAvailabilityEnd()));
+            if (entity.getPostSitter().getPetSitter() != null) {
+                String petSitterName = entity.getPostSitter().getPetSitter().getFirstName() + " "
+                        + entity.getPostSitter().getPetSitter().getLastName();
+                dto.setPetSitterName(petSitterName);
+            }
+        }
+
+        return dto;
     }
+
 
     public static ReservationEntity toEntity(ReservationDto dto) {
         ReservationEntity entity = new ReservationEntity();
         entity.setId(dto.getId());
 
-        // In a simple conversion, we assume that only the IDs of related entities are available.
-        // In a real scenario you might need to fetch the full entities.
         if (dto.getPostSitterId() != null) {
             PostSitterEntity postSitter = new PostSitterEntity();
             postSitter.setId(dto.getPostSitterId());

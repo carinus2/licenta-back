@@ -70,4 +70,11 @@ public class PostSitterController {
         List<PostSitterDto> posts = postSitterService.searchPosts(searchPostRepresentation);
         return ResponseEntity.ok(posts);
     }
+    @PatchMapping("/{postId}")
+    public ResponseEntity<PostSitterDto> updatePostStatus(
+            @PathVariable Integer postId,
+            @RequestParam String status) {
+        PostSitterDto updatedPost = postSitterService.updatePostStatus(postId, status);
+        return ResponseEntity.ok(updatedPost);
+    }
 }

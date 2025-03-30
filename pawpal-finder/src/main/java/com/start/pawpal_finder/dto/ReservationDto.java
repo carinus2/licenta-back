@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,4 +17,11 @@ public class ReservationDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Double finalPrice;
+
+    // New fields:
+    private String postDescription;
+    private String availabilityStart;
+    private String availabilityEnd;
+    private String petSitterName;
+
 }

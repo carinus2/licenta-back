@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -183,5 +184,16 @@ public class PostSitterService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public PostSitterDto updatePostStatus(Integer postId, String status) {
+        PostSitterEntity post = postSitterRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with ID: " + postId));
+        post.setStatus(status);
+        PostSitterEntity updatedPost = postSitterRepository.save(post);
+        List<PostSitterAvailabilityEntity> availability = availabilityRepository.findByPostSitter(updatedPost);
+        return Transformer.toDto(updatedPost, availability);
+    }
+
 
 }

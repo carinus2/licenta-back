@@ -9,6 +9,9 @@ import com.start.pawpal_finder.entity.ReservationEntity;
 import com.start.pawpal_finder.repository.PostSitterRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
 import com.start.pawpal_finder.repository.ReservationRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,19 +49,12 @@ public class ReservationService {
         if (duration == null) {
             duration = 1.0;
         }
-        switch (postSitter.getPricingModel()) {
-            case PER_HOUR:
-                finalPrice = postSitter.getRatePerHour() * duration;
-                break;
-            case PER_DAY:
-                finalPrice = postSitter.getRatePerDay() * duration;
-                break;
-            case FLAT:
-                finalPrice = postSitter.getFlatRate();
-                break;
-            default:
-                throw new RuntimeException("Unknown pricing model");
-        }
+        finalPrice = switch (postSitter.getPricingModel()) {
+            case PER_HOUR -> postSitter.getRatePerHour() * duration;
+            case PER_DAY -> postSitter.getRatePerDay() * duration;
+            case FLAT -> postSitter.getFlatRate();
+            default -> throw new RuntimeException("Unknown pricing model");
+        };
 
         ReservationEntity reservation = new ReservationEntity();
         reservation.setPostSitter(postSitter);
@@ -100,4 +96,29 @@ public class ReservationService {
 
         return Transformer.toDto(updated);
     }
+
+    @Transactional(readOnly = true)
+    public Page<ReservationDto> getReservationsForPetOwner(Integer petOwnerId, String status, String dateOrder, String sitterName, int page, int size) {
+        Sort sort = Sort.by("createdAt");
+        sort = "asc".equalsIgnoreCase(dateOrder) ? sort.ascending() : sort.descending();
+        PageRequest pageable = PageRequest.of(page, size, sort);
+
+        Page<ReservationEntity> reservationPage;
+        if (status != null && !status.isEmpty() && sitterName != null && !sitterName.isEmpty()) {
+            reservationPage = reservationRepository.findByPetOwnerIdAndStatusAndSitterNameContainingIgnoreCase(petOwnerId, status, sitterName, pageable);
+        } else if (status != null && !status.isEmpty()) {
+            reservationPage = reservationRepository.findByPetOwnerIdAndStatus(petOwnerId, status, pageable);
+        } else if (sitterName != null && !sitterName.isEmpty()) {
+            reservationPage = reservationRepository.findByPetOwnerIdAndSitterNameContainingIgnoreCase(petOwnerId, sitterName, pageable);
+        } else {
+            reservationPage = reservationRepository.findByPetOwnerId(petOwnerId, pageable);
+        }
+        return reservationPage.map(Transformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public long getReservationCountForPetOwner(Integer petOwnerId) {
+        return reservationRepository.countByPetOwnerId(petOwnerId);
+    }
+
 }
