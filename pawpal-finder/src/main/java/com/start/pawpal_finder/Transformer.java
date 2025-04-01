@@ -331,18 +331,21 @@ public class Transformer {
     }
 
     public static ReservationDto toDto(ReservationEntity entity) {
+        assert entity.getPetOwner() != null;
         ReservationDto dto = new ReservationDto(
                 entity.getId(),
                 entity.getPostSitter() != null ? entity.getPostSitter().getId() : null,
-                entity.getPetOwner() != null ? entity.getPetOwner().getId() : null,
+                entity.getPetOwner().getId(),
                 entity.getStatus(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.getFinalPrice(),
-                null, // postDescription will be set below
+                null,
                 null, // availabilityStart will be set below
                 null, // availabilityEnd will be set below
-                null  // petSitterName will be set below
+                null,  // petSitterName will be set below
+                entity.getPetOwner().getFirstName() + " " + entity.getPetOwner().getLastName()
+
         );
 
         if (entity.getPostSitter() != null) {
