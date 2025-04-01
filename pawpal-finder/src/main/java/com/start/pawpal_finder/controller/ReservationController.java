@@ -1,6 +1,8 @@
 package com.start.pawpal_finder.controller;
 
+import com.start.pawpal_finder.Transformer;
 import com.start.pawpal_finder.dto.ReservationDto;
+import com.start.pawpal_finder.entity.ReservationEntity;
 import com.start.pawpal_finder.service.ReservationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -56,9 +58,32 @@ public class ReservationController {
         return ResponseEntity.ok(pagedModel);
     }
 
+    @GetMapping("/sitter/{petSitterId}")
+    public ResponseEntity<PagedModel<EntityModel<ReservationDto>>> getReservationsForPetSitter(
+            @PathVariable Integer petSitterId,
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "desc") String dateOrder,
+            @RequestParam(required = false) String petOwnerName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            PagedResourcesAssembler<ReservationDto> assembler) {
+
+        Page<ReservationDto> reservationsPage = reservationService.getReservationsForPetSitter(
+                petSitterId, status, dateOrder, petOwnerName, page, size);
+
+        PagedModel<EntityModel<ReservationDto>> pagedModel = assembler.toModel(reservationsPage);
+        return ResponseEntity.ok(pagedModel);
+    }
+
     @GetMapping("{petOwnerId}/count")
     public ResponseEntity<Long> getReservationCountForPetOwner(@PathVariable Integer petOwnerId) {
         long count = reservationService.getReservationCountForPetOwner(petOwnerId);
         return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/sitter/get-reservation")
+    public ResponseEntity<ReservationEntity> getReservationById(@PathVariable Integer reservationId) {
+
+        return ResponseEntity.ok((reservationService.getReservationById(reservationId)));
     }
 }

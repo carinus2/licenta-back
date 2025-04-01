@@ -274,7 +274,7 @@ public class Transformer {
                 profile.getBio(),
                 profile.getNotificationsEnabled(),
                 profile.getPreferredPaymentMethod()
-                );
+        );
     }
 
 

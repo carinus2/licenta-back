@@ -28,4 +28,8 @@ public class SearchPostRepresentation {
     private Double maxPricePerDay;
     @JsonProperty
     private Double maxFlatRate;
+    @JsonProperty
+    private String city;
+    @JsonProperty
+    private String county;
 }

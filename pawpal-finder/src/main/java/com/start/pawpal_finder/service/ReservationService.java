@@ -84,9 +84,19 @@ public class ReservationService {
 
         reservation.setStatus(status);
         reservation.setUpdatedAt(LocalDateTime.now());
-        ReservationEntity updated = reservationRepository.save(reservation);
+        ReservationEntity updatedReservation = reservationRepository.save(reservation);
 
-        if ("ACCEPTED".equals(status) || "DENIED".equals(status)) {
+        PostSitterEntity postSitter = reservation.getPostSitter();
+        if (postSitter != null) {
+            if ("ACCEPTED".equalsIgnoreCase(status)) {
+                postSitter.setStatus("Approved");
+            } else if ("DENIED".equalsIgnoreCase(status)) {
+                postSitter.setStatus("Active");
+            }
+            postSitterRepository.save(postSitter);
+        }
+
+        if ("ACCEPTED".equalsIgnoreCase(status) || "DENIED".equalsIgnoreCase(status)) {
             NotificationMessageDto notif = new NotificationMessageDto(
                     "Reservation Update",
                     "Your reservation status has been updated to: " + status
@@ -94,8 +104,9 @@ public class ReservationService {
             webSocketNotificationService.sendNotificationToOwner(notif);
         }
 
-        return Transformer.toDto(updated);
+        return Transformer.toDto(updatedReservation);
     }
+
 
     @Transactional(readOnly = true)
     public Page<ReservationDto> getReservationsForPetOwner(Integer petOwnerId, String status, String dateOrder, String sitterName, int page, int size) {
@@ -117,8 +128,36 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
+    public Page<ReservationDto> getReservationsForPetSitter(Integer petSitterId, String status, String dateOrder, String petOwnerName, int page, int size) {
+        Sort sort = Sort.by("createdAt");
+        sort = "asc".equalsIgnoreCase(dateOrder) ? sort.ascending() : sort.descending();
+        PageRequest pageable = PageRequest.of(page, size, sort);
+
+        Page<ReservationEntity> reservationPage;
+        if (status != null && !status.isEmpty() && petOwnerName != null && !petOwnerName.isEmpty()) {
+            reservationPage = reservationRepository.findByPetSitterIdAndStatusAndPetOwnerNameContainingIgnoreCase(
+                    petSitterId, status, petOwnerName, pageable
+            );
+        } else if (status != null && !status.isEmpty()) {
+            reservationPage = reservationRepository.findByPetSitterIdAndStatus(petSitterId, status, pageable);
+        } else if (petOwnerName != null && !petOwnerName.isEmpty()) {
+            reservationPage = reservationRepository.findByPetSitterIdAndPetOwnerNameContainingIgnoreCase(
+                    petSitterId, petOwnerName, pageable
+            );
+        } else {
+            reservationPage = reservationRepository.findByPetSitterId(petSitterId, pageable);
+        }
+        return reservationPage.map(Transformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
     public long getReservationCountForPetOwner(Integer petOwnerId) {
         return reservationRepository.countByPetOwnerId(petOwnerId);
+    }
+
+    public ReservationEntity getReservationById(Integer reservationId) {
+
+        return reservationRepository.getReferenceById(reservationId);
     }
 
 }

@@ -24,4 +24,5 @@ public class ReservationDto {
     private String availabilityEnd;
     private String petSitterName;
 
+    private String petOwnerName;
 }

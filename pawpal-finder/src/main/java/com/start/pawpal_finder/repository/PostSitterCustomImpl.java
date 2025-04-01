@@ -32,14 +32,13 @@ public class PostSitterCustomImpl implements PostSitterRepositoryCustom {
 
         if (searchPostRepresentation.getKeyword() != null && !searchPostRepresentation.getKeyword().trim().isEmpty()) {
             jpql.append(" AND p.description LIKE :keyword");
-            params.put("keyword", "%" + searchPostRepresentation.getKeyword() + "%");
+            params.put("keyword", "%" + searchPostRepresentation.getKeyword().trim() + "%");
         }
         if (searchPostRepresentation.getStatus() != null && !searchPostRepresentation.getStatus().trim().isEmpty()) {
             jpql.append(" AND p.status = :status");
-            params.put("status", searchPostRepresentation.getStatus());
+            params.put("status", searchPostRepresentation.getStatus().trim());
         }
-        if (searchPostRepresentation.getTasks() != null
-                && !searchPostRepresentation.getTasks().trim().isEmpty()) {
+        if (searchPostRepresentation.getTasks() != null && !searchPostRepresentation.getTasks().trim().isEmpty()) {
             jpql.append(" AND EXISTS (SELECT t FROM p.tasks t WHERE LOWER(t) LIKE :tasks)");
             params.put("tasks", "%" + searchPostRepresentation.getTasks().toLowerCase() + "%");
         }
@@ -62,7 +61,14 @@ public class PostSitterCustomImpl implements PostSitterRepositoryCustom {
             jpql.append(" AND (p.pricingModel = 'FLAT' AND p.flatRate <= :maxFlatRate)");
             params.put("maxFlatRate", searchPostRepresentation.getMaxFlatRate());
         }
-
+        if (searchPostRepresentation.getCity() != null && !searchPostRepresentation.getCity().trim().isEmpty()) {
+            jpql.append(" AND LOWER(ps.city) = LOWER(:city)");
+            params.put("city", searchPostRepresentation.getCity().trim());
+        }
+        if (searchPostRepresentation.getCounty() != null && !searchPostRepresentation.getCounty().trim().isEmpty()) {
+            jpql.append(" AND LOWER(ps.county) = LOWER(:county)");
+            params.put("county", searchPostRepresentation.getCounty().trim());
+        }
 
         TypedQuery<PostSitterEntity> query = em.createQuery(jpql.toString(), PostSitterEntity.class);
         for (Map.Entry<String, Object> entry : params.entrySet()) {

@@ -37,5 +37,47 @@ public interface ReservationRepository extends PagingAndSortingRepository<Reserv
                                                                                        Pageable pageable);
 
     long countByPetOwnerId(Integer petOwnerId);
+    @Query("SELECT r FROM ReservationEntity r " +
+            "JOIN r.postSitter ps " +
+            "JOIN ps.petSitter sitter " +
+            "WHERE sitter.id = :petSitterId")
+    Page<ReservationEntity> findByPetSitterId(@Param("petSitterId") Integer petSitterId, Pageable pageable);
+
+    @Query("SELECT r FROM ReservationEntity r " +
+            "JOIN r.postSitter ps " +
+            "JOIN ps.petSitter sitter " +
+            "WHERE sitter.id = :petSitterId " +
+            "AND r.status = :status")
+    Page<ReservationEntity> findByPetSitterIdAndStatus(@Param("petSitterId") Integer petSitterId,
+                                                       @Param("status") String status,
+                                                       Pageable pageable);
+
+    @Query("SELECT r FROM ReservationEntity r " +
+            "JOIN r.postSitter ps " +
+            "JOIN ps.petSitter sitter " +
+            "JOIN r.petOwner po " +
+            "WHERE sitter.id = :petSitterId " +
+            "AND (LOWER(po.firstName) LIKE LOWER(CONCAT('%', :petOwnerName, '%')) " +
+            "     OR LOWER(po.lastName) LIKE LOWER(CONCAT('%', :petOwnerName, '%')))")
+    Page<ReservationEntity> findByPetSitterIdAndPetOwnerNameContainingIgnoreCase(
+            @Param("petSitterId") Integer petSitterId,
+            @Param("petOwnerName") String petOwnerName,
+            Pageable pageable);
+
+    @Query("SELECT r FROM ReservationEntity r " +
+            "JOIN r.postSitter ps " +
+            "JOIN ps.petSitter sitter " +
+            "JOIN r.petOwner po " +
+            "WHERE sitter.id = :petSitterId " +
+            "AND r.status = :status " +
+            "AND (LOWER(po.firstName) LIKE LOWER(CONCAT('%', :petOwnerName, '%')) " +
+            "     OR LOWER(po.lastName) LIKE LOWER(CONCAT('%', :petOwnerName, '%')))")
+    Page<ReservationEntity> findByPetSitterIdAndStatusAndPetOwnerNameContainingIgnoreCase(
+            @Param("petSitterId") Integer petSitterId,
+            @Param("status") String status,
+            @Param("petOwnerName") String petOwnerName,
+            Pageable pageable);
+
+
 
 }
