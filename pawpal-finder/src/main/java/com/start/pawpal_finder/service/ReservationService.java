@@ -88,7 +88,7 @@ public class ReservationService {
 
         PostSitterEntity postSitter = reservation.getPostSitter();
         if (postSitter != null) {
-            if ("ACCEPTED".equalsIgnoreCase(status)) {
+            if ("APPROVED".equalsIgnoreCase(status)) {
                 postSitter.setStatus("Approved");
             } else if ("DENIED".equalsIgnoreCase(status)) {
                 postSitter.setStatus("Active");
@@ -96,16 +96,18 @@ public class ReservationService {
             postSitterRepository.save(postSitter);
         }
 
-        if ("ACCEPTED".equalsIgnoreCase(status) || "DENIED".equalsIgnoreCase(status)) {
+        if ("APPROVED".equalsIgnoreCase(status) || "DENIED".equalsIgnoreCase(status)) {
             NotificationMessageDto notif = new NotificationMessageDto(
                     "Reservation Update",
                     "Your reservation status has been updated to: " + status
             );
             webSocketNotificationService.sendNotificationToOwner(notif);
+            persistentNotificationService.saveOwnerNotification(notif, reservation.getPetOwner().getId());
         }
 
         return Transformer.toDto(updatedReservation);
     }
+
 
 
     @Transactional(readOnly = true)

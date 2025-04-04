@@ -25,4 +25,15 @@ public class PersistentNotificationService {
         );
         return notificationRepository.save(notification);
     }
+
+    public NotificationEntity saveOwnerNotification(NotificationMessageDto notif, Integer ownerId) {
+        NotificationEntity notification = new NotificationEntity(
+                ownerId,
+                notif.getTitle(),
+                notif.getMessage(),
+                LocalDateTime.now(),
+                false
+        );
+        return notificationRepository.save(notification);
+    }
 }

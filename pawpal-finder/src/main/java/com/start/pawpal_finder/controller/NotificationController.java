@@ -18,7 +18,11 @@ public class NotificationController {
 
     @GetMapping("/{sitterId}")
     public List<NotificationEntity> getNotificationsForSitter(@PathVariable Integer sitterId) {
-        return notificationRepository.findBySitterIdOrderByCreatedAtDesc(sitterId);
+        return notificationRepository.findByUserIdOrderByCreatedAtDesc(sitterId);
+    }
+    @GetMapping("/owner/{ownerId}")
+    public List<NotificationEntity> getNotificationsForOwner(@PathVariable Integer ownerId) {
+        return notificationRepository.findByUserIdOrderByCreatedAtDesc(ownerId);
     }
 
 }

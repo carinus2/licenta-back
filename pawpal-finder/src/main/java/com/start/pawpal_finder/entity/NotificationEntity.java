@@ -21,7 +21,8 @@ public class NotificationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer sitterId; // The ID of the pet sitter
+    @Column(name = "user_id")
+    private Integer userId;
 
     private String title;
 
@@ -32,8 +33,8 @@ public class NotificationEntity {
 
     private Boolean isRead = false;
 
-    public NotificationEntity(Integer sitterId, String title, String message, LocalDateTime createdAt, Boolean isRead) {
-        this.sitterId = sitterId;
+    public NotificationEntity(Integer userId, String title, String message, LocalDateTime createdAt, Boolean isRead) {
+        this.userId = userId;
         this.title = title;
         this.message = message;
         this.createdAt = createdAt;

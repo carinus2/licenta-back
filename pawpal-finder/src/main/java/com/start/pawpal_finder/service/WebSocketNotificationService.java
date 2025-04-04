@@ -13,12 +13,11 @@ public class WebSocketNotificationService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    // After
     public void sendNotificationToSitter(NotificationMessageDto notif, Integer sitterId) {
         messagingTemplate.convertAndSend("/topic/sitterNotifications/" + sitterId, notif);
     }
 
     public void sendNotificationToOwner(NotificationMessageDto notif) {
-        messagingTemplate.convertAndSend("/topic/ownerNotifications", notif);
+        messagingTemplate.convertAndSend("/topic/ownerNotifications/", notif);
     }
 }
