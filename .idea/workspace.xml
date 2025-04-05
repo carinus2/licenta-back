@@ -4,14 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="refactor + reservation functionality">
+    <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="notification for pet owner done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/ReservationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/ReservationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/NotificationDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/NotificationDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/NotificationEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/NotificationEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/NotificationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/NotificationRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PersistentNotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PersistentNotificationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/WebSocketNotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/WebSocketNotificationService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +108,7 @@
       <workItem from="1736620446914" duration="4334000" />
       <workItem from="1736801796812" duration="11280000" />
       <workItem from="1738002234585" duration="58184000" />
-      <workItem from="1741973918177" duration="119287000" />
+      <workItem from="1741973918177" duration="129000000" />
     </task>
     <task id="LOCAL-00001" summary="add login and register feature">
       <option name="closed" value="true" />
@@ -310,7 +310,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743540532284</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="notification for pet owner done">
+      <option name="closed" value="true" />
+      <created>1743794875073</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1743794875073</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -351,7 +359,8 @@
     <MESSAGE value="add notifications" />
     <MESSAGE value="add my reservations for owner" />
     <MESSAGE value="refactor + reservation functionality" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor + reservation functionality" />
+    <MESSAGE value="notification for pet owner done" />
+    <option name="LAST_COMMIT_MESSAGE" value="notification for pet owner done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -360,20 +369,14 @@
           <properties class="java.nio.file.NoSuchFileException" package="java.nio.file" />
           <option name="timeStamp" value="41" />
         </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.RuntimeException" package="java.lang" />
+          <option name="timeStamp" value="65" />
+        </breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PersistentNotificationService.java</url>
-          <line>36</line>
+          <line>40</line>
           <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PersistentNotificationService.java</url>
-          <line>29</line>
-          <option name="timeStamp" value="52" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PersistentNotificationService.java</url>
-          <line>30</line>
-          <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java</url>

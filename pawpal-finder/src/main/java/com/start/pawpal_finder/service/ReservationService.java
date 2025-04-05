@@ -72,7 +72,7 @@ public class ReservationService {
         Integer sitterId = postSitter.getPetSitter().getId();
 
         webSocketNotificationService.sendNotificationToSitter(notif, sitterId);
-        persistentNotificationService.saveNotification(notif, sitterId);
+        persistentNotificationService.saveNotification(notif, sitterId, postSitterId);
 
         return Transformer.toDto(saved);
     }
@@ -102,7 +102,7 @@ public class ReservationService {
                     "Your reservation status has been updated to: " + status
             );
             webSocketNotificationService.sendNotificationToOwner(notif);
-            persistentNotificationService.saveOwnerNotification(notif, reservation.getPetOwner().getId());
+            persistentNotificationService.saveOwnerNotification(notif, reservation.getPetOwner().getId(), postSitter.getId());
         }
 
         return Transformer.toDto(updatedReservation);

@@ -32,6 +32,9 @@ public class NotificationEntity {
     private LocalDateTime createdAt;
 
     private Boolean isRead = false;
+    private Integer reservationId;
+    private Integer postId;
+
 
     public NotificationEntity(Integer userId, String title, String message, LocalDateTime createdAt, Boolean isRead) {
         this.userId = userId;

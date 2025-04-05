@@ -81,9 +81,9 @@ public class ReservationController {
         return ResponseEntity.ok(count);
     }
 
-    @GetMapping("/sitter/get-reservation")
+    @GetMapping("/sitter/get-reservation/{reservationId}")
     public ResponseEntity<ReservationEntity> getReservationById(@PathVariable Integer reservationId) {
-
-        return ResponseEntity.ok((reservationService.getReservationById(reservationId)));
+        return ResponseEntity.ok(reservationService.getReservationById(reservationId));
     }
+
 }

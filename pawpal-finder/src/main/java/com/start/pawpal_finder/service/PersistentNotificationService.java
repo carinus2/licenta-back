@@ -15,7 +15,8 @@ public class PersistentNotificationService {
         this.notificationRepository = notificationRepository;
     }
 
-    public NotificationEntity saveNotification(NotificationMessageDto notif, Integer sitterId) {
+
+    public NotificationEntity saveNotification(NotificationMessageDto notif, Integer sitterId, Integer postId) {
         NotificationEntity notification = new NotificationEntity(
                 sitterId,
                 notif.getTitle(),
@@ -23,10 +24,12 @@ public class PersistentNotificationService {
                 LocalDateTime.now(),
                 false
         );
+        notification.setReservationId(postId);
+        notification.setPostId(postId);
         return notificationRepository.save(notification);
     }
 
-    public NotificationEntity saveOwnerNotification(NotificationMessageDto notif, Integer ownerId) {
+    public NotificationEntity saveOwnerNotification(NotificationMessageDto notif, Integer ownerId, Integer postId) {
         NotificationEntity notification = new NotificationEntity(
                 ownerId,
                 notif.getTitle(),
@@ -34,6 +37,7 @@ public class PersistentNotificationService {
                 LocalDateTime.now(),
                 false
         );
+        notification.setReservationId(postId);
         return notificationRepository.save(notification);
     }
 }
