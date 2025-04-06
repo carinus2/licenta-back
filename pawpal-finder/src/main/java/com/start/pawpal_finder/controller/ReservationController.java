@@ -9,6 +9,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -82,8 +83,14 @@ public class ReservationController {
     }
 
     @GetMapping("/sitter/get-reservation/{reservationId}")
-    public ResponseEntity<ReservationEntity> getReservationById(@PathVariable Integer reservationId) {
-        return ResponseEntity.ok(reservationService.getReservationById(reservationId));
+    @Transactional(readOnly = true)
+    public ReservationDto getReservationById(@PathVariable String reservationId) {
+        ReservationEntity reservation = reservationService.getReservationById(Integer.valueOf(reservationId));
+        return Transformer.toDto(reservation);
     }
 
+    @GetMapping("/get-reservation-by-post/{postId}")
+    public ResponseEntity<Integer> getReservationByPostId(@PathVariable Integer postId) {
+        return ResponseEntity.ok(reservationService.getReservationByPostId(postId));
+    }
 }

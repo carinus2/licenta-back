@@ -162,4 +162,8 @@ public class ReservationService {
         return reservationRepository.getReferenceById(reservationId);
     }
 
+    public Integer getReservationByPostId(Integer postId) {
+
+        return reservationRepository.findReservationIdByPostId(postId);
+    }
 }

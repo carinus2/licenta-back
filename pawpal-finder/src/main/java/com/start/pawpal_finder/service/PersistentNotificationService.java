@@ -38,6 +38,7 @@ public class PersistentNotificationService {
                 false
         );
         notification.setReservationId(postId);
+        notification.setPostId(postId);
         return notificationRepository.save(notification);
     }
 }

@@ -1,5 +1,6 @@
 package com.start.pawpal_finder.repository;
 
+import com.start.pawpal_finder.entity.PostSitterEntity;
 import com.start.pawpal_finder.entity.ReservationEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -78,6 +79,8 @@ public interface ReservationRepository extends PagingAndSortingRepository<Reserv
             @Param("petOwnerName") String petOwnerName,
             Pageable pageable);
 
+    @Query("SELECT r.id FROM ReservationEntity r WHERE r.postSitter.id = :postId")
+    Integer findReservationIdByPostId(@Param("postId") Integer postId);
 
 
 }
