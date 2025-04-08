@@ -18,24 +18,24 @@ import java.time.LocalDateTime;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final PostSitterRepository postSitterRepository;
+    private final PostSitterService postSitterService;
     private final PetOwnerRepository petOwnerRepository;
     private final WebSocketNotificationService webSocketNotificationService;
     private final PersistentNotificationService persistentNotificationService;
     private final ReviewRepository reviewRepository;
-    private final PetSitterProfileRepository petSitterProfileRepository;
 
     public ReservationService(ReservationRepository reservationRepository,
                               PostSitterRepository postSitterRepository,
                               PetOwnerRepository petOwnerRepository,
                               WebSocketNotificationService webSocketNotificationService,
-                              PersistentNotificationService persistentNotificationService, ReviewRepository reviewRepository, PetSitterProfileRepository petSitterProfileRepository) {
+                              PersistentNotificationService persistentNotificationService, ReviewRepository reviewRepository, PetSitterProfileRepository petSitterProfileRepository, PostSitterService postSitterService) {
         this.reservationRepository = reservationRepository;
         this.postSitterRepository = postSitterRepository;
         this.petOwnerRepository = petOwnerRepository;
         this.webSocketNotificationService = webSocketNotificationService;
         this.persistentNotificationService = persistentNotificationService;
         this.reviewRepository = reviewRepository;
-        this.petSitterProfileRepository = petSitterProfileRepository;
+        this.postSitterService = postSitterService;
     }
 
     @Transactional
@@ -173,14 +173,18 @@ public class ReservationService {
         ReservationEntity reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation not found with ID: " + reservationId));
 
-        if ("ROLE_PET_OWNER".equalsIgnoreCase(role)) {
-            reservation.setStatus("COMPLETED_BY_OWNER");
-        } else if ("ROLE_PET_SITTER".equalsIgnoreCase(role)) {
-            reservation.setStatus("COMPLETED_BY_SITTER");
+        if ("APPROVED".equalsIgnoreCase(reservation.getStatus())) {
+            reservation.setStatus("COMPLETED");
+            reservation.setUpdatedAt(LocalDateTime.now());
+            ReservationEntity updatedReservation = reservationRepository.save(reservation);
+
+            if (reservation.getPostSitter() != null) {
+                postSitterService.updatePostStatus(reservation.getPostSitter().getId(), "Completed");
+            }
+            return Transformer.toDto(updatedReservation);
+        } else {
+            return Transformer.toDto(reservation);
         }
-        reservation.setUpdatedAt(LocalDateTime.now());
-        ReservationEntity updated = reservationRepository.save(reservation);
-        return Transformer.toDto(updated);
     }
 
     @Transactional

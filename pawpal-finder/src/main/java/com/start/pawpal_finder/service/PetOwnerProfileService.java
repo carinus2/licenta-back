@@ -2,25 +2,33 @@ package com.start.pawpal_finder.service;
 
 import com.start.pawpal_finder.Transformer;
 import com.start.pawpal_finder.dto.PetOwnerProfileDto;
+import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PetOwnerProfileEntity;
+import com.start.pawpal_finder.entity.ReviewEntity;
 import com.start.pawpal_finder.repository.PetOwnerProfileRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
+import com.start.pawpal_finder.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PetOwnerProfileService {
 
     private final PetOwnerProfileRepository profileRepository;
     private final PetOwnerRepository petOwnerRepository;
+    private final ReviewRepository reviewRepository;
 
-    public PetOwnerProfileService(PetOwnerProfileRepository profileRepository, PetOwnerRepository petOwnerRepository) {
+
+    public PetOwnerProfileService(PetOwnerProfileRepository profileRepository, PetOwnerRepository petOwnerRepository, ReviewRepository reviewRepository) {
         this.profileRepository = profileRepository;
         this.petOwnerRepository = petOwnerRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     public Optional<PetOwnerProfileDto> getProfileByOwnerId(Integer ownerId) {
@@ -94,5 +102,12 @@ public class PetOwnerProfileService {
 
     public void deleteProfile(Integer ownerId) {
         profileRepository.findByPetOwnerId(ownerId).ifPresent(profileRepository::delete);
+    }
+
+    public List<ReviewDto> getReviewsForOwner(Integer ownerId) {
+        List<ReviewEntity> reviewEntities = reviewRepository.findByReviewedId(ownerId);
+        return reviewEntities.stream()
+                .map(Transformer::toReviewDto)
+                .collect(Collectors.toList());
     }
 }

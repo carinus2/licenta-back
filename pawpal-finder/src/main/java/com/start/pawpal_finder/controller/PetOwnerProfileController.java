@@ -1,11 +1,13 @@
 package com.start.pawpal_finder.controller;
 
 import com.start.pawpal_finder.dto.PetOwnerProfileDto;
+import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.service.PetOwnerProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,5 +40,11 @@ public class PetOwnerProfileController {
     public ResponseEntity<Optional<PetOwnerProfileDto>> getProfile(@PathVariable Integer ownerId) {
         Optional<PetOwnerProfileDto> profile = profileService.getProfileByOwnerId(ownerId);
         return ResponseEntity.ok(profile);
+    }
+
+    @GetMapping("/profile/{ownerId}/reviews")
+    public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable Integer ownerId) {
+        List<ReviewDto> reviews = profileService.getReviewsForOwner(ownerId);
+        return ResponseEntity.ok(reviews);
     }
 }

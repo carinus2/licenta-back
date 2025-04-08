@@ -99,7 +99,6 @@ public class ReservationController {
     public ResponseEntity<ReservationDto> markReservationComplete(
             @PathVariable Integer reservationId,
             @RequestParam String role) {
-        // 'role' is e.g. "PET_OWNER" or "PET_SITTER"
         ReservationDto updated = reservationService.markCompleted(reservationId, role);
         return ResponseEntity.ok(updated);
     }
@@ -111,6 +110,5 @@ public class ReservationController {
         ReviewDto savedReview = reservationService.submitReview(reservationId, reviewDto);
         return ResponseEntity.ok(savedReview);
     }
-
 
 }
