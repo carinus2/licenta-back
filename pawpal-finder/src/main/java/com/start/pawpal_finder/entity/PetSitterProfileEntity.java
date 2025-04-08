@@ -39,6 +39,4 @@ public class PetSitterProfileEntity {
     @Column(name = "experience")
     private Integer experience;
 
-    @OneToMany(mappedBy = "petSitterProfile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewEntity> reviews = new ArrayList<>();
 }

@@ -3,6 +3,8 @@ package com.start.pawpal_finder.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,10 +16,28 @@ public class ReviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer rating;      // rating 1..5
-    private String content;      // conținutul review-ului
-
     @ManyToOne
-    @JoinColumn(name = "pet_sitter_profile_id")
-    private PetSitterProfileEntity petSitterProfile;
+    @JoinColumn(name = "reservation_id", nullable = false)
+    private ReservationEntity reservation;
+
+    @Column(nullable = false, length = 1000)
+    private String content;
+
+    @Column(nullable = false)
+    private int rating;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "written_by_role", nullable = false)
+    private String writtenByRole;
+
+    @Column(name = "written_by_id", nullable = false)
+    private Integer writtenById;
+
+    @Column(name = "reviewed_role", nullable = false)
+    private String reviewedRole;
+
+    @Column(name = "reviewed_id", nullable = false)
+    private Integer reviewedId;
 }

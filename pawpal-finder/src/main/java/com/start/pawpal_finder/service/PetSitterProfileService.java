@@ -59,14 +59,6 @@ public class PetSitterProfileService {
                 dto.setProfilePictureUrl("data:image/jpeg;base64," +
                         Base64.getEncoder().encodeToString(profile.getProfilePictureUrl()));
             }
-
-            if (profile.getReviews() != null) {
-                dto.setReviews(
-                        profile.getReviews().stream()
-                                .map(Transformer::toDto)
-                                .collect(Collectors.toList())
-                );
-            }
         }
 
         return Optional.of(dto);

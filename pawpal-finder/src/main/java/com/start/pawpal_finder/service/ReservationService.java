@@ -3,12 +3,9 @@ package com.start.pawpal_finder.service;
 import com.start.pawpal_finder.Transformer;
 import com.start.pawpal_finder.dto.NotificationMessageDto;
 import com.start.pawpal_finder.dto.ReservationDto;
-import com.start.pawpal_finder.entity.PostSitterEntity;
-import com.start.pawpal_finder.entity.PetOwnerEntity;
-import com.start.pawpal_finder.entity.ReservationEntity;
-import com.start.pawpal_finder.repository.PostSitterRepository;
-import com.start.pawpal_finder.repository.PetOwnerRepository;
-import com.start.pawpal_finder.repository.ReservationRepository;
+import com.start.pawpal_finder.dto.ReviewDto;
+import com.start.pawpal_finder.entity.*;
+import com.start.pawpal_finder.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,17 +21,21 @@ public class ReservationService {
     private final PetOwnerRepository petOwnerRepository;
     private final WebSocketNotificationService webSocketNotificationService;
     private final PersistentNotificationService persistentNotificationService;
+    private final ReviewRepository reviewRepository;
+    private final PetSitterProfileRepository petSitterProfileRepository;
 
     public ReservationService(ReservationRepository reservationRepository,
                               PostSitterRepository postSitterRepository,
                               PetOwnerRepository petOwnerRepository,
                               WebSocketNotificationService webSocketNotificationService,
-                              PersistentNotificationService persistentNotificationService) {
+                              PersistentNotificationService persistentNotificationService, ReviewRepository reviewRepository, PetSitterProfileRepository petSitterProfileRepository) {
         this.reservationRepository = reservationRepository;
         this.postSitterRepository = postSitterRepository;
         this.petOwnerRepository = petOwnerRepository;
         this.webSocketNotificationService = webSocketNotificationService;
         this.persistentNotificationService = persistentNotificationService;
+        this.reviewRepository = reviewRepository;
+        this.petSitterProfileRepository = petSitterProfileRepository;
     }
 
     @Transactional
@@ -166,4 +167,39 @@ public class ReservationService {
 
         return reservationRepository.findReservationIdByPostId(postId);
     }
+
+    @Transactional
+    public ReservationDto markCompleted(Integer reservationId, String role) {
+        ReservationEntity reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new RuntimeException("Reservation not found with ID: " + reservationId));
+
+        if ("ROLE_PET_OWNER".equalsIgnoreCase(role)) {
+            reservation.setStatus("COMPLETED_BY_OWNER");
+        } else if ("ROLE_PET_SITTER".equalsIgnoreCase(role)) {
+            reservation.setStatus("COMPLETED_BY_SITTER");
+        }
+        reservation.setUpdatedAt(LocalDateTime.now());
+        ReservationEntity updated = reservationRepository.save(reservation);
+        return Transformer.toDto(updated);
+    }
+
+    @Transactional
+    public ReviewDto submitReview(Integer reservationId, ReviewDto reviewDto) {
+        ReservationEntity reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new RuntimeException("Reservation not found with ID: " + reservationId));
+
+        ReviewEntity review = new ReviewEntity();
+        review.setReservation(reservation);
+        review.setContent(reviewDto.getContent());
+        review.setRating(reviewDto.getRating());
+        review.setCreatedAt(LocalDateTime.now());
+        review.setWrittenByRole(reviewDto.getWrittenByRole());
+        review.setWrittenById(reviewDto.getWrittenById());
+        review.setReviewedRole(reviewDto.getReviewedRole());
+        review.setReviewedId(reviewDto.getReviewedId());
+
+        ReviewEntity savedReview = reviewRepository.save(review);
+        return Transformer.toReviewDto(savedReview);
+    }
+
 }

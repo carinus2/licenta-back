@@ -290,13 +290,20 @@ public class Transformer {
         );
     }
 
-    public static ReviewDto toDto(ReviewEntity reviewEntity) {
+    public static ReviewDto toReviewDto(ReviewEntity review) {
         ReviewDto dto = new ReviewDto();
-        dto.setId(reviewEntity.getId());
-        dto.setRating(reviewEntity.getRating());
-        dto.setContent(reviewEntity.getContent());
+        dto.setId(review.getId());
+        dto.setReservationId(review.getReservation().getId());
+        dto.setContent(review.getContent());
+        dto.setRating(review.getRating());
+        dto.setCreatedAt(review.getCreatedAt().toString());
+        dto.setWrittenByRole(review.getWrittenByRole());
+        dto.setWrittenById(review.getWrittenById());
+        dto.setReviewedRole(review.getReviewedRole());
+        dto.setReviewedId(review.getReviewedId());
         return dto;
     }
+
 
     public static PetSitterProfileDto toDto(PetSitterProfileEntity entity) {
         PetSitterProfileDto dto = new PetSitterProfileDto();
@@ -319,14 +326,6 @@ public class Transformer {
                     Base64.getEncoder().encodeToString(entity.getProfilePictureUrl()));
         }
 
-        if (entity.getReviews() != null) {
-            dto.setReviews(
-                    entity.getReviews().stream()
-                            .map(Transformer::toDto)
-                            .collect(Collectors.toList())
-            );
-        }
-
         return dto;
     }
 
@@ -341,9 +340,9 @@ public class Transformer {
                 entity.getUpdatedAt(),
                 entity.getFinalPrice(),
                 null,
-                null, // availabilityStart will be set below
-                null, // availabilityEnd will be set below
-                null,  // petSitterName will be set below
+                null,
+                null,
+                null,
                 entity.getPetOwner().getFirstName() + " " + entity.getPetOwner().getLastName()
 
         );

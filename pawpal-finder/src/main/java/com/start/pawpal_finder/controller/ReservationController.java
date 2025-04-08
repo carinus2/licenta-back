@@ -2,6 +2,7 @@ package com.start.pawpal_finder.controller;
 
 import com.start.pawpal_finder.Transformer;
 import com.start.pawpal_finder.dto.ReservationDto;
+import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.entity.ReservationEntity;
 import com.start.pawpal_finder.service.ReservationService;
 import org.springframework.data.domain.Page;
@@ -93,4 +94,23 @@ public class ReservationController {
     public ResponseEntity<Integer> getReservationByPostId(@PathVariable Integer postId) {
         return ResponseEntity.ok(reservationService.getReservationByPostId(postId));
     }
+
+    @PutMapping("/{reservationId}/complete")
+    public ResponseEntity<ReservationDto> markReservationComplete(
+            @PathVariable Integer reservationId,
+            @RequestParam String role) {
+        // 'role' is e.g. "PET_OWNER" or "PET_SITTER"
+        ReservationDto updated = reservationService.markCompleted(reservationId, role);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PostMapping("/{reservationId}/review")
+    public ResponseEntity<ReviewDto> submitReview(
+            @PathVariable Integer reservationId,
+            @RequestBody ReviewDto reviewDto) {
+        ReviewDto savedReview = reservationService.submitReview(reservationId, reviewDto);
+        return ResponseEntity.ok(savedReview);
+    }
+
+
 }
