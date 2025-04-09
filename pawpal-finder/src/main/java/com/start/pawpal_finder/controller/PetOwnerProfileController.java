@@ -43,8 +43,10 @@ public class PetOwnerProfileController {
     }
 
     @GetMapping("/profile/{ownerId}/reviews")
-    public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable Integer ownerId) {
-        List<ReviewDto> reviews = profileService.getReviewsForOwner(ownerId);
+    public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable Integer ownerId,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "3") int size) {
+        List<ReviewDto> reviews = profileService.getReviewsForOwner(ownerId, page, size);
         return ResponseEntity.ok(reviews);
     }
 }

@@ -9,6 +9,8 @@ import com.start.pawpal_finder.entity.ReviewEntity;
 import com.start.pawpal_finder.repository.PetOwnerProfileRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
 import com.start.pawpal_finder.repository.ReviewRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -104,9 +106,10 @@ public class PetOwnerProfileService {
         profileRepository.findByPetOwnerId(ownerId).ifPresent(profileRepository::delete);
     }
 
-    public List<ReviewDto> getReviewsForOwner(Integer ownerId) {
-        List<ReviewEntity> reviewEntities = reviewRepository.findByReviewedId(ownerId);
-        return reviewEntities.stream()
+    public List<ReviewDto> getReviewsForOwner(Integer ownerId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ReviewEntity> reviewPage = reviewRepository.findByReviewedId(ownerId, pageRequest);
+        return reviewPage.getContent().stream()
                 .map(Transformer::toReviewDto)
                 .collect(Collectors.toList());
     }

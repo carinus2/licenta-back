@@ -40,4 +40,11 @@ public class ReviewEntity {
 
     @Column(name = "reviewed_id", nullable = false)
     private Integer reviewedId;
+
+    @Column(name = "written_by_first_name", nullable = false)
+    private String writtenByFirstName;
+
+    @Column(name = "written_by_last_name", nullable = false)
+    private String writtenByLastName;
+
 }

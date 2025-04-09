@@ -301,6 +301,8 @@ public class Transformer {
         dto.setWrittenById(review.getWrittenById());
         dto.setReviewedRole(review.getReviewedRole());
         dto.setReviewedId(review.getReviewedId());
+        dto.setWrittenByFirstName(review.getWrittenByFirstName());
+        dto.setWrittenByLastName(review.getWrittenByLastName());
         return dto;
     }
 

@@ -15,4 +15,6 @@ public class ReviewDto {
     private Integer writtenById;
     private String reviewedRole;
     private Integer reviewedId;
+    private String writtenByFirstName;
+    private String writtenByLastName;
 }

@@ -201,6 +201,8 @@ public class ReservationService {
         review.setWrittenById(reviewDto.getWrittenById());
         review.setReviewedRole(reviewDto.getReviewedRole());
         review.setReviewedId(reviewDto.getReviewedId());
+        review.setWrittenByFirstName(reviewDto.getWrittenByFirstName());
+        review.setWrittenByLastName(reviewDto.getWrittenByLastName());
 
         ReviewEntity savedReview = reviewRepository.save(review);
         return Transformer.toReviewDto(savedReview);
