@@ -5,13 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="refactor review">
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostRepositoryCustom.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostRepositoryCustomImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/representation/SearchOwnerPostRepresentation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/Transformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/Transformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PetOwnerProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PetOwnerProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/ReviewDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/ReviewDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/ReviewEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/ReviewEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/ReviewRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/ReviewRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetOwnerProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetOwnerProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PetSitterProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PetSitterProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/ReservationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/ReservationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/ReservationEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/ReservationEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/ReservationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/ReservationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostSitterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostSitterService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +74,7 @@
     "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "show.migrate.to.gradle.popup": "false",
     "vue.rearranger.settings.migration": "true"
   },
@@ -110,7 +115,7 @@
       <workItem from="1736801796812" duration="11280000" />
       <workItem from="1738002234585" duration="58184000" />
       <workItem from="1741973918177" duration="142264000" />
-      <workItem from="1744056750945" duration="14390000" />
+      <workItem from="1744056750945" duration="32664000" />
     </task>
     <task id="LOCAL-00001" summary="add login and register feature">
       <option name="closed" value="true" />
@@ -352,7 +357,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744144083922</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="refactor review">
+      <option name="closed" value="true" />
+      <created>1744230375424</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1744230375425</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -169,22 +169,47 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationDto markCompleted(Integer reservationId, String role) {
+    public ReservationDto markCompleted(Integer reservationId, String role, boolean forceCompletion) {
         ReservationEntity reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation not found with ID: " + reservationId));
 
-        if ("APPROVED".equalsIgnoreCase(reservation.getStatus())) {
+        if ("PET_OWNER".equalsIgnoreCase(role)) {
+            PostSitterEntity post = reservation.getPostSitter();
+            if (post == null || post.getPostDate() == null || post.getAvailabilities() == null || post.getAvailabilities().isEmpty()) {
+                throw new RuntimeException("Reservation's post data is incomplete. Cannot compute scheduled end time.");
+            }
+            LocalDateTime scheduledEnd = null;
+            for (PostSitterAvailabilityEntity avail : post.getAvailabilities()) {
+                LocalDateTime slotEnd = LocalDateTime.of(post.getPostDate(), avail.getEndTime());
+                if (scheduledEnd == null || slotEnd.isAfter(scheduledEnd)) {
+                    scheduledEnd = slotEnd;
+                }
+            }
+            LocalDateTime now = LocalDateTime.now();
+            if (now.isBefore(scheduledEnd) && !forceCompletion) {
+                throw new RuntimeException("The scheduled end time (" + scheduledEnd +
+                        ") has not passed yet. Marking complete requires force confirmation by the owner.");
+            }
+            reservation.setOwnerMarkedComplete(true);
+        } else if ("PET_SITTER".equalsIgnoreCase(role)) {
+            reservation.setSitterMarkedComplete(true);
+        } else {
+            throw new RuntimeException("Unknown role: " + role);
+        }
+
+        if (reservation.isSitterMarkedComplete() && reservation.isOwnerMarkedComplete()) {
             reservation.setStatus("COMPLETED");
             reservation.setUpdatedAt(LocalDateTime.now());
-            ReservationEntity updatedReservation = reservationRepository.save(reservation);
 
             if (reservation.getPostSitter() != null) {
                 postSitterService.updatePostStatus(reservation.getPostSitter().getId(), "Completed");
             }
-            return Transformer.toDto(updatedReservation);
         } else {
-            return Transformer.toDto(reservation);
+            reservation.setStatus("AWAITING_COMPLETION_CONFIRMATION");
         }
+
+        ReservationEntity updatedReservation = reservationRepository.save(reservation);
+        return Transformer.toDto(updatedReservation);
     }
 
     @Transactional
@@ -207,5 +232,11 @@ public class ReservationService {
         ReviewEntity savedReview = reviewRepository.save(review);
         return Transformer.toReviewDto(savedReview);
     }
+
+    @Transactional(readOnly = true)
+    public long getReservationCountForPetOwnerByStatus(Integer petOwnerId, String status) {
+        return reservationRepository.countByPetOwnerIdAndStatus(petOwnerId, status);
+    }
+
 
 }

@@ -18,18 +18,15 @@ public class ReservationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // The post that is reserved
     @ManyToOne
     @JoinColumn(name = "post_sitter_id", nullable = false)
     private PostSitterEntity postSitter;
 
-    // The pet owner who made the reservation
     @ManyToOne
     @JoinColumn(name = "pet_owner_id", nullable = false)
     private PetOwnerEntity petOwner;
 
-    // Reservation status: PENDING, ACCEPTED, DENIED, COMPLETED
-    @Column(name = "status", length = 20, nullable = false)
+    @Column(name = "status", length = 50, nullable = false)
     private String status;
 
     @Column(name = "created_at", nullable = false)
@@ -40,5 +37,11 @@ public class ReservationEntity {
 
     @Column(name = "final_price")
     private Double finalPrice;
+
+    @Column(name = "sitter_marked_complete", nullable = false)
+    private boolean sitterMarkedComplete = false;
+
+    @Column(name = "owner_marked_complete", nullable = false)
+    private boolean ownerMarkedComplete = false;
 }
 

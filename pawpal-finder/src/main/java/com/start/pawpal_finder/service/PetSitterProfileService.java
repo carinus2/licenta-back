@@ -2,10 +2,15 @@ package com.start.pawpal_finder.service;
 
 import com.start.pawpal_finder.Transformer;
 import com.start.pawpal_finder.dto.PetSitterProfileDto;
+import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.entity.PetSitterEntity;
 import com.start.pawpal_finder.entity.PetSitterProfileEntity;
+import com.start.pawpal_finder.entity.ReviewEntity;
 import com.start.pawpal_finder.repository.PetSitterProfileRepository;
 import com.start.pawpal_finder.repository.PetSitterRepository;
+import com.start.pawpal_finder.repository.ReviewRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,11 +25,13 @@ public class PetSitterProfileService {
 
     private final PetSitterProfileRepository profileRepository;
     private final PetSitterRepository petSitterRepository;
+    private final ReviewRepository reviewRepository;
 
     public PetSitterProfileService(PetSitterProfileRepository profileRepository,
-                                   PetSitterRepository petSitterRepository) {
+                                   PetSitterRepository petSitterRepository, ReviewRepository reviewRepository) {
         this.profileRepository = profileRepository;
         this.petSitterRepository = petSitterRepository;
+        this.reviewRepository = reviewRepository;
     }
 
 
@@ -108,5 +115,13 @@ public class PetSitterProfileService {
 
         List<PetSitterProfileEntity> sitters = profileRepository.findPetSitterProfileEntitiesByPetSitter_CountyAndPetSitter_City(county, city);
         return sitters.stream().map(Transformer::toDto).toList();
+    }
+
+    public List<ReviewDto> getReviewsForSitter(Integer ownerId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ReviewEntity> reviewPage = reviewRepository.findByReviewedId(ownerId, pageRequest);
+        return reviewPage.getContent().stream()
+                .map(Transformer::toReviewDto)
+                .collect(Collectors.toList());
     }
 }

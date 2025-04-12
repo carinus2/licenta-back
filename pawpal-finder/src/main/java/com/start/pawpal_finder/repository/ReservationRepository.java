@@ -12,7 +12,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface ReservationRepository extends PagingAndSortingRepository<ReservationEntity, Integer> , JpaRepository<ReservationEntity, Integer> {
 
     Page<ReservationEntity> findByPetOwnerId(Integer petOwnerId, Pageable pageable);
-
+    long countByPetOwnerIdAndStatus(Integer petOwnerId, String status);
     Page<ReservationEntity> findByPetOwnerIdAndStatus(Integer petOwnerId, String status, Pageable pageable);
 
     @Query("SELECT r FROM ReservationEntity r " +

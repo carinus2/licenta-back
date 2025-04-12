@@ -98,8 +98,9 @@ public class ReservationController {
     @PutMapping("/{reservationId}/complete")
     public ResponseEntity<ReservationDto> markReservationComplete(
             @PathVariable Integer reservationId,
-            @RequestParam String role) {
-        ReservationDto updated = reservationService.markCompleted(reservationId, role);
+            @RequestParam String role,
+            @RequestParam(defaultValue = "false") boolean forceCompletion) {
+        ReservationDto updated = reservationService.markCompleted(reservationId, role, forceCompletion);
         return ResponseEntity.ok(updated);
     }
 
@@ -111,4 +112,15 @@ public class ReservationController {
         return ResponseEntity.ok(savedReview);
     }
 
+    @GetMapping("/owner/{petOwnerId}/count-pending")
+    public ResponseEntity<Long> getPendingReservationCountForPetOwner(@PathVariable Integer petOwnerId) {
+        long count = reservationService.getReservationCountForPetOwnerByStatus(petOwnerId, "PENDING");
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/owner/{petOwnerId}/count-completed")
+    public ResponseEntity<Long> getCompletedBookingsCountForPetOwner(@PathVariable Integer petOwnerId) {
+        long count = reservationService.getReservationCountForPetOwnerByStatus(petOwnerId, "COMPLETED");
+        return ResponseEntity.ok(count);
+    }
 }

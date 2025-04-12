@@ -10,6 +10,8 @@ import com.start.pawpal_finder.entity.TaskEntity;
 import com.start.pawpal_finder.repository.AnimalRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
 import com.start.pawpal_finder.repository.PostRepository;
+import com.start.pawpal_finder.repository.PostRepositoryCustom;
+import com.start.pawpal_finder.representation.SearchOwnerPostRepresentation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +23,13 @@ public class PostService {
     private final PetOwnerRepository petOwnerRepository;
     private final AnimalRepository animalRepository;
     private final PostRepository postRepository;
+    private final PostRepositoryCustom postRepositoryCustom;
 
-    public PostService(PetOwnerRepository petOwnerRepository, AnimalRepository animalRepository, PostRepository postRepository) {
+    public PostService(PetOwnerRepository petOwnerRepository, AnimalRepository animalRepository, PostRepository postRepository, PostRepositoryCustom postRepositoryCustom) {
         this.petOwnerRepository = petOwnerRepository;
         this.animalRepository = animalRepository;
         this.postRepository = postRepository;
+        this.postRepositoryCustom = postRepositoryCustom;
     }
 
     public PostDto createPost(PostDto postDto) {
@@ -112,5 +116,14 @@ public class PostService {
     public List<PostDto> getPostsByCityAndCounty(String city, String county) {
         return postRepository.findByPetOwner_CityAndPetOwner_CountyAndStatus(city, county, "ACTIVE").stream().map(Transformer::toDto).toList();
     }
+
+    public List<PostDto> searchOwnerPosts(SearchOwnerPostRepresentation searchPostRepresentation) {
+        List<PostEntity> posts = postRepositoryCustom.searchOwnerPosts(searchPostRepresentation);
+
+        return posts.stream()
+                .map(Transformer::toDto)
+                .collect(Collectors.toList());
+    }
+
 
 }

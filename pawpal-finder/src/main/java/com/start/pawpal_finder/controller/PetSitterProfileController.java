@@ -3,6 +3,7 @@ package com.start.pawpal_finder.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.start.pawpal_finder.dto.PetSitterProfileDto;
+import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.service.PetSitterProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,14 @@ public class PetSitterProfileController {
     @GetMapping("/search")
     public List<PetSitterProfileDto> searchSittersByLocation(@RequestParam String city, @RequestParam String county) {
         return profileService.findByCityAndCounty(city, county);
+    }
+
+    @GetMapping("/profile/{sitterId}/reviews")
+    public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable Integer sitterId,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "3") int size) {
+        List<ReviewDto> reviews = profileService.getReviewsForSitter(sitterId, page, size);
+        return ResponseEntity.ok(reviews);
     }
 
 }

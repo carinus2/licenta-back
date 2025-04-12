@@ -11,6 +11,10 @@ import com.start.pawpal_finder.representation.SearchPostRepresentation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -33,12 +37,24 @@ public class PostSitterService {
         this.postSitterCustom = postSitterCustom;
     }
 
+    @Transactional
     public PostSitterDto createPostSitter(PostSitterDto postSitterDto) {
         PetSitterEntity petSitter = petSitterRepository.findById(postSitterDto.getPetSitterId())
                 .orElseThrow(() -> new RuntimeException("Pet Sitter not found with ID: " + postSitterDto.getPetSitterId()));
 
-        PostSitterEntity postSitterEntity = Transformer.toEntity(postSitterDto, petSitter);
-        PostSitterEntity savedPost = postSitterRepository.save(postSitterEntity);
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        for (PostSitterAvailabilityDto avail : postSitterDto.getAvailability()) {
+            DayOfWeek availabilityDay = DayOfWeek.valueOf(avail.getDayOfWeek().toString().toUpperCase());
+            LocalDate nextOccurrence = today.with(TemporalAdjusters.nextOrSame(availabilityDay));
+            LocalTime startTime = LocalTime.parse(avail.getStartTime().toString());
+            if (nextOccurrence.isEqual(today) && startTime.isBefore(now)) {
+                throw new RuntimeException("Cannot select an availability time in the past for today: " + avail);
+            }
+        }
+
+        PostSitterEntity postEntity = Transformer.toEntity(postSitterDto, petSitter);
+        PostSitterEntity savedPost = postSitterRepository.save(postEntity);
 
         List<PostSitterAvailabilityEntity> availabilityEntities = postSitterDto.getAvailability().stream()
                 .map(dto -> {
@@ -49,7 +65,6 @@ public class PostSitterService {
                 .collect(Collectors.toList());
 
         availabilityRepository.saveAll(availabilityEntities);
-
         return Transformer.toDto(savedPost, availabilityEntities);
     }
 
