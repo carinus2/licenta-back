@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -151,11 +152,11 @@ public class Transformer {
                 post.getTasks().stream().map(Transformer::toDto).toList(),
                 post.getStatus(),
                 post.getNotes(),
-                post.getAnimals().stream().map(Transformer::toDto).collect(Collectors.toList())
+                post.getAnimals().stream().map(Transformer::toDto).collect(Collectors.toSet())
         );
     }
 
-    public static PostEntity fromDto(PostDto dto, PetOwnerEntity petOwner, List<AnimalEntity> animals) {
+    public static PostEntity fromDto(PostDto dto, PetOwnerEntity petOwner, Set<AnimalEntity> animals) {
         List<TaskEntity> taskEntities = dto.getTasks() != null
                 ? dto.getTasks().stream()
                 .map(task -> new TaskEntity(null, task.getTask(), null))
@@ -382,6 +383,42 @@ public class Transformer {
         entity.setCreatedAt(dto.getCreatedAt());
         entity.setUpdatedAt(dto.getUpdatedAt());
         entity.setFinalPrice(dto.getFinalPrice());
+        return entity;
+    }
+
+    public static InterestReservationDto toDto(InterestReservationEntity interest) {
+        if (interest == null) {
+            return null;
+        }
+        InterestReservationDto dto = new InterestReservationDto();
+        dto.setId(interest.getId());
+        dto.setPostId(interest.getPost().getId());
+        dto.setPetOwnerId(interest.getPetOwner().getId());
+        dto.setPetSitterId(interest.getPetSitter().getId());
+        dto.setStatus(interest.getStatus());
+        dto.setMessage(interest.getMessage());
+        dto.setCreatedAt(interest.getCreatedAt());
+        dto.setUpdatedAt(interest.getUpdatedAt());
+        dto.setSitterMarkedComplete(interest.isSitterMarkedComplete());
+        dto.setOwnerMarkedComplete(interest.isOwnerMarkedComplete());
+        return dto;
+    }
+
+    public static InterestReservationEntity fromDto(InterestReservationDto dto,
+                                                    PostEntity post,
+                                                    PetOwnerEntity petOwner,
+                                                    PetSitterEntity petSitter) {
+        if (dto == null) return null;
+
+        InterestReservationEntity entity = new InterestReservationEntity();
+        entity.setId(dto.getId());
+        entity.setPost(post);
+        entity.setPetOwner(petOwner);
+        entity.setPetSitter(petSitter);
+        entity.setStatus(dto.getStatus());
+        entity.setMessage(dto.getMessage());
+        entity.setSitterMarkedComplete(dto.isSitterMarkedComplete());
+        entity.setOwnerMarkedComplete(dto.isOwnerMarkedComplete());
         return entity;
     }
 }

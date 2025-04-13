@@ -1,0 +1,124 @@
+package com.start.pawpal_finder.service;
+
+import com.start.pawpal_finder.Transformer;
+import com.start.pawpal_finder.dto.InterestReservationDto;
+import com.start.pawpal_finder.dto.NotificationMessageDto;
+import com.start.pawpal_finder.entity.InterestReservationEntity;
+import com.start.pawpal_finder.entity.PetOwnerEntity;
+import com.start.pawpal_finder.entity.PetSitterEntity;
+import com.start.pawpal_finder.entity.PostEntity;
+import com.start.pawpal_finder.repository.InterestReservationRepository;
+import com.start.pawpal_finder.repository.PetOwnerRepository;
+import com.start.pawpal_finder.repository.PetSitterRepository;
+import com.start.pawpal_finder.repository.PostRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+@Service
+public class InterestReservationService {
+
+    private final InterestReservationRepository interestReservationRepository;
+    private final PostRepository postRepository;
+    private final PetOwnerRepository petOwnerRepository;
+    private final PetSitterRepository petSitterRepository;
+    private final WebSocketNotificationService webSocketNotificationService;
+    private final PersistentNotificationService persistentNotificationService;
+
+    public InterestReservationService(InterestReservationRepository interestReservationRepository,
+                                      PostRepository postRepository,
+                                      PetOwnerRepository petOwnerRepository,
+                                      PetSitterRepository petSitterRepository,
+                                      WebSocketNotificationService webSocketNotificationService,
+                                      PersistentNotificationService persistentNotificationService) {
+        this.interestReservationRepository = interestReservationRepository;
+        this.postRepository = postRepository;
+        this.petOwnerRepository = petOwnerRepository;
+        this.petSitterRepository = petSitterRepository;
+        this.webSocketNotificationService = webSocketNotificationService;
+        this.persistentNotificationService = persistentNotificationService;
+    }
+
+    @Transactional
+    public InterestReservationDto createInterestReservation(Integer postId, Integer petSitterId, String message) {
+        PostEntity post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with ID: " + postId));
+        PetOwnerEntity petOwner = post.getPetOwner();
+        PetSitterEntity petSitter = petSitterRepository.findById(petSitterId)
+                .orElseThrow(() -> new RuntimeException("Pet sitter not found with ID: " + petSitterId));
+
+        InterestReservationEntity interest = new InterestReservationEntity();
+        interest.setPost(post);
+        interest.setPetOwner(petOwner);
+        interest.setPetSitter(petSitter);
+        interest.setStatus("PENDING");
+        interest.setMessage(message);
+
+        InterestReservationEntity savedInterest = interestReservationRepository.save(interest);
+
+        NotificationMessageDto notif = new NotificationMessageDto(
+                "New Interest in Your Post",
+                "A pet sitter is interested in your post (ID: " + postId + ")."
+        );
+        Integer ownerId = petOwner.getId();
+        webSocketNotificationService.sendNotificationToOwner(notif);
+        persistentNotificationService.saveOwnerNotification(notif, ownerId, postId);
+
+        return Transformer.toDto(savedInterest);
+    }
+
+    @Transactional
+    public InterestReservationDto markInterestCompleted(Integer interestId, String role) {
+        InterestReservationEntity interest = interestReservationRepository.findById(interestId)
+                .orElseThrow(() -> new RuntimeException("Interest not found with ID: " + interestId));
+
+        if ("ROLE_PET_OWNER".equalsIgnoreCase(role)) {
+            interest.setOwnerMarkedComplete(true);
+        } else if ("ROLE_PET_SITTER".equalsIgnoreCase(role)) {
+            interest.setSitterMarkedComplete(true);
+        } else {
+            throw new RuntimeException("Unknown role: " + role);
+        }
+
+        if (interest.isOwnerMarkedComplete() && interest.isSitterMarkedComplete()) {
+            interest.setStatus("COMPLETED");
+        } else {
+            interest.setStatus("AWAITING_COMPLETION_CONFIRMATION");
+        }
+
+        InterestReservationEntity updated = interestReservationRepository.save(interest);
+
+        NotificationMessageDto notif = new NotificationMessageDto(
+                "Interest Reservation Update",
+                "Your interest reservation (ID: " + interestId + ") has been updated."
+        );
+        webSocketNotificationService.sendNotificationToOwner(notif);
+        webSocketNotificationService.sendNotificationToSitter(notif, interest.getPetSitter().getId());
+        persistentNotificationService.saveNotification(notif, interest.getPetSitter().getId(), interest.getPost().getId());
+        persistentNotificationService.saveOwnerNotification(notif, interest.getPetOwner().getId(), interest.getPost().getId());
+
+        return Transformer.toDto(updated);
+    }
+
+    @Transactional(readOnly = true)
+    public InterestReservationDto getInterestReservationByPostId(Integer postId) {
+        InterestReservationEntity interest = interestReservationRepository.findInterestReservationByPostId(postId);
+        if (interest == null) {
+            throw new RuntimeException("Interest reservation not found for post ID: " + postId);
+        }
+        return Transformer.toDto(interest);
+    }
+
+    @Transactional(readOnly = true)
+    public List<InterestReservationDto> getInterestReservationsForOwner(Integer ownerId) {
+        List<InterestReservationEntity> interests = interestReservationRepository.findByPetOwner_Id(ownerId);
+        return interests.stream()
+                .map(Transformer::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+}

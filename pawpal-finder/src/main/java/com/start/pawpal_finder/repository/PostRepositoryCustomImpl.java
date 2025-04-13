@@ -25,7 +25,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 "SELECT DISTINCT p FROM PostEntity p " +
                         "LEFT JOIN FETCH p.petOwner po " +
                         "LEFT JOIN FETCH p.tasks t " +
-                        "WHERE 1=1 "
+                        "WHERE p.endDate >= CURRENT_TIMESTAMP " +
+                        "AND 1=1 "
         );
 
         Map<String, Object> params = new HashMap<>();
@@ -41,7 +42,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         }
 
         if (search.getTask() != null && !search.getTask().isEmpty()) {
-            jpql.append(" AND EXISTS (SELECT t1 FROM p.tasks t1 WHERE LOWER(t1.description) LIKE :task)");
+            jpql.append(" AND EXISTS (SELECT t1 FROM p.tasks t1 WHERE LOWER(t1.task) LIKE :task)");
             params.put("task", "%" + search.getTask().toLowerCase() + "%");
         }
 

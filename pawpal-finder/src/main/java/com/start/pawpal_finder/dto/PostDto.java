@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -22,5 +23,5 @@ public class PostDto {
     private List<TaskDto> tasks;
     private String status;
     private String notes;
-    private List<AnimalDto> animals;
+    private Set<AnimalDto> animals;
 }

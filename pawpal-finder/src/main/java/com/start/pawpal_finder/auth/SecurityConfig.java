@@ -73,6 +73,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "api/notifications/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "api/notifications/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "api/notifications/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/interest-reservations/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/interest-reservations/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/interest-reservations/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/interest-reservations/**").authenticated()
+
                 .requestMatchers("/ws-notifications/**").permitAll()
                 //  .requestMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()

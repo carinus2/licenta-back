@@ -14,7 +14,9 @@ import com.start.pawpal_finder.repository.PostRepositoryCustom;
 import com.start.pawpal_finder.representation.SearchOwnerPostRepresentation;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +38,12 @@ public class PostService {
         PetOwnerEntity petOwner = petOwnerRepository.findById(postDto.getPetOwnerId())
                 .orElseThrow(() -> new RuntimeException("Pet Owner not found"));
 
-        List<AnimalEntity> animals = animalRepository.findAllById(
-                postDto.getAnimals().stream().map(AnimalDto::getId).collect(Collectors.toList())
+        Set<AnimalEntity> animals = new HashSet<>(
+                animalRepository.findAllById(
+                        postDto.getAnimals().stream()
+                                .map(AnimalDto::getId)
+                                .collect(Collectors.toList())
+                )
         );
 
         PostEntity newPost = Transformer.fromDto(postDto, petOwner, animals);
@@ -67,8 +73,12 @@ public class PostService {
         PetOwnerEntity petOwner = petOwnerRepository.findById(postDto.getPetOwnerId())
                 .orElseThrow(() -> new RuntimeException("Pet Owner not found"));
 
-        List<AnimalEntity> animals = animalRepository.findAllById(
-                postDto.getAnimals().stream().map(AnimalDto::getId).collect(Collectors.toList())
+        Set<AnimalEntity> animals = new HashSet<>(
+                animalRepository.findAllById(
+                        postDto.getAnimals().stream()
+                                .map(AnimalDto::getId)
+                                .collect(Collectors.toList())
+                )
         );
 
         existingPost.setTitle(postDto.getTitle());
