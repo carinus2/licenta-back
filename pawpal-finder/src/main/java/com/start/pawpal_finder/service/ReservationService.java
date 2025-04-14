@@ -68,7 +68,7 @@ public class ReservationService {
 
         NotificationMessageDto notif = new NotificationMessageDto(
                 "New Reservation Request",
-                "You have received a new reservation request for post ID " + postSitterId + "."
+                "You have received a new reservation request from " + petOwner.getFirstName() + " " + petOwner.getLastName()+ "."
         );
         Integer sitterId = postSitter.getPetSitter().getId();
 

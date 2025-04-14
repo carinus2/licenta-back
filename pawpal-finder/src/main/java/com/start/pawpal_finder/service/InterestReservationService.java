@@ -11,6 +11,8 @@ import com.start.pawpal_finder.repository.InterestReservationRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
 import com.start.pawpal_finder.repository.PetSitterRepository;
 import com.start.pawpal_finder.repository.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +63,7 @@ public class InterestReservationService {
 
         NotificationMessageDto notif = new NotificationMessageDto(
                 "New Interest in Your Post",
-                "A pet sitter is interested in your post (ID: " + postId + ")."
+                petOwner.getFirstName() + " " + petSitter.getLastName() + " is interested in one of your posts."
         );
         Integer ownerId = petOwner.getId();
         webSocketNotificationService.sendNotificationToOwner(notif);
@@ -93,7 +95,7 @@ public class InterestReservationService {
 
         NotificationMessageDto notif = new NotificationMessageDto(
                 "Interest Reservation Update",
-                "Your interest reservation (ID: " + interestId + ") has been updated."
+                "Your interest reservation has been updated to: " + interest.getStatus() + "."
         );
         webSocketNotificationService.sendNotificationToOwner(notif);
         webSocketNotificationService.sendNotificationToSitter(notif, interest.getPetSitter().getId());
@@ -113,11 +115,10 @@ public class InterestReservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<InterestReservationDto> getInterestReservationsForOwner(Integer ownerId) {
-        List<InterestReservationEntity> interests = interestReservationRepository.findByPetOwner_Id(ownerId);
-        return interests.stream()
-                .map(Transformer::toDto)
-                .collect(Collectors.toList());
+    public Page<InterestReservationDto> getInterestReservationsForOwner(Integer ownerId, int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<InterestReservationEntity> pageResult = interestReservationRepository.findByPetOwner_Id(ownerId, pageable);
+        return pageResult.map(Transformer::toDto);
     }
 
 

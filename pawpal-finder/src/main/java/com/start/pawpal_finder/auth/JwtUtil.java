@@ -44,19 +44,13 @@ public class JwtUtil {
                 .collect(Collectors.toList());
 
         String email = userDetails.getUsername();
-        String firstName = "";
-        String lastName = "";
         Integer userId = null;
         Optional<PetOwnerEntity> petOwner = petOwnerService.findByEmail(email);
         if (petOwner.isPresent()) {
-            firstName = petOwner.get().getFirstName();
-            lastName = petOwner.get().getLastName();
             userId = petOwner.get().getId();
         } else {
             Optional<PetSitterEntity> petSitter = petSitterService.findByEmail(email);
             if (petSitter.isPresent()) {
-                firstName = petSitter.get().getFirstName();
-                lastName = petSitter.get().getLastName();
                 userId = petSitter.get().getId();
             }
         }
@@ -64,8 +58,6 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .claim("roles", roles)
-                .claim("firstName", firstName)
-                .claim("lastName", lastName)
                 .claim("email", email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 12 * 60 * 60 * 1000))

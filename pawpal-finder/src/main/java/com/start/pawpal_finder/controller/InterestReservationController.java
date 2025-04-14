@@ -2,6 +2,7 @@ package com.start.pawpal_finder.controller;
 
 import com.start.pawpal_finder.dto.InterestReservationDto;
 import com.start.pawpal_finder.service.InterestReservationService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,9 +43,11 @@ public class InterestReservationController {
     }
 
     @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<List<InterestReservationDto>> getInterestReservationsForOwner(@PathVariable Integer ownerId) {
-        List<InterestReservationDto> dtos = interestReservationService.getInterestReservationsForOwner(ownerId);
+    public ResponseEntity<Page<InterestReservationDto>> getInterestReservationsForOwner(
+            @PathVariable Integer ownerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<InterestReservationDto> dtos = interestReservationService.getInterestReservationsForOwner(ownerId, page, size);
         return ResponseEntity.ok(dtos);
     }
-
 }

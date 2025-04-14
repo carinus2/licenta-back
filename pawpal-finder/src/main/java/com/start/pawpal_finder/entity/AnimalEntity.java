@@ -14,9 +14,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "animal", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 @ToString(exclude = "petOwner")
+@Entity
 public class AnimalEntity {
 
     @Id
