@@ -13,16 +13,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/animals")
 public class AnimalController {
-
     private final AnimalService animalService;
 
     public AnimalController(AnimalService animalService) {
         this.animalService = animalService;
     }
 
-    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/save/{ownerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnimalDto> saveAnimal(
-            @RequestParam Integer ownerId,
+            @PathVariable Integer ownerId,
             @RequestPart("animalDto") AnimalDto animalDto,
             @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
     ) {
@@ -49,8 +48,8 @@ public class AnimalController {
         return ResponseEntity.ok(count);
     }
 
-    @GetMapping("/owner")
-    public ResponseEntity<List<AnimalDto>> getAnimalsByOwner(@RequestParam Integer petOwnerId) {
+    @GetMapping("/owner/{petOwnerId}")
+    public ResponseEntity<List<AnimalDto>> getAnimalsByOwnerId(@PathVariable Integer petOwnerId) {
         List<AnimalDto> animals = animalService.getAnimalsByOwner(petOwnerId);
         return ResponseEntity.ok(animals);
     }

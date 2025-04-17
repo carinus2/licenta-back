@@ -50,4 +50,13 @@ public class InterestReservationController {
         Page<InterestReservationDto> dtos = interestReservationService.getInterestReservationsForOwner(ownerId, page, size);
         return ResponseEntity.ok(dtos);
     }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<InterestReservationDto> updateStatus(
+            @PathVariable Integer id,
+            @RequestParam String status,
+            @RequestParam String ownerName
+    ) {
+        return ResponseEntity.ok(interestReservationService.updateStatus(id, status, ownerName));
+    }
 }

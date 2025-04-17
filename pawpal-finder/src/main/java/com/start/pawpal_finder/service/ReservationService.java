@@ -173,7 +173,7 @@ public class ReservationService {
         ReservationEntity reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation not found with ID: " + reservationId));
 
-        if ("PET_OWNER".equalsIgnoreCase(role)) {
+        if ("ROLE_PET_OWNER".equalsIgnoreCase(role)) {
             PostSitterEntity post = reservation.getPostSitter();
             if (post == null || post.getPostDate() == null || post.getAvailabilities() == null || post.getAvailabilities().isEmpty()) {
                 throw new RuntimeException("Reservation's post data is incomplete. Cannot compute scheduled end time.");

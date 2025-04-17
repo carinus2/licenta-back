@@ -12,6 +12,8 @@ import com.start.pawpal_finder.repository.PetOwnerRepository;
 import com.start.pawpal_finder.repository.PostRepository;
 import com.start.pawpal_finder.repository.PostRepositoryCustom;
 import com.start.pawpal_finder.representation.SearchOwnerPostRepresentation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -135,5 +137,14 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    public Page<PostDto> getPostsByUserAndStatus(
+            Integer petOwnerId,
+            String status,
+            Pageable pageable
+    ) {
+        return postRepository
+                .findByPetOwnerIdAndStatus(petOwnerId, status, pageable)
+                .map(Transformer::toDto);
+    }
 
 }

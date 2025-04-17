@@ -121,5 +121,36 @@ public class InterestReservationService {
         return pageResult.map(Transformer::toDto);
     }
 
+    @Transactional
+    public InterestReservationDto updateStatus(
+            Integer interestId,
+            String newStatus,
+            String ownerName
+    ) {
+        InterestReservationEntity interest = interestReservationRepository.findById(interestId)
+                .orElseThrow(() -> new RuntimeException("Interest not found: " + interestId));
+
+        interest.setStatus(newStatus);
+        PostEntity post = interest.getPost();
+        post.setStatus(newStatus.equals("APPROVED") ? "APPROVED" : post.getStatus());
+        postRepository.save(post);
+
+        InterestReservationEntity saved = interestReservationRepository.save(interest);
+
+        NotificationMessageDto notif = new NotificationMessageDto(
+                "Interest “" + newStatus + "”",
+                "Your interest was " + newStatus.toLowerCase() +
+                        " by " + ownerName + "."
+        );
+        webSocketNotificationService.sendNotificationToSitter(notif, interest.getPetSitter().getId());
+        persistentNotificationService.saveNotification(
+                notif,
+                interest.getPetSitter().getId(),
+                interest.getPost().getId()
+        );
+
+        return Transformer.toDto(saved);
+    }
+
 
 }
