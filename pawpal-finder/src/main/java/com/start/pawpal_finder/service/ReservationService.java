@@ -90,9 +90,9 @@ public class ReservationService {
         PostSitterEntity postSitter = reservation.getPostSitter();
         if (postSitter != null) {
             if ("APPROVED".equalsIgnoreCase(status)) {
-                postSitter.setStatus("Approved");
+                postSitter.setStatus("APPROVED");
             } else if ("DENIED".equalsIgnoreCase(status)) {
-                postSitter.setStatus("Active");
+                postSitter.setStatus("ACTIVE");
             }
             postSitterRepository.save(postSitter);
         }
@@ -202,7 +202,7 @@ public class ReservationService {
             reservation.setUpdatedAt(LocalDateTime.now());
 
             if (reservation.getPostSitter() != null) {
-                postSitterService.updatePostStatus(reservation.getPostSitter().getId(), "Completed");
+                postSitterService.updatePostStatus(reservation.getPostSitter().getId(), "COMPLETED");
             }
         } else {
             reservation.setStatus("AWAITING_COMPLETION_CONFIRMATION");

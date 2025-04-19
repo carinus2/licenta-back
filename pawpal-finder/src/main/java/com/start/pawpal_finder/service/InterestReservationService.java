@@ -105,13 +105,12 @@ public class InterestReservationService {
         return Transformer.toDto(updated);
     }
 
-    @Transactional(readOnly = true)
-    public InterestReservationDto getInterestReservationByPostId(Integer postId) {
-        InterestReservationEntity interest = interestReservationRepository.findInterestReservationByPostId(postId);
-        if (interest == null) {
-            throw new RuntimeException("Interest reservation not found for post ID: " + postId);
-        }
-        return Transformer.toDto(interest);
+    @Transactional(readOnly=true)
+    public InterestReservationDto getInterestByPostAndOwner(Integer postId, Integer sitterId) {
+        var entity = interestReservationRepository
+                .findByPost_IdAndPetOwner_Id(postId, sitterId)
+                .orElseThrow(() -> new RuntimeException("No interest for you on that post"));
+        return Transformer.toDto(entity);
     }
 
     @Transactional(readOnly = true)
@@ -152,5 +151,10 @@ public class InterestReservationService {
         return Transformer.toDto(saved);
     }
 
-
+    @Transactional(readOnly=true)
+    public List<InterestReservationDto> getInterestReservationsBySitter(int sitterId) {
+        List<InterestReservationEntity> ents =
+                interestReservationRepository.findByPetSitter_Id(sitterId);
+        return ents.stream().map(Transformer::toDto).toList();
+    }
 }

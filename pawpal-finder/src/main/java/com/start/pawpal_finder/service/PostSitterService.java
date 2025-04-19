@@ -8,6 +8,7 @@ import com.start.pawpal_finder.entity.PostSitterAvailabilityEntity;
 import com.start.pawpal_finder.entity.PostSitterEntity;
 import com.start.pawpal_finder.repository.*;
 import com.start.pawpal_finder.representation.SearchPostRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,11 @@ public class PostSitterService {
     private final PostSitterAvailabilityRepository availabilityRepository;
     private final PostSitterRepositoryCustom postSitterCustom;
 
-    public PostSitterService(PostSitterRepository postSitterRepository, PetSitterRepository petSitterRepository, PostSitterAvailabilityRepository availabilityRepository, PostSitterRepositoryCustom postSitterCustom) {
+    @Autowired
+    public PostSitterService(PostSitterRepository postSitterRepository,
+                             PetSitterRepository petSitterRepository,
+                             PostSitterAvailabilityRepository availabilityRepository,
+                             PostSitterRepositoryCustom postSitterCustom) {
         this.postSitterRepository = postSitterRepository;
         this.petSitterRepository = petSitterRepository;
         this.availabilityRepository = availabilityRepository;
@@ -72,7 +77,7 @@ public class PostSitterService {
         return postSitterRepository.countByPetSitter_Id(sitterId);
     }
     public List<PostSitterDto> getActiveSitterPostsBySitterId(Integer sitterId) {
-        List<PostSitterEntity> activePosts = postSitterRepository.findByPetSitter_IdAndStatus(sitterId, "Active");
+        List<PostSitterEntity> activePosts = postSitterRepository.findByPetSitter_IdAndStatus(sitterId, "ACTIVE");
 
         return activePosts.stream()
                 .map(post -> {

@@ -36,11 +36,15 @@ public class InterestReservationController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/get-by-post/{postId}")
-    public ResponseEntity<InterestReservationDto> getInterestReservationByPostId(@PathVariable Integer postId) {
-        InterestReservationDto dto = interestReservationService.getInterestReservationByPostId(postId);
-        return ResponseEntity.ok(dto);
+    @GetMapping("/get-by-post")
+    public ResponseEntity<InterestReservationDto> getForPostAndSitter(
+            @RequestParam Integer postId,
+            @RequestParam Integer ownerId) {
+        return ResponseEntity.ok(
+                interestReservationService.getInterestByPostAndOwner(postId, ownerId)
+        );
     }
+
 
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<Page<InterestReservationDto>> getInterestReservationsForOwner(
@@ -58,5 +62,14 @@ public class InterestReservationController {
             @RequestParam String ownerName
     ) {
         return ResponseEntity.ok(interestReservationService.updateStatus(id, status, ownerName));
+    }
+
+    @GetMapping("/sitter/{sitterId}")
+    public ResponseEntity<List<InterestReservationDto>> getBySitter(
+            @PathVariable Integer sitterId
+    ) {
+        List<InterestReservationDto> list =
+                interestReservationService.getInterestReservationsBySitter(sitterId);
+        return ResponseEntity.ok(list);
     }
 }

@@ -7,10 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InterestReservationRepository extends JpaRepository<InterestReservationEntity, Integer> {
-    InterestReservationEntity findInterestReservationByPostId(Integer postId);
+    List<InterestReservationEntity> findAllByPost_Id(Integer postId);
     Page<InterestReservationEntity> findByPetOwner_Id(Integer ownerId, Pageable pageable);
-
+    List<InterestReservationEntity> findByPetSitter_Id(Integer sitterId);
+    Optional<InterestReservationEntity> findByPost_IdAndPetOwner_Id(Integer postId, Integer ownerId);
 }
