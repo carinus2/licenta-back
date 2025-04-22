@@ -3,6 +3,7 @@ package com.start.pawpal_finder.service;
 import com.start.pawpal_finder.entity.NotificationEntity;
 import com.start.pawpal_finder.dto.NotificationMessageDto;
 import com.start.pawpal_finder.repository.NotificationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 public class PersistentNotificationService {
 
     private final NotificationRepository notificationRepository;
+    @Autowired
 
     public PersistentNotificationService(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;

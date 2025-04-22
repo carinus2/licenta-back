@@ -1,6 +1,7 @@
 package com.start.pawpal_finder.service;
 
 import com.start.pawpal_finder.Transformer;
+import com.start.pawpal_finder.dto.LatLng;
 import com.start.pawpal_finder.dto.PetSitterProfileDto;
 import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.entity.PetSitterEntity;
@@ -9,6 +10,7 @@ import com.start.pawpal_finder.entity.ReviewEntity;
 import com.start.pawpal_finder.repository.PetSitterProfileRepository;
 import com.start.pawpal_finder.repository.PetSitterRepository;
 import com.start.pawpal_finder.repository.ReviewRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,14 @@ public class PetSitterProfileService {
     private final PetSitterProfileRepository profileRepository;
     private final PetSitterRepository petSitterRepository;
     private final ReviewRepository reviewRepository;
-
+    private final GeocodingService geocodingService;
+    @Autowired
     public PetSitterProfileService(PetSitterProfileRepository profileRepository,
-                                   PetSitterRepository petSitterRepository, ReviewRepository reviewRepository) {
+                                   PetSitterRepository petSitterRepository, ReviewRepository reviewRepository, GeocodingService geocodingService) {
         this.profileRepository = profileRepository;
         this.petSitterRepository = petSitterRepository;
         this.reviewRepository = reviewRepository;
+        this.geocodingService = geocodingService;
     }
 
 
@@ -61,6 +65,10 @@ public class PetSitterProfileService {
             dto.setNotificationsEnabled(profile.getNotificationsEnabled());
             dto.setPreferredPaymentMethod(profile.getPreferredPaymentMethod());
             dto.setExperience(profile.getExperience());
+            dto.setStreet(profile.getStreet());
+            dto.setStreetNumber(profile.getStreetNumber());
+            dto.setLatitude(profile.getLatitude());
+            dto.setLongitude(profile.getLongitude());
 
             if (profile.getProfilePictureUrl() != null) {
                 dto.setProfilePictureUrl("data:image/jpeg;base64," +
@@ -92,6 +100,21 @@ public class PetSitterProfileService {
         profile.setNotificationsEnabled(dto.getNotificationsEnabled());
         profile.setPreferredPaymentMethod(dto.getPreferredPaymentMethod());
         profile.setExperience(dto.getExperience());
+
+        profile.setStreet(dto.getStreet());
+        profile.setStreetNumber(dto.getStreetNumber());
+
+        String fullAddress = String.join(", ",
+                dto.getStreet() + " " + dto.getStreetNumber(),
+                dto.getCity(),
+                dto.getCounty(),
+                "Romania"
+        );
+
+        LatLng coords = geocodingService.geocode(fullAddress);
+        profile.setLatitude(coords.getLat());
+        profile.setLongitude(coords.getLng());
+
 
         if (profilePicture != null && !profilePicture.isEmpty()) {
             try {

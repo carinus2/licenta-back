@@ -39,4 +39,15 @@ public class PetSitterProfileEntity {
     @Column(name = "experience")
     private Integer experience;
 
+    @Column(name = "street", nullable = false)
+    private String street;
+
+    @Column(name = "street_number", nullable = false)
+    private String streetNumber;
+
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
 }

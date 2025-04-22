@@ -12,6 +12,7 @@ import com.start.pawpal_finder.repository.PetOwnerRepository;
 import com.start.pawpal_finder.repository.PostRepository;
 import com.start.pawpal_finder.repository.PostRepositoryCustom;
 import com.start.pawpal_finder.representation.SearchOwnerPostRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class PostService {
     private final AnimalRepository animalRepository;
     private final PostRepository postRepository;
     private final PostRepositoryCustom postRepositoryCustom;
-
+    @Autowired
     public PostService(PetOwnerRepository petOwnerRepository, AnimalRepository animalRepository, PostRepository postRepository, PostRepositoryCustom postRepositoryCustom) {
         this.petOwnerRepository = petOwnerRepository;
         this.animalRepository = animalRepository;

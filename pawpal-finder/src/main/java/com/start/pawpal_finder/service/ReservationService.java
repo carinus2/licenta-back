@@ -6,6 +6,7 @@ import com.start.pawpal_finder.dto.ReservationDto;
 import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.entity.*;
 import com.start.pawpal_finder.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,7 +24,7 @@ public class ReservationService {
     private final WebSocketNotificationService webSocketNotificationService;
     private final PersistentNotificationService persistentNotificationService;
     private final ReviewRepository reviewRepository;
-
+    @Autowired
     public ReservationService(ReservationRepository reservationRepository,
                               PostSitterRepository postSitterRepository,
                               PetOwnerRepository petOwnerRepository,

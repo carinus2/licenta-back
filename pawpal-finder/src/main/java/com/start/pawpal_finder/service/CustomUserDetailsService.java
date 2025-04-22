@@ -20,6 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final PetSitterService petSitterService;
     private final PetOwnerService petOwnerService;
 
+    @Autowired
     public CustomUserDetailsService(PetSitterService petSitterService, PetOwnerService petOwnerService) {
         this.petSitterService = petSitterService;
         this.petOwnerService = petOwnerService;
@@ -32,9 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(
                     petSitter.getEmail(),
                     petSitter.getPassword(),
-                    Collections.singleton(() -> "ROLE_PET_SITTER"),
-                    petSitter.getFirstName(),
-                    petSitter.getLastName()
+                    Collections.singleton(() -> "ROLE_PET_SITTER")
             );
         }
         PetOwnerEntity petOwner = petOwnerService.findByEmail(username).orElse(null);
@@ -42,9 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(
                     petOwner.getEmail(),
                     petOwner.getPassword(),
-                    Collections.singleton(() -> "ROLE_PET_OWNER"),
-                    petOwner.getFirstName(),
-                    petOwner.getLastName()
+                    Collections.singleton(() -> "ROLE_PET_OWNER")
             );
         }
         return new User(

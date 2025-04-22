@@ -323,6 +323,10 @@ public class Transformer {
         dto.setNotificationsEnabled(entity.getNotificationsEnabled());
         dto.setPreferredPaymentMethod(entity.getPreferredPaymentMethod());
         dto.setExperience(entity.getExperience());
+        dto.setStreet(entity.getStreet());
+        dto.setStreetNumber(entity.getStreetNumber());
+        dto.setLatitude(entity.getLatitude());
+        dto.setLongitude(entity.getLongitude());
 
         if (entity.getProfilePictureUrl() != null) {
             dto.setProfilePictureUrl("data:image/jpeg;base64," +

@@ -27,11 +27,15 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
 
-    @Autowired
-    private PetSitterService petSitterService;
+    private final PetSitterService petSitterService;
+
+    private final PetOwnerService petOwnerService;
 
     @Autowired
-    private PetOwnerService petOwnerService;
+    public JwtUtil(PetSitterService petSitterService, PetOwnerService petOwnerService) {
+        this.petSitterService = petSitterService;
+        this.petOwnerService = petOwnerService;
+    }
 
     @Value("${secret.key}")
     private final String SECRET_KEY = "ThisIsTheLongestKeyEverOnThePlanetISwear!";

@@ -28,4 +28,10 @@ public class PetSitterProfileDto {
     private Integer experience;
 
     private List<ReviewDto> reviews;
+
+    private String street;
+    private String streetNumber;
+
+    private Double latitude;
+    private Double longitude;
 }

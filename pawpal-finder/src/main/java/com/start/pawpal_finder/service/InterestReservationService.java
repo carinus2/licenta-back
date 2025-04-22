@@ -11,6 +11,7 @@ import com.start.pawpal_finder.repository.InterestReservationRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
 import com.start.pawpal_finder.repository.PetSitterRepository;
 import com.start.pawpal_finder.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class InterestReservationService {
     private final WebSocketNotificationService webSocketNotificationService;
     private final PersistentNotificationService persistentNotificationService;
 
+    @Autowired
     public InterestReservationService(InterestReservationRepository interestReservationRepository,
                                       PostRepository postRepository,
                                       PetOwnerRepository petOwnerRepository,

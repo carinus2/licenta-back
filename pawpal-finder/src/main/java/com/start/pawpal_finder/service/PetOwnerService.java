@@ -16,7 +16,7 @@ public class PetOwnerService {
     private final PasswordEncoder passwordEncoder;
 
     private final PetOwnerRepository petOwnerRepository;
-
+    @Autowired
     public PetOwnerService(PasswordEncoder passwordEncoder, PetOwnerRepository petOwnerRepository) {
         this.passwordEncoder = passwordEncoder;
         this.petOwnerRepository = petOwnerRepository;
