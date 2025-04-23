@@ -80,53 +80,79 @@ public class PetSitterProfileService {
     }
 
 
-    public PetSitterProfileDto saveProfile(PetSitterProfileDto dto, MultipartFile profilePicture) {
-        Optional<PetSitterEntity> petSitterOpt = petSitterRepository.findById(dto.getPetSitterId());
-        if (petSitterOpt.isEmpty()) {
-            throw new IllegalArgumentException("PetSitter not found");
-        }
+    public PetSitterProfileDto saveProfile(
+            PetSitterProfileDto dto,
+            MultipartFile profilePicture
+    ) {
+        PetSitterEntity sitter = petSitterRepository.findById(dto.getPetSitterId())
+                .orElseThrow(() -> new IllegalArgumentException("PetSitter not found"));
 
-        PetSitterEntity petSitter = petSitterOpt.get();
-        petSitter.setCity(dto.getCity());
-        petSitter.setCounty(dto.getCounty());
-        petSitter.setPhoneNumber(dto.getPhoneNumber());
-        petSitterRepository.save(petSitter);
+        // update sitter basics
+        sitter.setCity(dto.getCity());
+        sitter.setCounty(dto.getCounty());
+        sitter.setPhoneNumber(dto.getPhoneNumber());
+        petSitterRepository.save(sitter);
 
-        PetSitterProfileEntity profile = profileRepository.findByPetSitterId(petSitter.getId())
+        // load or create profile entity
+        PetSitterProfileEntity profile = profileRepository
+                .findByPetSitterId(sitter.getId())
                 .orElse(new PetSitterProfileEntity());
-
-        profile.setPetSitter(petSitter);
+        profile.setPetSitter(sitter);
         profile.setBio(dto.getBio());
         profile.setNotificationsEnabled(dto.getNotificationsEnabled());
         profile.setPreferredPaymentMethod(dto.getPreferredPaymentMethod());
         profile.setExperience(dto.getExperience());
-
         profile.setStreet(dto.getStreet());
         profile.setStreetNumber(dto.getStreetNumber());
 
-        String fullAddress = String.join(", ",
-                dto.getStreet() + " " + dto.getStreetNumber(),
-                dto.getCity(),
-                dto.getCounty(),
-                "Romania"
-        );
+        LatLng resolved = resolveCoordinates(dto);
+        profile.setLatitude(resolved.getLat());
+        profile.setLongitude(resolved.getLng());
 
-        LatLng coords = geocodingService.geocode(fullAddress);
-        profile.setLatitude(coords.getLat());
-        profile.setLongitude(coords.getLng());
-
-
+        // picture
         if (profilePicture != null && !profilePicture.isEmpty()) {
             try {
                 profile.setProfilePictureUrl(profilePicture.getBytes());
             } catch (IOException e) {
-                throw new RuntimeException("Failed to save profile picture", e);
+                throw new RuntimeException("Failed to save picture", e);
             }
         }
 
-        PetSitterProfileEntity savedProfile = profileRepository.save(profile);
+        // persist and return DTO
+        PetSitterProfileEntity saved = profileRepository.save(profile);
+        return Transformer.toDto(saved);
+    }
 
-        return Transformer.toDto(savedProfile);
+    /**
+     * Try in order:
+     *  1) use client‐supplied coordinates,
+     *  2) street‐level geocode,
+     *  3) city‐level fallback.
+     */
+    private LatLng resolveCoordinates(PetSitterProfileDto dto) {
+        // 1) client provided
+        if (dto.getLatitude() != null && dto.getLongitude() != null) {
+            return new LatLng(dto.getLatitude(), dto.getLongitude());
+        }
+
+        // build street‐level address
+        String streetPart = Optional.ofNullable(dto.getStreet())
+                .filter(s -> !s.isBlank())
+                .map(s -> s + " " + dto.getStreetNumber() + ", ")
+                .orElse("");
+
+        String fullAddr = streetPart
+                + dto.getCity() + ", "
+                + dto.getCounty() + ", Romania";
+
+        // 2) try street
+        try {
+            return geocodingService.geocode(fullAddr);
+        } catch (IllegalStateException ise) {
+            // 3) fallback to city only
+            String cityOnly = dto.getCity() + ", " + dto.getCounty() + ", Romania";
+            return geocodingService.geocode(cityOnly);
+        }
     }
 
 
