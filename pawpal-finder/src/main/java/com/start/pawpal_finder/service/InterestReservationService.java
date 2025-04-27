@@ -90,19 +90,37 @@ public class InterestReservationService {
             interest.setStatus("AWAITING_COMPLETION_CONFIRMATION");
         }
 
+        if ("COMPLETED".equals(interest.getStatus())) {
+            PostEntity post = interest.getPost();
+            post.setStatus("COMPLETED");
+            postRepository.save(post);
+        }
+
         InterestReservationEntity updated = interestReservationRepository.save(interest);
 
         NotificationMessageDto notif = new NotificationMessageDto(
                 "Interest Reservation Update",
-                "Your interest reservation has been updated to: " + interest.getStatus() + "."
+                "Your interest reservation is now: " + updated.getStatus()
         );
-        webSocketNotificationService.sendNotificationToOwner(notif);
-        webSocketNotificationService.sendNotificationToSitter(notif, interest.getPetSitter().getId());
-        persistentNotificationService.saveNotification(notif, interest.getPetSitter().getId(), interest.getPost().getId());
-        persistentNotificationService.saveOwnerNotification(notif, interest.getPetOwner().getId(), interest.getPost().getId());
+        if ("ROLE_PET_OWNER".equalsIgnoreCase(role)) {
+            webSocketNotificationService.sendNotificationToSitter(notif, interest.getPetSitter().getId());
+            persistentNotificationService.saveNotification(
+                    notif,
+                    interest.getPetSitter().getId(),
+                    interest.getPost().getId()
+            );
+        } else {
+            webSocketNotificationService.sendNotificationToOwner(notif);
+            persistentNotificationService.saveOwnerNotification(
+                    notif,
+                    interest.getPetOwner().getId(),
+                    interest.getPost().getId()
+            );
+        }
 
         return toDto(updated);
     }
+
 
     @Transactional(readOnly=true)
     public InterestReservationDto getInterestByPostAndSitterId(Integer postId, Integer sitterId) {
