@@ -1,6 +1,7 @@
 package com.start.pawpal_finder.controller;
 
 import com.start.pawpal_finder.dto.InterestReservationDto;
+import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.service.InterestReservationService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -39,12 +40,28 @@ public class InterestReservationController {
     @GetMapping("/get-by-post")
     public ResponseEntity<InterestReservationDto> getForPostAndSitter(
             @RequestParam Integer postId,
-            @RequestParam Integer ownerId) {
+            @RequestParam Integer sitterId) {
         return ResponseEntity.ok(
-                interestReservationService.getInterestByPostAndOwner(postId, ownerId)
+                interestReservationService.getInterestByPostAndSitterId(postId, sitterId)
         );
     }
 
+    @GetMapping("/get-by-post-owner")
+    public ResponseEntity<InterestReservationDto> getForPostAndOwner(
+            @RequestParam Integer postId,
+            @RequestParam Integer ownerId) {
+        return ResponseEntity.ok(
+                interestReservationService.getInterestByPostAndOwnerId(postId, ownerId)
+        );
+    }
+
+    @PostMapping("/{interestReservationId}/review-interest")
+    public ResponseEntity<ReviewDto> submitReview(
+            @PathVariable Integer interestReservationId,
+            @RequestBody ReviewDto reviewDto) {
+        ReviewDto savedReview = interestReservationService.submitReviewOnInterest(interestReservationId, reviewDto);
+        return ResponseEntity.ok(savedReview);
+    }
 
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<Page<InterestReservationDto>> getInterestReservationsForOwner(

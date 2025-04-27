@@ -12,6 +12,7 @@ import java.util.List;
 public interface PostSitterAvailabilityRepository extends JpaRepository<PostSitterAvailabilityEntity, Integer> {
 
     List<PostSitterAvailabilityEntity> findByPostSitter(PostSitterEntity postSitter);
+    List<PostSitterAvailabilityEntity> findByPostSitterAndPostSitter_Status(PostSitterEntity postSitter, String status);
     @Transactional
     void deleteByPostSitter(PostSitterEntity postSitter);
 }

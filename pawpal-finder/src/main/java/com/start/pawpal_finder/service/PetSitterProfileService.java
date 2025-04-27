@@ -75,7 +75,14 @@ public class PetSitterProfileService {
                         Base64.getEncoder().encodeToString(profile.getProfilePictureUrl()));
             }
         }
+        List<ReviewEntity> reviews = reviewRepository
+                .findByReviewedRoleAndReviewedId("ROLE_PET_SITTER", sitterId);
 
+        List<ReviewDto> reviewDtos = reviews.stream()
+                .map(Transformer::toReviewDto)
+                .collect(Collectors.toList());
+
+        dto.setReviews(reviewDtos);
         return Optional.of(dto);
     }
 

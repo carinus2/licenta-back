@@ -8,6 +8,7 @@ import lombok.*;
 public class ReviewDto {
     private Integer id;
     private Integer reservationId;
+    private Integer interestReservationId;
     private String content;
     private int rating;
     private String createdAt;

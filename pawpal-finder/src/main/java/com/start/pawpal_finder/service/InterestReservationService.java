@@ -3,22 +3,20 @@ package com.start.pawpal_finder.service;
 import com.start.pawpal_finder.Transformer;
 import com.start.pawpal_finder.dto.InterestReservationDto;
 import com.start.pawpal_finder.dto.NotificationMessageDto;
-import com.start.pawpal_finder.entity.InterestReservationEntity;
-import com.start.pawpal_finder.entity.PetOwnerEntity;
-import com.start.pawpal_finder.entity.PetSitterEntity;
-import com.start.pawpal_finder.entity.PostEntity;
-import com.start.pawpal_finder.repository.InterestReservationRepository;
-import com.start.pawpal_finder.repository.PetOwnerRepository;
-import com.start.pawpal_finder.repository.PetSitterRepository;
-import com.start.pawpal_finder.repository.PostRepository;
+import com.start.pawpal_finder.dto.ReviewDto;
+import com.start.pawpal_finder.entity.*;
+import com.start.pawpal_finder.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.start.pawpal_finder.Transformer.toDto;
+import static com.start.pawpal_finder.Transformer.toReviewDto;
 
 
 @Service
@@ -26,24 +24,23 @@ public class InterestReservationService {
 
     private final InterestReservationRepository interestReservationRepository;
     private final PostRepository postRepository;
-    private final PetOwnerRepository petOwnerRepository;
     private final PetSitterRepository petSitterRepository;
     private final WebSocketNotificationService webSocketNotificationService;
     private final PersistentNotificationService persistentNotificationService;
-
+    private final ReviewRepository reviewRepository;
     @Autowired
     public InterestReservationService(InterestReservationRepository interestReservationRepository,
                                       PostRepository postRepository,
                                       PetOwnerRepository petOwnerRepository,
                                       PetSitterRepository petSitterRepository,
                                       WebSocketNotificationService webSocketNotificationService,
-                                      PersistentNotificationService persistentNotificationService) {
+                                      PersistentNotificationService persistentNotificationService, ReviewRepository reviewRepository) {
         this.interestReservationRepository = interestReservationRepository;
         this.postRepository = postRepository;
-        this.petOwnerRepository = petOwnerRepository;
         this.petSitterRepository = petSitterRepository;
         this.webSocketNotificationService = webSocketNotificationService;
         this.persistentNotificationService = persistentNotificationService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Transactional
@@ -71,7 +68,7 @@ public class InterestReservationService {
         webSocketNotificationService.sendNotificationToOwner(notif);
         persistentNotificationService.saveOwnerNotification(notif, ownerId, postId);
 
-        return Transformer.toDto(savedInterest);
+        return toDto(savedInterest);
     }
 
     @Transactional
@@ -104,15 +101,23 @@ public class InterestReservationService {
         persistentNotificationService.saveNotification(notif, interest.getPetSitter().getId(), interest.getPost().getId());
         persistentNotificationService.saveOwnerNotification(notif, interest.getPetOwner().getId(), interest.getPost().getId());
 
-        return Transformer.toDto(updated);
+        return toDto(updated);
     }
 
     @Transactional(readOnly=true)
-    public InterestReservationDto getInterestByPostAndOwner(Integer postId, Integer sitterId) {
+    public InterestReservationDto getInterestByPostAndSitterId(Integer postId, Integer sitterId) {
         var entity = interestReservationRepository
-                .findByPost_IdAndPetOwner_Id(postId, sitterId)
+                .findByPost_IdAndPetSitterId(postId, sitterId)
                 .orElseThrow(() -> new RuntimeException("No interest for you on that post"));
-        return Transformer.toDto(entity);
+        return toDto(entity);
+    }
+
+    @Transactional(readOnly=true)
+    public InterestReservationDto getInterestByPostAndOwnerId(Integer postId, Integer ownerId) {
+        var entity = interestReservationRepository
+                .findByPost_IdAndPetOwner_Id(postId, ownerId)
+                .orElseThrow(() -> new RuntimeException("No interest for you on that post"));
+        return toDto(entity);
     }
 
     @Transactional(readOnly = true)
@@ -150,7 +155,7 @@ public class InterestReservationService {
                 interest.getPost().getId()
         );
 
-        return Transformer.toDto(saved);
+        return toDto(saved);
     }
 
     @Transactional(readOnly=true)
@@ -158,5 +163,28 @@ public class InterestReservationService {
         List<InterestReservationEntity> ents =
                 interestReservationRepository.findByPetSitter_Id(sitterId);
         return ents.stream().map(Transformer::toDto).toList();
+    }
+
+    public ReviewDto submitReviewOnInterest(int interestId, ReviewDto dto) {
+        InterestReservationEntity ir = interestReservationRepository.findById(interestId)
+                .orElseThrow(() -> new RuntimeException("No interest with ID " + interestId));
+        if (!"COMPLETED".equals(ir.getStatus())) {
+            throw new RuntimeException("Cannot review before completion");
+        }
+
+        ReviewEntity review = new ReviewEntity();
+        review.setContent(dto.getContent());
+        review.setRating(dto.getRating());
+        review.setWrittenByRole(dto.getWrittenByRole());
+        review.setWrittenById(dto.getWrittenById());
+        review.setReviewedRole(dto.getReviewedRole());
+        review.setReviewedId(dto.getReviewedId());
+        review.setInterestReservation(ir);
+        review.setCreatedAt(LocalDateTime.now());
+        review.setWrittenByFirstName(ir.getPetOwner().getFirstName());
+        review.setWrittenByLastName(ir.getPetOwner().getLastName());
+        reviewRepository.save(review);
+
+        return toReviewDto(review);
     }
 }

@@ -96,6 +96,19 @@ public class PostSitterService {
                 .collect(Collectors.toList());
     }
 
+    public List<PostSitterDto> getAllActivePosts() {
+        return postSitterRepository.findAll().stream()
+                // for each post, fetch its ACTIVE availability rows
+                .map(post -> {
+                    List<PostSitterAvailabilityEntity> activeAvail =
+                            availabilityRepository.findByPostSitterAndPostSitter_Status(post, "ACTIVE");
+                    if (activeAvail.isEmpty()) return null;
+                    return Transformer.toDto(post, activeAvail);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
     public List<PostSitterDto> getSitterPostsByLocation(String city, String county) {
         return postSitterRepository.findByPetSitter_CityAndPetSitter_County(city, county)
                 .stream()

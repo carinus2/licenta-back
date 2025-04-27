@@ -16,9 +16,13 @@ public class ReviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "reservation_id", nullable = false)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id", nullable = true)
     private ReservationEntity reservation;
+
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "interest_reservation_id", nullable = true)
+    private InterestReservationEntity interestReservation;
 
     @Column(nullable = false, length = 1000)
     private String content;

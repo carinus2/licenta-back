@@ -15,4 +15,6 @@ public interface InterestReservationRepository extends JpaRepository<InterestRes
     Page<InterestReservationEntity> findByPetOwner_Id(Integer ownerId, Pageable pageable);
     List<InterestReservationEntity> findByPetSitter_Id(Integer sitterId);
     Optional<InterestReservationEntity> findByPost_IdAndPetOwner_Id(Integer postId, Integer ownerId);
+    Optional<InterestReservationEntity> findByPost_IdAndPetSitterId(Integer postId, Integer ownerId);
+
 }

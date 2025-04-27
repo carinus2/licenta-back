@@ -30,6 +30,11 @@ public class PostSitterController {
         return ResponseEntity.ok(postSitterService.getAllSitterPosts());
     }
 
+    @GetMapping("/all-active")
+    public ResponseEntity<List<PostSitterDto>> getAllActiveSitterPosts() {
+        return ResponseEntity.ok(postSitterService.getAllActivePosts());
+    }
+
     @GetMapping("/location")
     public ResponseEntity<List<PostSitterDto>> getSitterPostsByLocation(
             @RequestParam String city, @RequestParam String county) {

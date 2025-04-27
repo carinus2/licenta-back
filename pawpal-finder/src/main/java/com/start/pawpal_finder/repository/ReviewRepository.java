@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
-
+    List<ReviewEntity> findByReviewedRoleAndReviewedId(String reviewedRole,
+                                                       Integer reviewedId);
     Page<ReviewEntity> findByReviewedId(Integer reviewedId, Pageable pageable);
 }

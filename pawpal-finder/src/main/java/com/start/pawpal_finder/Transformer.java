@@ -291,21 +291,27 @@ public class Transformer {
         );
     }
 
-    public static ReviewDto toReviewDto(ReviewEntity review) {
+    public static ReviewDto toReviewDto(ReviewEntity e) {
         ReviewDto dto = new ReviewDto();
-        dto.setId(review.getId());
-        dto.setReservationId(review.getReservation().getId());
-        dto.setContent(review.getContent());
-        dto.setRating(review.getRating());
-        dto.setCreatedAt(review.getCreatedAt().toString());
-        dto.setWrittenByRole(review.getWrittenByRole());
-        dto.setWrittenById(review.getWrittenById());
-        dto.setReviewedRole(review.getReviewedRole());
-        dto.setReviewedId(review.getReviewedId());
-        dto.setWrittenByFirstName(review.getWrittenByFirstName());
-        dto.setWrittenByLastName(review.getWrittenByLastName());
+        dto.setId(e.getId());
+        dto.setContent(e.getContent());
+        dto.setRating(e.getRating());
+        dto.setCreatedAt(e.getCreatedAt().toString());
+        dto.setWrittenByRole(e.getWrittenByRole());
+        dto.setWrittenById(e.getWrittenById());
+        dto.setReviewedRole(e.getReviewedRole());
+        dto.setReviewedId(e.getReviewedId());
+        dto.setWrittenByFirstName(e.getWrittenByFirstName());
+        dto.setWrittenByLastName(e.getWrittenByLastName());
+
+        if (e.getReservation() != null) {
+            dto.setReservationId(e.getReservation().getId());
+        } else if (e.getInterestReservation() != null) {
+            dto.setInterestReservationId(e.getInterestReservation().getId());
+        }
         return dto;
     }
+
 
 
     public static PetSitterProfileDto toDto(PetSitterProfileEntity entity) {
