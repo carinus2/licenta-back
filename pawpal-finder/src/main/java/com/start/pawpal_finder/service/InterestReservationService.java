@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.start.pawpal_finder.Transformer.toDto;
 import static com.start.pawpal_finder.Transformer.toReviewDto;
@@ -123,12 +124,12 @@ public class InterestReservationService {
 
 
     @Transactional(readOnly=true)
-    public InterestReservationDto getInterestByPostAndSitterId(Integer postId, Integer sitterId) {
-        var entity = interestReservationRepository
+    public Optional<InterestReservationDto> getInterestByPostAndSitterId(Integer postId, Integer sitterId) {
+        return interestReservationRepository
                 .findByPost_IdAndPetSitterId(postId, sitterId)
-                .orElseThrow(() -> new RuntimeException("No interest for you on that post"));
-        return toDto(entity);
+                .map(Transformer::toDto);
     }
+
 
     @Transactional(readOnly=true)
     public InterestReservationDto getInterestByPostAndOwnerId(Integer postId, Integer ownerId) {

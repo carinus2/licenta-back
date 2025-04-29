@@ -41,9 +41,9 @@ public class InterestReservationController {
     public ResponseEntity<InterestReservationDto> getForPostAndSitter(
             @RequestParam Integer postId,
             @RequestParam Integer sitterId) {
-        return ResponseEntity.ok(
-                interestReservationService.getInterestByPostAndSitterId(postId, sitterId)
-        );
+        return interestReservationService.getInterestByPostAndSitterId(postId, sitterId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping("/get-by-post-owner")
