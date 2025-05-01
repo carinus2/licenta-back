@@ -59,4 +59,13 @@ public class PetSitterProfileController {
         return ResponseEntity.ok(reviews);
     }
 
+    @GetMapping("/near")
+    public List<PetSitterProfileDto> getSittersNear(
+            @RequestParam double lat,
+            @RequestParam double lng,
+            @RequestParam(name = "radius", defaultValue = "10000") double radius
+    ) {
+        return profileService.findSittersNear(lat, lng, radius);
+    }
+
 }

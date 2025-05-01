@@ -180,4 +180,12 @@ public class PetSitterProfileService {
                 .map(Transformer::toReviewDto)
                 .collect(Collectors.toList());
     }
+
+    public List<PetSitterProfileDto> findSittersNear(
+            double lat,
+            double lng,
+            double radiusMeters
+    ) {
+        return profileRepository.findAllByProximity(lat, lng, radiusMeters).stream().map(Transformer::toDto).toList();
+    }
 }
