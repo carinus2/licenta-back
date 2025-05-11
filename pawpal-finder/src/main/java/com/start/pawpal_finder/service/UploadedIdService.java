@@ -3,6 +3,8 @@ package com.start.pawpal_finder.service;
 import com.start.pawpal_finder.entity.UploadedIdEntity;
 import com.start.pawpal_finder.repository.UploadedIdRepository;
 import com.start.pawpal_finder.representation.UploadedIdStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,5 +67,9 @@ public class UploadedIdService {
         } else {
             throw new RuntimeException("ID not found: " + id);
         }
+    }
+
+    public Page<UploadedIdEntity> getAllUploadedIds(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 }

@@ -5,6 +5,7 @@ import com.start.pawpal_finder.auth.authentication.model.AuthenticationRequest;
 import com.start.pawpal_finder.auth.authentication.model.AuthenticationResponse;
 import com.start.pawpal_finder.service.PetOwnerService;
 import com.start.pawpal_finder.service.PetSitterService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,29 +30,63 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> authenticateUser(
+            @RequestBody AuthenticationRequest request) {
+
+        // 1) authenticate credentials
         var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(), request.getPassword()
+                )
+        );
 
-        if ("admin@email.com".equals(request.getEmail()) && "admin1234".equals(request.getPassword())) {
-            var jwt = jwtUtils.generateAdminJwtToken(authentication);
-            return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_ADMIN"), "Admin", null, null, null));
-        } else {
-            var petOwner = petOwnerService.findByEmail(request.getEmail());
-            if (petOwner.isPresent()) {
-                var owner = petOwner.get();
-                var jwt = jwtUtils.generateJwtToken(authentication);
-                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_PET_OWNER"), owner.getEmail(), owner.getFirstName(), owner.getLastName(), owner.getId()));
-            }
-
-            var petSitter = petSitterService.findByEmail(request.getEmail());
-            if (petSitter.isPresent()) {
-                var sitter = petSitter.get();
-                var jwt = jwtUtils.generateJwtToken(authentication);
-                return ResponseEntity.ok(new AuthenticationResponse(jwt, List.of("ROLE_PET_SITTER"), sitter.getEmail(), sitter.getFirstName(), sitter.getLastName(), sitter.getId()));
-            }
-
-            return ResponseEntity.status(401).body(null);
+        // 2) lookup as Pet-Owner first
+        var petOwnerOpt = petOwnerService.findByEmail(request.getEmail());
+        if (petOwnerOpt.isPresent() && Boolean.TRUE.equals(petOwnerOpt.get().getAdmin())) {
+            // 2a) PET_OWNER + ADMIN
+            var owner = petOwnerOpt.get();
+            var jwt   = jwtUtils.generateAdminJwtToken(authentication);
+            return ResponseEntity.ok(new AuthenticationResponse(
+                    jwt,
+                    List.of("ROLE_ADMIN"),
+                    owner.getEmail(),
+                    owner.getFirstName(),
+                    owner.getLastName(),
+                    owner.getId()
+            ));
         }
+        else if (petOwnerOpt.isPresent()) {
+            // 2b) PET_OWNER only
+            var owner = petOwnerOpt.get();
+            var jwt   = jwtUtils.generateJwtToken(authentication);
+            return ResponseEntity.ok(new AuthenticationResponse(
+                    jwt,
+                    List.of("ROLE_PET_OWNER"),
+                    owner.getEmail(),
+                    owner.getFirstName(),
+                    owner.getLastName(),
+                    owner.getId()
+            ));
+        }
+
+        // 3) if not a Pet-Owner at all, try Pet-Sitter
+        var sitterOpt = petSitterService.findByEmail(request.getEmail());
+        if (sitterOpt.isPresent()) {
+            var sitter = sitterOpt.get();
+            var jwt    = jwtUtils.generateJwtToken(authentication);
+            return ResponseEntity.ok(new AuthenticationResponse(
+                    jwt,
+                    List.of("ROLE_PET_SITTER"),
+                    sitter.getEmail(),
+                    sitter.getFirstName(),
+                    sitter.getLastName(),
+                    sitter.getId()
+            ));
+        }
+
+        // 4) fallback
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
+
 }

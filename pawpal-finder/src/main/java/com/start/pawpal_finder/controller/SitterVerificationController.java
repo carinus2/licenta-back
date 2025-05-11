@@ -9,11 +9,17 @@ import com.start.pawpal_finder.representation.ScheduleRequestRepresentation;
 import com.start.pawpal_finder.representation.UploadedIdStatus;
 import com.start.pawpal_finder.service.TimeSlotService;
 import com.start.pawpal_finder.service.UploadedIdService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,10 +40,7 @@ public class SitterVerificationController {
         this.idService = idService;
     }
 
-    /**
-     * Returns whether the sitter's ID is verified, whether they have any booked slot,
-     * and whether both are true (fully verified).
-     */
+
     @GetMapping("/status/{sitterId}")
     public ResponseEntity<SitterVerificationStatusDto> getVerificationStatus(
             @PathVariable Integer sitterId
@@ -53,10 +56,6 @@ public class SitterVerificationController {
         return ResponseEntity.ok(dto);
     }
 
-    /**
-     * Returns all available 30-minute slots on the given date.
-     * Angular will call: GET /api/sitter/verification/slots?date=YYYY-MM-DD
-     */
     @GetMapping("/slots")
     public List<TimeSlotDto> getSlots(
             @RequestParam("date") @DateTimeFormat(iso = ISO.DATE) LocalDate date
@@ -66,10 +65,7 @@ public class SitterVerificationController {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Handles ID-photo uploads. Expects a multipart/form-data POST with
-     * "file"=<the JPEG/PNG blob> and "sitterId"=<the sitter's user ID>.
-     */
+
     @PostMapping("/upload-id")
     public ResponseEntity<Void> uploadId(
             @RequestParam("file") MultipartFile file,
@@ -80,10 +76,6 @@ public class SitterVerificationController {
     }
 
 
-    /**
-     * Books one of the pre-defined slots.
-     * Angular will send { slotId: 123, sitterId: 456 } in the JSON body.
-     */
     @PostMapping("/book-slot")
     public ResponseEntity<Void> bookSlot(
             @RequestBody SlotRequestRepresentation req
@@ -92,60 +84,22 @@ public class SitterVerificationController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Schedules a custom‐time call when no predefined slots work.
-     * Angular will send { dateTime: "2025-05-11T14:30", sitterId: 456 }.
-     */
     @PostMapping("/schedule-call")
     public ResponseEntity<Void> scheduleCall(
             @RequestBody ScheduleRequestRepresentation req
     ) {
-        // Parse the incoming ISO-8601 date/time string
         LocalDateTime dt = LocalDateTime.parse(req.getDateTime());
         slotSvc.bookCustomSlot(dt, req.getSitterId());
         return ResponseEntity.ok().build();
     }
 
-    /*
-     * Admin-specific endpoints that match exactly what the frontend is calling
-     */
 
-    /**
-     * Returns all booked time slots for admin verification panel.
-     * Matches exactly the URL used by the Angular admin dashboard component.
-     */
-    @GetMapping("/admin/booked-slots")
-    public ResponseEntity<List<TimeSlotDto>> getBookedSlots() {
-        return ResponseEntity.ok(
-                slotSvc.getAllBookedSlots().stream()
-                        .map(Transformer::fromEntity)
-                        .collect(Collectors.toList())
-        );
-    }
-
-    /**
-     * Returns all uploaded IDs for admin verification panel.
-     * Matches exactly the URL used by the Angular admin dashboard component.
-     */
-    @GetMapping("/admin/uploaded-ids")
-    public ResponseEntity<List<UploadedIdEntity>> getUploadedIds() {
-        return ResponseEntity.ok(idService.getAllUploadedIds());
-    }
-
-    /**
-     * Verifies (approves) a sitter's uploaded ID.
-     * Matches exactly the URL used by the Angular admin dashboard component.
-     */
     @PostMapping("/admin/verify-id/{id}")
     public ResponseEntity<Void> verifyId(@PathVariable Integer id) {
         idService.updateStatus(id.longValue(), UploadedIdStatus.VERIFIED);
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Rejects a sitter's uploaded ID.
-     * Matches exactly the URL used by the Angular admin dashboard component.
-     */
     @PostMapping("/admin/reject-id/{id}")
     public ResponseEntity<Void> rejectId(@PathVariable Integer id) {
         idService.updateStatus(id.longValue(), UploadedIdStatus.REJECTED);
@@ -157,11 +111,43 @@ public class SitterVerificationController {
             @PathVariable Integer sitterId
     ) {
         List<TimeSlotDto> dtos = slotSvc
-                // you’ll need a service method that finds the booked slot(s) for this sitter)
                 .getBookedSlotsBySitterId(sitterId)
                 .stream()
                 .map(Transformer::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/admin/uploaded-ids")
+    public ResponseEntity<Page<UploadedIdEntity>> getUploadedIds(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UploadedIdEntity> paged = idService.getAllUploadedIds(pageable);
+        return ResponseEntity.ok(paged);
+    }
+
+    @GetMapping("/admin/booked-slots")
+    public ResponseEntity<Page<TimeSlotDto>> getBookedSlots(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TimeSlotDto> paged = slotSvc.getAllBookedSlots(pageable)
+                .map(Transformer::fromEntity);
+        return ResponseEntity.ok(paged);
+    }
+
+    @GetMapping(value = "/admin/id-image/{id}")
+    public ResponseEntity<byte[]> getIdImage(@PathVariable Long id) {
+        UploadedIdEntity entity = idService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        MediaType type = entity.getFileName().toLowerCase().endsWith(".png")
+                ? MediaType.IMAGE_PNG
+                : MediaType.IMAGE_JPEG;
+        return ResponseEntity.ok()
+                .contentType(type)
+                .body(entity.getFileData());
     }
 }

@@ -3,6 +3,8 @@ package com.start.pawpal_finder.service;
 import com.start.pawpal_finder.entity.TimeSlotEntity;
 import com.start.pawpal_finder.repository.TimeSlotRepository;
 import com.start.pawpal_finder.representation.StatusModelTimeSlot;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -66,5 +68,9 @@ public class TimeSlotService {
     }
     public boolean hasBookedSlot(Integer sitterId) {
         return repository.countBySitterId(sitterId) > 0;
+    }
+
+    public Page<TimeSlotEntity> getAllBookedSlots(Pageable pageable) {
+        return repository.findByStatus(StatusModelTimeSlot.BOOKED, pageable);
     }
 }

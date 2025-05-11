@@ -73,13 +73,9 @@ public class JwtUtil {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("roles", roles)
+                .claim("roles", List.of("ROLE_ADMIN"))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 12 * 60 * 60 * 1000))
                 .signWith(getJwtKey())
