@@ -14,23 +14,35 @@ import java.util.Optional;
 public class PetOwnerService {
 
     private final PasswordEncoder passwordEncoder;
-
     private final PetOwnerRepository petOwnerRepository;
+
     @Autowired
-    public PetOwnerService(PasswordEncoder passwordEncoder, PetOwnerRepository petOwnerRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.petOwnerRepository = petOwnerRepository;
+    public PetOwnerService(PasswordEncoder passwordEncoder,
+                           PetOwnerRepository petOwnerRepository) {
+        this.passwordEncoder      = passwordEncoder;
+        this.petOwnerRepository   = petOwnerRepository;
     }
 
     public Optional<PetOwnerEntity> findByEmail(String email) {
         return petOwnerRepository.findByEmail(email);
     }
 
-    public void registerPetOwner(PetOwnerDto petOwnerDto) {
+    /**
+     * Registers a new pet owner, encoding their password,
+     * saving to the database, and returning a DTO with its generated ID.
+     */
+    public PetOwnerDto registerPetOwner(PetOwnerDto petOwnerDto) {
+        // 1) Map DTO → Entity
+        PetOwnerEntity entity = Transformer.fromDto(petOwnerDto);
 
-        PetOwnerEntity petOwner = Transformer.fromDto(petOwnerDto);
-        petOwner.setPassword(passwordEncoder.encode(petOwnerDto.getPassword()));
-        petOwnerRepository.save(petOwner);
+        // 2) Encode the raw password
+        entity.setPassword(passwordEncoder.encode(petOwnerDto.getPassword()));
+
+        // 3) Persist
+        PetOwnerEntity saved = petOwnerRepository.save(entity);
+
+        // 4) Map Entity → DTO (now with ID populated) and return
+        return Transformer.toDto(saved);
     }
 
     public boolean hasAnimals(String email) {

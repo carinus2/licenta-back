@@ -5,11 +5,9 @@ import com.start.pawpal_finder.auth.authentication.model.AuthenticationRequest;
 import com.start.pawpal_finder.auth.authentication.model.AuthenticationResponse;
 import com.start.pawpal_finder.service.PetOwnerService;
 import com.start.pawpal_finder.service.PetSitterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,19 +16,15 @@ import java.util.List;
 @RequestMapping("/api/auth")
 public class AuthenticationController {
 
-    @Autowired
-    private JwtUtil jwtUtils;
-
-    @Autowired
-    private PetOwnerService petOwnerService;
-
-    @Autowired
-    private PetSitterService petSitterService;
-
+    private final JwtUtil jwtUtils;
+    private final PetOwnerService petOwnerService;
+    private final PetSitterService petSitterService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationController(JwtUtil jwtUtils, AuthenticationManager authenticationManager) {
+    public AuthenticationController(JwtUtil jwtUtils, PetOwnerService petOwnerService, PetSitterService petSitterService, AuthenticationManager authenticationManager) {
         this.jwtUtils = jwtUtils;
+        this.petOwnerService = petOwnerService;
+        this.petSitterService = petSitterService;
         this.authenticationManager = authenticationManager;
     }
 

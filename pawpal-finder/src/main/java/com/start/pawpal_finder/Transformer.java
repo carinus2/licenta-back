@@ -9,6 +9,8 @@ import com.start.pawpal_finder.service.PetSitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +24,11 @@ public class Transformer {
     private final PetSitterService petSitterService;
     private final AnimalService animalService;
 
-    @Autowired
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_TIME;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+
     public Transformer(PetOwnerService petOwnerService, PetSitterService petSitterService, AnimalService animalService) {
 
         this.petOwnerService = petOwnerService;
@@ -312,7 +318,20 @@ public class Transformer {
         return dto;
     }
 
+    public static TimeSlotDto fromEntity(TimeSlotEntity entity) {
+        TimeSlotDto dto = new TimeSlotDto();
+        dto.setId(entity.getId());
+        dto.setStartTime(String.valueOf(LocalDateTime.parse(entity.getStartTime().format(DATE_TIME_FORMATTER))));
+        dto.setEndTime(String.valueOf(LocalDateTime.parse(entity.getEndTime().format(DATE_TIME_FORMATTER))));
+        dto.setStatus(entity.getStatus().toString());
 
+        if (entity.getSitterId() != null) {
+            dto.setSitterId(entity.getSitterId());
+        }
+        dto.setDate(entity.getStartTime().format(DATE_FORMATTER));
+
+        return dto;
+    }
 
     public static PetSitterProfileDto toDto(PetSitterProfileEntity entity) {
         PetSitterProfileDto dto = new PetSitterProfileDto();

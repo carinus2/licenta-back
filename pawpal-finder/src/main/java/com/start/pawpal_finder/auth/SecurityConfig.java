@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -81,6 +82,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "api/interest-reservations/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "api/interest-reservations/**").authenticated()
                 .requestMatchers("/ws-notifications/**").permitAll()
+                .requestMatchers("/api/sitter/verification/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
@@ -109,8 +111,15 @@ public class SecurityConfig {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(userDetailsService)
+        // 1) In‐memory admin user with plaintext password
+        auth.inMemoryAuthentication()
+                .passwordEncoder(passwordEncoder)             // <<— make sure this is applied
+                .withUser("admin@email.com")
+                .password("{noop}admin1234")
+                .roles("ADMIN");
+
+        // 2) Your existing JDBC/UserDetailsService users (pet‐owners, sitters, etc.)
+        auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder);
     }
 
