@@ -280,7 +280,11 @@ public class Transformer {
                 profile.getBudget(),
                 profile.getBio(),
                 profile.getNotificationsEnabled(),
-                profile.getPreferredPaymentMethod()
+                profile.getPreferredPaymentMethod(),
+                profile.getStreet(),
+                profile.getStreetNumber(),
+                profile.getLatitude(),
+                profile.getLongitude()
         );
     }
 
@@ -293,7 +297,11 @@ public class Transformer {
                 dto.getBudget(),
                 dto.getBio(),
                 dto.getNotificationsEnabled(),
-                dto.getPreferredPaymentMethod()
+                dto.getPreferredPaymentMethod(),
+                dto.getStreet(),
+                dto.getStreetNumber(),
+                dto.getLatitude(),
+                dto.getLongitude()
         );
     }
 

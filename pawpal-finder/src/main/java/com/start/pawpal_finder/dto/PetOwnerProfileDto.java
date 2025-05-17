@@ -27,6 +27,10 @@ public class PetOwnerProfileDto {
     private Boolean notificationsEnabled;
     private String preferredPaymentMethod;
 
+    private String street;
+    private String streetNumber;
+    private Double latitude;
+    private Double longitude;
     public PetOwnerProfileDto(PetOwnerEntity petOwner, PetOwnerProfileEntity profile) {
         this.petOwnerId = petOwner.getId();
         this.firstName = petOwner.getFirstName();
@@ -40,5 +44,9 @@ public class PetOwnerProfileDto {
         this.bio = profile.getBio();
         this.notificationsEnabled = profile.getNotificationsEnabled();
         this.preferredPaymentMethod = profile.getPreferredPaymentMethod();
+        this.street = profile.getStreet();
+        this.streetNumber = profile.getStreetNumber();
+        this.latitude = profile.getLatitude();
+        this.longitude = profile.getLongitude();
     }
 }

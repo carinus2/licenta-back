@@ -1,7 +1,9 @@
 package com.start.pawpal_finder.service;
 
 import com.start.pawpal_finder.Transformer;
+import com.start.pawpal_finder.dto.LatLng;
 import com.start.pawpal_finder.dto.PetOwnerProfileDto;
+import com.start.pawpal_finder.dto.PetSitterProfileDto;
 import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PetOwnerProfileEntity;
@@ -26,12 +28,13 @@ public class PetOwnerProfileService {
     private final PetOwnerProfileRepository profileRepository;
     private final PetOwnerRepository petOwnerRepository;
     private final ReviewRepository reviewRepository;
+    private final GeocodingService geocodingService;
 
-    @Autowired
-    public PetOwnerProfileService(PetOwnerProfileRepository profileRepository, PetOwnerRepository petOwnerRepository, ReviewRepository reviewRepository) {
+    public PetOwnerProfileService(PetOwnerProfileRepository profileRepository, PetOwnerRepository petOwnerRepository, ReviewRepository reviewRepository, GeocodingService geocodingService) {
         this.profileRepository = profileRepository;
         this.petOwnerRepository = petOwnerRepository;
         this.reviewRepository = reviewRepository;
+        this.geocodingService = geocodingService;
     }
 
     public Optional<PetOwnerProfileDto> getProfileByOwnerId(Integer ownerId) {
@@ -59,6 +62,10 @@ public class PetOwnerProfileService {
             dto.setBudget(profile.getBudget());
             dto.setNotificationsEnabled(profile.getNotificationsEnabled());
             dto.setPreferredPaymentMethod(profile.getPreferredPaymentMethod());
+            dto.setStreet(profile.getStreet());
+            dto.setStreetNumber(profile.getStreetNumber());
+            dto.setLatitude(profile.getLatitude());
+            dto.setLongitude(profile.getLongitude());
 
             if (profile.getProfilePictureUrl() != null) {
                 dto.setProfilePictureUrl("data:image/jpeg;base64," +
@@ -69,27 +76,46 @@ public class PetOwnerProfileService {
         return Optional.of(dto);
     }
 
-    public PetOwnerProfileDto saveProfile(PetOwnerProfileDto dto, MultipartFile profilePicture) {
-        Optional<PetOwnerEntity> petOwnerOpt = petOwnerRepository.findById(dto.getPetOwnerId());
-        if (petOwnerOpt.isEmpty()) {
-            throw new IllegalArgumentException("PetOwner not found");
-        }
+    public List<PetOwnerProfileDto> getAllProfiles() {
 
-        PetOwnerEntity petOwner = petOwnerOpt.get();
-        petOwner.setCity(dto.getCity());
-        petOwner.setCounty(dto.getCounty());
-        petOwner.setPhoneNumber(dto.getPhoneNumber());
-        petOwnerRepository.save(petOwner);
+        return profileRepository.findAll().stream().map(Transformer::toDto).collect(Collectors.toList());
+    }
 
-        PetOwnerProfileEntity profile = profileRepository.findByPetOwnerId(petOwner.getId())
+
+    public PetOwnerProfileDto saveProfile(
+            PetOwnerProfileDto dto,
+            MultipartFile profilePicture
+    ) {
+        PetOwnerEntity owner = petOwnerRepository.findById(dto.getPetOwnerId())
+                .orElseThrow(() -> new IllegalArgumentException("PetOwner not found"));
+
+        // update basic owner info
+        owner.setCity(dto.getCity());
+        owner.setCounty(dto.getCounty());
+        owner.setPhoneNumber(dto.getPhoneNumber());
+        petOwnerRepository.save(owner);
+
+        // load or new profile
+        PetOwnerProfileEntity profile = profileRepository
+                .findByPetOwnerId(owner.getId())
                 .orElse(new PetOwnerProfileEntity());
 
-        profile.setPetOwner(petOwner);
+        profile.setPetOwner(owner);
         profile.setBio(dto.getBio());
         profile.setBudget(dto.getBudget());
         profile.setNotificationsEnabled(dto.getNotificationsEnabled());
         profile.setPreferredPaymentMethod(dto.getPreferredPaymentMethod());
 
+        // NEW: street & number from DTO
+        profile.setStreet(dto.getStreet());
+        profile.setStreetNumber(dto.getStreetNumber());
+
+        // NEW: resolve lat/lng
+        LatLng coords = resolveCoordinates(dto);
+        profile.setLatitude(coords.getLat());
+        profile.setLongitude(coords.getLng());
+
+        // existing: picture handling
         if (profilePicture != null && !profilePicture.isEmpty()) {
             try {
                 profile.setProfilePictureUrl(profilePicture.getBytes());
@@ -98,9 +124,35 @@ public class PetOwnerProfileService {
             }
         }
 
-        PetOwnerProfileEntity savedProfile = profileRepository.save(profile);
+        PetOwnerProfileEntity saved = profileRepository.save(profile);
+        return Transformer.toDto(saved);
+    }
 
-        return Transformer.toDto(savedProfile);
+    private LatLng resolveCoordinates(PetOwnerProfileDto dto) {
+        // 1) client-provided
+        if (dto.getLatitude() != null && dto.getLongitude() != null) {
+            return new LatLng(dto.getLatitude(), dto.getLongitude());
+        }
+
+        // build street-level address if provided
+        String streetPart = Optional.ofNullable(dto.getStreet())
+                .filter(s -> !s.isBlank())
+                .map(s -> s + " " + dto.getStreetNumber() + ", ")
+                .orElse("");
+
+        String fullAddr = streetPart
+                + dto.getCity() + ", "
+                + dto.getCounty() + ", Romania";
+
+        try {
+            // 2) street+city
+            return geocodingService.geocode(fullAddr);
+        } catch (IllegalStateException e) {
+            // 3) city-only fallback
+            return geocodingService.geocode(
+                    dto.getCity() + ", " + dto.getCounty() + ", Romania"
+            );
+        }
     }
 
     public void deleteProfile(Integer ownerId) {

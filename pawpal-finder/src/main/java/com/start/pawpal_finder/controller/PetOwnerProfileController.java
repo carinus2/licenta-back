@@ -3,6 +3,7 @@ package com.start.pawpal_finder.controller;
 import com.start.pawpal_finder.dto.PetOwnerProfileDto;
 import com.start.pawpal_finder.dto.ReviewDto;
 import com.start.pawpal_finder.service.PetOwnerProfileService;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,11 @@ public class PetOwnerProfileController {
         return ResponseEntity.ok(savedProfile);
     }
 
+    @GetMapping("/all-profiles")
+    public ResponseEntity<List<PetOwnerProfileDto>> getAllProfiles(){
+
+        return ResponseEntity.ok(profileService.getAllProfiles());
+    }
 
     @DeleteMapping("/{ownerId}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Integer ownerId) {

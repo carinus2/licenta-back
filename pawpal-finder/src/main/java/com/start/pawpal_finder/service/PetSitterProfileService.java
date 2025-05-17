@@ -29,7 +29,6 @@ public class PetSitterProfileService {
     private final PetSitterRepository petSitterRepository;
     private final ReviewRepository reviewRepository;
     private final GeocodingService geocodingService;
-    @Autowired
     public PetSitterProfileService(PetSitterProfileRepository profileRepository,
                                    PetSitterRepository petSitterRepository, ReviewRepository reviewRepository, GeocodingService geocodingService) {
         this.profileRepository = profileRepository;
@@ -130,12 +129,6 @@ public class PetSitterProfileService {
         return Transformer.toDto(saved);
     }
 
-    /**
-     * Try in order:
-     *  1) use client‐supplied coordinates,
-     *  2) street‐level geocode,
-     *  3) city‐level fallback.
-     */
     private LatLng resolveCoordinates(PetSitterProfileDto dto) {
         // 1) client provided
         if (dto.getLatitude() != null && dto.getLongitude() != null) {
@@ -161,7 +154,6 @@ public class PetSitterProfileService {
             return geocodingService.geocode(cityOnly);
         }
     }
-
 
     public void deleteProfile(Integer sitterId) {
         profileRepository.findByPetSitterId(sitterId).ifPresent(profileRepository::delete);

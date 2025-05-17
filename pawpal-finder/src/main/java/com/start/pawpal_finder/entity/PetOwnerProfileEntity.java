@@ -37,4 +37,16 @@ public class PetOwnerProfileEntity {
 
     @Column(name = "preferred_payment_method", length = 20)
     private String preferredPaymentMethod = "Card";
+
+    @Column(name = "street")
+    private String street;
+
+    @Column(name = "street_number")
+    private String streetNumber;
+
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
 }
