@@ -84,7 +84,6 @@ public class Transformer {
         dto.setCounty(entity.getCounty());
         dto.setPhoneNumber(entity.getPhoneNumber());
         dto.setBirthDate(entity.getBirthDate());
-        dto.setAdmin(entity.getAdmin());
         return dto;
     }
 
@@ -102,7 +101,6 @@ public class Transformer {
         entity.setCounty(dto.getCounty());
         entity.setPhoneNumber(dto.getPhoneNumber());
         entity.setBirthDate(dto.getBirthDate());
-        entity.setAdmin(dto.getAdmin());
         return entity;
     }
 

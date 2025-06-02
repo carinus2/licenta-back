@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Controller pentru înregistrare (register). După ce creează entitatea,
+ * autentifică imediat noul cont și returnează token-ul JWT + datele necesare.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class RegistrationController {
@@ -26,60 +29,64 @@ public class RegistrationController {
     private final JwtUtil jwtUtils;
     private final AuthenticationManager authenticationManager;
 
-
-    public RegistrationController(PetSitterService petSitterService, PetOwnerService petOwnerService, JwtUtil jwtUtils, AuthenticationManager authenticationManager) {
+    public RegistrationController(PetSitterService petSitterService,
+                                  PetOwnerService petOwnerService,
+                                  JwtUtil jwtUtils,
+                                  AuthenticationManager authenticationManager) {
         this.petSitterService = petSitterService;
         this.petOwnerService = petOwnerService;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
     }
 
-
     @PostMapping("/register-pet-sitter")
     public ResponseEntity<?> registerPetSitter(@RequestBody PetSitterDto dto) {
         try {
+            // 1. Creăm pet sitter în baza de date
             petSitterService.registerPetSitter(dto);
 
-            var authToken = new UsernamePasswordAuthenticationToken(
-                    dto.getEmail(), dto.getPassword()
-            );
+            // 2. Autentificăm credențialele imediat
+            var authToken = new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
             var authentication = authenticationManager.authenticate(authToken);
 
-            String jwt = jwtUtils.generateJwtToken(authentication);
+            // 3. Generăm JWT pe baza autentificării (rolurile vin din CustomUserDetailsService)
+            String jwt = jwtUtils.generateToken(authentication);
 
+            // 4. Returnăm un DTO cu token, roluri și datele extra pe care le vrei front-end-ului
             return ResponseEntity.ok(new AuthenticationResponse(
                     jwt,
                     List.of("ROLE_PET_SITTER"),
                     dto.getEmail(),
                     dto.getFirstName(),
                     dto.getLastName(),
-                    dto.getId()
+                    dto.getId()   // presupunem că PetSitterDto conține getId() după save
             ));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
 
-
     @PostMapping("/register-pet-owner")
     public ResponseEntity<?> registerPetOwner(@RequestBody PetOwnerDto petOwnerDto) {
         try {
+            // 1. Creăm pet owner în baza de date
             petOwnerService.registerPetOwner(petOwnerDto);
 
-            var authToken = new UsernamePasswordAuthenticationToken(
-                    petOwnerDto.getEmail(), petOwnerDto.getPassword()
-            );
+            // 2. Autentificăm credențialele imediat
+            var authToken = new UsernamePasswordAuthenticationToken(petOwnerDto.getEmail(), petOwnerDto.getPassword());
             var authentication = authenticationManager.authenticate(authToken);
 
-            String jwt = jwtUtils.generateJwtToken(authentication);
+            // 3. Generăm JWT pe baza autentificării
+            String jwt = jwtUtils.generateToken(authentication);
 
+            // 4. Returnăm un DTO cu token, roluri și datele extra
             return ResponseEntity.ok(new AuthenticationResponse(
                     jwt,
-                    List.of("ROLE_PET_SITTER"),
+                    List.of("ROLE_PET_OWNER"),
                     petOwnerDto.getEmail(),
                     petOwnerDto.getFirstName(),
                     petOwnerDto.getLastName(),
-                    petOwnerDto.getId()
+                    petOwnerDto.getId()  // presupunem că PetOwnerDto conține getId() după save
             ));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());

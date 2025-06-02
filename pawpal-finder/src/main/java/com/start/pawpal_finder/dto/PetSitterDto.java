@@ -20,6 +20,5 @@ public class PetSitterDto {
     private String county;
     private String phoneNumber;
     private LocalDate birthDate;
-    private Boolean admin;
 }
 

@@ -16,10 +16,11 @@ public class AuthenticationResponse {
     public String lastName;
     public Integer userId;
 
-    public AuthenticationResponse(String jwt, List<String> roles, String email) {
+    public AuthenticationResponse(String jwt, List<String> roles, String email, Integer userId) {
         this.jwt = jwt;
         this.roles = roles;
         this.email = email;
+        this.userId = userId;
     }
 
     public AuthenticationResponse(String jwt, List<String> roles) {

@@ -44,9 +44,6 @@ public class PetSitterEntity {
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "admin", nullable = false)
-    private Boolean admin = false;
-
     @ManyToMany
     @JoinTable(
             name = "pet_sitter_animals",

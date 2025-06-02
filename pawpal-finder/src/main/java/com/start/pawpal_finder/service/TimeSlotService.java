@@ -3,6 +3,7 @@ package com.start.pawpal_finder.service;
 import com.start.pawpal_finder.entity.TimeSlotEntity;
 import com.start.pawpal_finder.repository.TimeSlotRepository;
 import com.start.pawpal_finder.representation.StatusModelTimeSlot;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,13 @@ public class TimeSlotService {
         return repository.findByStartTimeBetweenAndStatusNot(startOfDay, endOfDay, StatusModelTimeSlot.BOOKED);
     }
 
+    public void cancelSlot(Long slotId) {
+        TimeSlotEntity slot = repository.findById(slotId)
+                .orElseThrow(() -> new EntityNotFoundException("Slot not found"));
+        slot.setSitterId(null);      // or however you track who booked it
+        slot.setStatus(StatusModelTimeSlot.AVAILABLE);
+        repository.save(slot);
+    }
     public void bookSlot(Long slotId, Integer sitterId) {
         TimeSlotEntity slot = repository.findById(slotId)
                 .orElseThrow(() -> new RuntimeException("Slot not found: " + slotId));

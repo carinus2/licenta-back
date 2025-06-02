@@ -1,6 +1,7 @@
 package com.start.pawpal_finder.auth.authorization;
 
 import com.start.pawpal_finder.auth.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,14 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import static java.util.stream.Collectors.toList;
 
+@Component
 public class AuthorizationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -27,30 +29,35 @@ public class AuthorizationTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        // Skip JWT check for WebSocket handshake requests
+
+        // Dacă endpoint-ul începe cu /ws-notifications, sărim JWT-ul
         if (request.getRequestURI().startsWith("/ws-notifications")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            var jwt = jwtUtils.getJwtFromRequest(request);
+            String jwt = jwtUtils.getJwtFromRequest(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                var jwsClaims = jwtUtils.getClaims(jwt);
+                // Extragem claims din token
+                Claims claims = jwtUtils.getClaims(jwt);
+                List<String> roles = claims.get("roles", ArrayList.class);
+                String username = claims.getSubject();
 
-                List<String> roles = jwsClaims.get("roles", ArrayList.class);
-                var username = jwsClaims.getSubject();
-
-                var entitlements = roles.stream()
+                // Transformăm lista de roluri într-o listă de GrantedAuthority
+                List<SimpleGrantedAuthority> authorities = roles.stream()
                         .map(SimpleGrantedAuthority::new)
                         .collect(toList());
 
-                var authentication = new UsernamePasswordAuthenticationToken(username, null, entitlements);
+                // Creăm autentificarea și punem în context
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(username, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             System.out.println("Cannot set authentication: " + e.getMessage());
         }
+
         filterChain.doFilter(request, response);
     }
 }

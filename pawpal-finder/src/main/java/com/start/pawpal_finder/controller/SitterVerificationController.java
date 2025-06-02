@@ -56,6 +56,12 @@ public class SitterVerificationController {
         return ResponseEntity.ok(dto);
     }
 
+    @PostMapping("/cancel-slot/{slotId}")
+    public ResponseEntity<Void> cancelSlot(@PathVariable Long slotId) {
+        slotSvc.cancelSlot(slotId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/slots")
     public List<TimeSlotDto> getSlots(
             @RequestParam("date") @DateTimeFormat(iso = ISO.DATE) LocalDate date

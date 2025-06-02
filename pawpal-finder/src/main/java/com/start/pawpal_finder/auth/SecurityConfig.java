@@ -2,46 +2,71 @@ package com.start.pawpal_finder.auth;
 
 import com.start.pawpal_finder.auth.authorization.AuthorizationTokenFilter;
 import com.start.pawpal_finder.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
-
+    private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public SecurityConfig(CustomUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService,
+                          PasswordEncoder passwordEncoder) {
+        this.customUserDetailsService = customUserDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(customUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(provider);
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return customUserDetailsService;
+    }
+
+    public static Integer getAuthenticatedUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof String) {
+            try {
+                return Integer.parseInt((String) principal);
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("Principal is not a valid ID: " + principal, e);
+            }
+        } else {
+            throw new IllegalStateException("Principal is not a valid user ID.");
+        }
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           AuthorizationTokenFilter authorizationTokenFilter) throws Exception {
         http
+                // dezactivăm CORS + CSRF (REST stateless JWT)
                 .cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
@@ -85,56 +110,21 @@ public class SecurityConfig {
                 .requestMatchers("/api/sitter/verification/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                .and()
-                .addFilterBefore(authenticationJwtTokenFilter(), BasicAuthenticationFilter.class);
+                // la erori de autentificare, returnăm 401 UNAUTHORIZED (stateless)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
+                // spunem că nu vrem sesiuni server-side (STATELESS)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
+
+        // Adăugăm filtru nostru JWT înainte de UsernamePasswordAuthenticationFilter
+        http.addFilterBefore(authorizationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/ws-notifications/**");
-    }
-
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    @Bean
-    public AuthorizationTokenFilter authenticationJwtTokenFilter() {
-        return new AuthorizationTokenFilter();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        // 1) In‐memory admin user with plaintext password
-        auth.inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder)             // <<— make sure this is applied
-                .withUser("admin@email.com")
-                .password("{noop}admin1234")
-                .roles("ADMIN");
-
-        // 2) Your existing JDBC/UserDetailsService users (pet‐owners, sitters, etc.)
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
-    }
-
-    public static Integer getAuthenticatedUserId() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof String) {
-            try {
-                return Integer.parseInt((String) principal);
-            } catch (NumberFormatException e) {
-                throw new IllegalStateException("Principal is not a valid ID: " + principal, e);
-            }
-        } else {
-            throw new IllegalStateException("Principal is not a valid user ID.");
-        }
-    }
-
+    // Nu mai este nevoie de Bean separat pentru AuthorizationTokenFilter aici,
+    // deoarece îl definim direct prin component scan (vezi pasul următor).
 }

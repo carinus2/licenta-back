@@ -1,15 +1,22 @@
 package com.start.pawpal_finder.auth.authentication.api;
-
+import org.springframework.security.core.GrantedAuthority;
+import java.util.stream.Collectors;
+import java.util.List;
 import com.start.pawpal_finder.auth.JwtUtil;
 import com.start.pawpal_finder.auth.authentication.model.AuthenticationRequest;
 import com.start.pawpal_finder.auth.authentication.model.AuthenticationResponse;
-import com.start.pawpal_finder.service.PetOwnerService;
-import com.start.pawpal_finder.service.PetSitterService;
+import com.start.pawpal_finder.dto.CustomUserDetails;
+import com.start.pawpal_finder.service.CustomUserDetailsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -18,75 +25,62 @@ import java.util.List;
 public class AuthenticationController {
 
     private final JwtUtil jwtUtils;
-    private final PetOwnerService petOwnerService;
-    private final PetSitterService petSitterService;
+    private final CustomUserDetailsService customUserDetailsService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationController(JwtUtil jwtUtils, PetOwnerService petOwnerService, PetSitterService petSitterService, AuthenticationManager authenticationManager) {
+    public AuthenticationController(JwtUtil jwtUtils,
+                                    CustomUserDetailsService customUserDetailsService,
+                                    AuthenticationManager authenticationManager) {
         this.jwtUtils = jwtUtils;
-        this.petOwnerService = petOwnerService;
-        this.petSitterService = petSitterService;
+        this.customUserDetailsService = customUserDetailsService;
         this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticateUser(
-            @RequestBody AuthenticationRequest request) {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authRequest) {
+        try {
+            // 1) Authenticate credentials
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authRequest.getEmail(),
+                            authRequest.getPassword()
+                    )
+            );
 
-        // 1) authenticate credentials
-        var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(), request.getPassword()
-                )
-        );
+            // 2) Generate the JWT
+            String jwt = jwtUtils.generateToken(authentication);
 
-        // 2) lookup as Pet-Owner first
-        var petOwnerOpt = petOwnerService.findByEmail(request.getEmail());
-        if (petOwnerOpt.isPresent() && Boolean.TRUE.equals(petOwnerOpt.get().getAdmin())) {
-            // 2a) PET_OWNER + ADMIN
-            var owner = petOwnerOpt.get();
-            var jwt   = jwtUtils.generateAdminJwtToken(authentication);
-            return ResponseEntity.ok(new AuthenticationResponse(
+            // 3) Extract the CustomUserDetails principal (which now carries an 'id')
+            Object principal = authentication.getPrincipal();
+            if (!(principal instanceof CustomUserDetails)) {
+                // Should not happen in normal flow. Just in case, we return a minimal response:
+                return ResponseEntity.ok(new AuthenticationResponse(jwt, null));
+            }
+
+            CustomUserDetails userDetails = (CustomUserDetails) principal;
+
+            // 4) Extract each piece:
+            String email = userDetails.getUsername();
+            List<String> rolesList = userDetails.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+            Integer userId = userDetails.getId(); // ← this is the numeric DB ID
+
+            // 5) Construct the response in the exact order: (String jwt, List<String> roles, String email, Integer userId)
+            AuthenticationResponse response = new AuthenticationResponse(
                     jwt,
-                    List.of("ROLE_ADMIN"),
-                    owner.getEmail(),
-                    owner.getFirstName(),
-                    owner.getLastName(),
-                    owner.getId()
-            ));
-        }
-        else if (petOwnerOpt.isPresent()) {
-            // 2b) PET_OWNER only
-            var owner = petOwnerOpt.get();
-            var jwt   = jwtUtils.generateJwtToken(authentication);
-            return ResponseEntity.ok(new AuthenticationResponse(
-                    jwt,
-                    List.of("ROLE_PET_OWNER"),
-                    owner.getEmail(),
-                    owner.getFirstName(),
-                    owner.getLastName(),
-                    owner.getId()
-            ));
-        }
+                    rolesList,
+                    email,
+                    userId
+            );
 
-        // 3) if not a Pet-Owner at all, try Pet-Sitter
-        var sitterOpt = petSitterService.findByEmail(request.getEmail());
-        if (sitterOpt.isPresent()) {
-            var sitter = sitterOpt.get();
-            var jwt    = jwtUtils.generateJwtToken(authentication);
-            return ResponseEntity.ok(new AuthenticationResponse(
-                    jwt,
-                    List.of("ROLE_PET_SITTER"),
-                    sitter.getEmail(),
-                    sitter.getFirstName(),
-                    sitter.getLastName(),
-                    sitter.getId()
-            ));
-        }
+            return ResponseEntity.ok(response);
 
-        // 4) fallback
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid authentication values");
+        }
     }
-
-
 }

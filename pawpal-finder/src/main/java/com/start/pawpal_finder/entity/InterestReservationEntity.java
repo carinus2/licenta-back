@@ -27,19 +27,16 @@ public class InterestReservationEntity {
     @JoinColumn(name = "pet_owner_id", nullable = false)
     private PetOwnerEntity petOwner;
 
-    // The pet sitter who is interested in the post
     @ManyToOne
     @JoinColumn(name = "pet_sitter_id", nullable = false)
     private PetSitterEntity petSitter;
 
-    // For example: "PENDING", "APPROVED", "REJECTED", "COMPLETED"
     @Column(name = "status", nullable = false, length = 50)
     private String status;
 
     @Column(name = "message", length = 500)
     private String message;
 
-    // Timestamp fields
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

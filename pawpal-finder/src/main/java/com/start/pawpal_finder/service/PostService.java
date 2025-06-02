@@ -7,10 +7,7 @@ import com.start.pawpal_finder.entity.AnimalEntity;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PostEntity;
 import com.start.pawpal_finder.entity.TaskEntity;
-import com.start.pawpal_finder.repository.AnimalRepository;
-import com.start.pawpal_finder.repository.PetOwnerRepository;
-import com.start.pawpal_finder.repository.PostRepository;
-import com.start.pawpal_finder.repository.PostRepositoryCustom;
+import com.start.pawpal_finder.repository.*;
 import com.start.pawpal_finder.representation.SearchOwnerPostRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,12 +26,14 @@ public class PostService {
     private final AnimalRepository animalRepository;
     private final PostRepository postRepository;
     private final PostRepositoryCustom postRepositoryCustom;
+    private final InterestReservationRepository interestReservationRepository;
     @Autowired
-    public PostService(PetOwnerRepository petOwnerRepository, AnimalRepository animalRepository, PostRepository postRepository, PostRepositoryCustom postRepositoryCustom) {
+    public PostService(PetOwnerRepository petOwnerRepository, AnimalRepository animalRepository, PostRepository postRepository, PostRepositoryCustom postRepositoryCustom, InterestReservationRepository interestReservationRepository) {
         this.petOwnerRepository = petOwnerRepository;
         this.animalRepository = animalRepository;
         this.postRepository = postRepository;
         this.postRepositoryCustom = postRepositoryCustom;
+        this.interestReservationRepository = interestReservationRepository;
     }
 
     public PostDto createPost(PostDto postDto) {
@@ -114,6 +113,7 @@ public class PostService {
         PostEntity post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
+        interestReservationRepository.deleteByPostId(postId);
         postRepository.delete(post);
     }
 
