@@ -4,27 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="add some fields for owners">
+    <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="some refactor for register, authentication and authorization">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/Transformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/Transformer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/JwtUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/AuthenticationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/RegistrationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/RegistrationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/model/AuthenticationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/model/AuthenticationResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authorization/AuthorizationTokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authorization/AuthorizationTokenFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/SitterVerificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/SitterVerificationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/CustomUserDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/CustomUserDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/PetSitterDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/PetSitterDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/InterestReservationEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/InterestReservationEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetSitterEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PetSitterEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/InterestReservationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/InterestReservationRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/CustomUserDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetOwnerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetOwnerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/TimeSlotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/TimeSlotService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +115,7 @@
       <workItem from="1745240487077" duration="59125000" />
       <workItem from="1747423493378" duration="6106000" />
       <workItem from="1747751423641" duration="3925000" />
-      <workItem from="1748193741935" duration="28835000" />
+      <workItem from="1748193741935" duration="42614000" />
     </task>
     <task id="LOCAL-00001" summary="add login and register feature">
       <option name="closed" value="true" />
@@ -472,7 +461,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746972074449</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="some refactor for register, authentication and authorization">
+      <option name="closed" value="true" />
+      <created>1748863084948</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1748863084948</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -490,7 +487,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add edit post" />
     <MESSAGE value="add post sitter functionalities" />
     <MESSAGE value="add my profile for owner" />
     <MESSAGE value="add edit my profile for owner" />
@@ -515,7 +511,8 @@
     <MESSAGE value="little refactor" />
     <MESSAGE value="implement admin dashboard and verification sitter" />
     <MESSAGE value="refactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor" />
+    <MESSAGE value="some refactor for register, authentication and authorization" />
+    <option name="LAST_COMMIT_MESSAGE" value="some refactor for register, authentication and authorization" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -567,11 +564,6 @@
           <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/InterestReservationService.java</url>
           <line>128</line>
           <option name="timeStamp" value="83" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/authentication/api/AuthenticationController.java</url>
-          <line>42</line>
-          <option name="timeStamp" value="86" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostSitterAvailabilityRepository.java</url>

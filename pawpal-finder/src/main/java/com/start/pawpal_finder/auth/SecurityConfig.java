@@ -19,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -110,21 +109,16 @@ public class SecurityConfig {
                 .requestMatchers("/api/sitter/verification/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                // la erori de autentificare, returnăm 401 UNAUTHORIZED (stateless)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
-                // spunem că nu vrem sesiuni server-side (STATELESS)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
-        // Adăugăm filtru nostru JWT înainte de UsernamePasswordAuthenticationFilter
         http.addFilterBefore(authorizationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Nu mai este nevoie de Bean separat pentru AuthorizationTokenFilter aici,
-    // deoarece îl definim direct prin component scan (vezi pasul următor).
 }

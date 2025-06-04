@@ -1,7 +1,6 @@
-// src/main/java/com/start/pawpal_finder/auth/JwtUtil.java
 package com.start.pawpal_finder.auth;
 
-import com.start.pawpal_finder.dto.CustomUserDetails; // ← our custom implementation
+import com.start.pawpal_finder.dto.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,12 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,20 +45,6 @@ public class JwtUtil {
         return createToken(claims, userIdString);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        if (userDetails instanceof CustomUserDetails) {
-            CustomUserDetails c = (CustomUserDetails) userDetails;
-            List<String> roles = c.getAuthorities()
-                    .stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-            claims.put("roles", roles);
-            claims.put("email", c.getUsername());
-
-        }
-        return createToken(claims, userDetails.getUsername());
-    }
 
     private String createToken(Map<String, Object> claims, String subject) {
         Date now = new Date();
@@ -107,8 +89,4 @@ public class JwtUtil {
         return null;
     }
 
-    private Key getJwtKey() {
-        byte[] keyBytes = SECRET_KEY.getBytes();
-        return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
-    }
 }
