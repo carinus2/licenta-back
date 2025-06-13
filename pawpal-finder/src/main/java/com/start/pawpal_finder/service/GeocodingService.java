@@ -31,10 +31,7 @@ public class GeocodingService {
 
         try {
             String json = restTemplate.getForObject(url, String.class);
-            System.out.println(json);
             JsonNode root = objectMapper.readTree(json);
-            System.out.println(root.path("status"));
-            System.out.println(root.path("results"));
             JsonNode results = root.path("results");
             if (results.isArray() && !results.isEmpty()) {
                 JsonNode loc = results.get(0)

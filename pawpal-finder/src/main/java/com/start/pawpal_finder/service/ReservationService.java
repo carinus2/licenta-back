@@ -47,7 +47,7 @@ public class ReservationService {
         PetOwnerEntity petOwner = petOwnerRepository.findById(petOwnerId)
                 .orElseThrow(() -> new RuntimeException("Pet Owner not found with ID: " + petOwnerId));
 
-        double finalPrice = 0.0;
+        double finalPrice;
         if (duration == null) {
             duration = 1.0;
         }
@@ -55,7 +55,6 @@ public class ReservationService {
             case PER_HOUR -> postSitter.getRatePerHour() * duration;
             case PER_DAY -> postSitter.getRatePerDay() * duration;
             case FLAT -> postSitter.getFlatRate();
-            default -> throw new RuntimeException("Unknown pricing model");
         };
 
         ReservationEntity reservation = new ReservationEntity();
@@ -109,8 +108,6 @@ public class ReservationService {
 
         return Transformer.toDto(updatedReservation);
     }
-
-
 
     @Transactional(readOnly = true)
     public Page<ReservationDto> getReservationsForPetOwner(Integer petOwnerId, String status, String dateOrder, String sitterName, int page, int size) {
@@ -170,7 +167,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationDto markCompleted(Integer reservationId, String role, boolean forceCompletion) {
+    public ReservationDto markCompleted(Integer reservationId, String role) {
         ReservationEntity reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation not found with ID: " + reservationId));
 
@@ -179,17 +176,13 @@ public class ReservationService {
             if (post == null || post.getPostDate() == null || post.getAvailabilities() == null || post.getAvailabilities().isEmpty()) {
                 throw new RuntimeException("Reservation's post data is incomplete. Cannot compute scheduled end time.");
             }
+
             LocalDateTime scheduledEnd = null;
             for (PostSitterAvailabilityEntity avail : post.getAvailabilities()) {
                 LocalDateTime slotEnd = LocalDateTime.of(post.getPostDate(), avail.getEndTime());
                 if (scheduledEnd == null || slotEnd.isAfter(scheduledEnd)) {
                     scheduledEnd = slotEnd;
                 }
-            }
-            LocalDateTime now = LocalDateTime.now();
-            if (now.isBefore(scheduledEnd) && !forceCompletion) {
-                throw new RuntimeException("The scheduled end time (" + scheduledEnd +
-                        ") has not passed yet. Marking complete requires force confirmation by the owner.");
             }
             reservation.setOwnerMarkedComplete(true);
         } else if ("PET_SITTER".equalsIgnoreCase(role)) {
@@ -212,6 +205,7 @@ public class ReservationService {
         ReservationEntity updatedReservation = reservationRepository.save(reservation);
         return Transformer.toDto(updatedReservation);
     }
+
 
     @Transactional
     public ReviewDto submitReview(Integer reservationId, ReviewDto reviewDto) {
@@ -238,6 +232,4 @@ public class ReservationService {
     public long getReservationCountForPetOwnerByStatus(Integer petOwnerId, String status) {
         return reservationRepository.countByPetOwnerIdAndStatus(petOwnerId, status);
     }
-
-
 }

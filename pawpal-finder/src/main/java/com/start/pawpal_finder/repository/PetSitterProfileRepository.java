@@ -12,10 +12,6 @@ public interface PetSitterProfileRepository extends JpaRepository<PetSitterProfi
     Optional<PetSitterProfileEntity> findByPetSitterId(Integer petSitterId);
     List<PetSitterProfileEntity> findPetSitterProfileEntitiesByPetSitter_CountyAndPetSitter_City(String county, String city);
 
-    /**
-     * Find all sitters within :radiusMeters of the given point,
-     * ordered by distance ascending.
-     */
     @Query(value = """
       SELECT *, (
         6371000 * 2 * ASIN(

@@ -98,9 +98,8 @@ public class ReservationController {
     @PutMapping("/{reservationId}/complete")
     public ResponseEntity<ReservationDto> markReservationComplete(
             @PathVariable Integer reservationId,
-            @RequestParam String role,
-            @RequestParam(defaultValue = "false") boolean forceCompletion) {
-        ReservationDto updated = reservationService.markCompleted(reservationId, role, forceCompletion);
+            @RequestParam String role){
+        ReservationDto updated = reservationService.markCompleted(reservationId, role);
         return ResponseEntity.ok(updated);
     }
 

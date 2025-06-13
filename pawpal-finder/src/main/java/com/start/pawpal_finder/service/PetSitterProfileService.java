@@ -79,7 +79,7 @@ public class PetSitterProfileService {
 
         List<ReviewDto> reviewDtos = reviews.stream()
                 .map(Transformer::toReviewDto)
-                .collect(Collectors.toList());
+                .toList();
 
         dto.setReviews(reviewDtos);
         return Optional.of(dto);
@@ -93,13 +93,11 @@ public class PetSitterProfileService {
         PetSitterEntity sitter = petSitterRepository.findById(dto.getPetSitterId())
                 .orElseThrow(() -> new IllegalArgumentException("PetSitter not found"));
 
-        // update sitter basics
         sitter.setCity(dto.getCity());
         sitter.setCounty(dto.getCounty());
         sitter.setPhoneNumber(dto.getPhoneNumber());
         petSitterRepository.save(sitter);
 
-        // load or create profile entity
         PetSitterProfileEntity profile = profileRepository
                 .findByPetSitterId(sitter.getId())
                 .orElse(new PetSitterProfileEntity());
@@ -115,7 +113,6 @@ public class PetSitterProfileService {
         profile.setLatitude(resolved.getLat());
         profile.setLongitude(resolved.getLng());
 
-        // picture
         if (profilePicture != null && !profilePicture.isEmpty()) {
             try {
                 profile.setProfilePictureUrl(profilePicture.getBytes());
@@ -124,18 +121,16 @@ public class PetSitterProfileService {
             }
         }
 
-        // persist and return DTO
         PetSitterProfileEntity saved = profileRepository.save(profile);
         return Transformer.toDto(saved);
     }
 
     private LatLng resolveCoordinates(PetSitterProfileDto dto) {
-        // 1) client provided
+
         if (dto.getLatitude() != null && dto.getLongitude() != null) {
             return new LatLng(dto.getLatitude(), dto.getLongitude());
         }
 
-        // build street‐level address
         String streetPart = Optional.ofNullable(dto.getStreet())
                 .filter(s -> !s.isBlank())
                 .map(s -> s + " " + dto.getStreetNumber() + ", ")
@@ -145,11 +140,9 @@ public class PetSitterProfileService {
                 + dto.getCity() + ", "
                 + dto.getCounty() + ", Romania";
 
-        // 2) try street
         try {
             return geocodingService.geocode(fullAddr);
         } catch (IllegalStateException ise) {
-            // 3) fallback to city only
             String cityOnly = dto.getCity() + ", " + dto.getCounty() + ", Romania";
             return geocodingService.geocode(cityOnly);
         }
