@@ -14,12 +14,13 @@ import java.util.Optional;
 public class PetOwnerService {
 
     private final PasswordEncoder passwordEncoder;
-
     private final PetOwnerRepository petOwnerRepository;
 
-    public PetOwnerService(PasswordEncoder passwordEncoder, PetOwnerRepository petOwnerRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.petOwnerRepository = petOwnerRepository;
+    @Autowired
+    public PetOwnerService(PasswordEncoder passwordEncoder,
+                           PetOwnerRepository petOwnerRepository) {
+        this.passwordEncoder      = passwordEncoder;
+        this.petOwnerRepository   = petOwnerRepository;
     }
 
     public Optional<PetOwnerEntity> findByEmail(String email) {
@@ -28,9 +29,10 @@ public class PetOwnerService {
 
     public void registerPetOwner(PetOwnerDto petOwnerDto) {
 
-        PetOwnerEntity petOwner = Transformer.fromDto(petOwnerDto);
-        petOwner.setPassword(passwordEncoder.encode(petOwnerDto.getPassword()));
-        petOwnerRepository.save(petOwner);
+        PetOwnerEntity entity = Transformer.fromDto(petOwnerDto);
+        entity.setPassword(passwordEncoder.encode(petOwnerDto.getPassword()));
+        PetOwnerEntity saved = petOwnerRepository.save(entity);
+        Transformer.toDto(saved);
     }
 
     public boolean hasAnimals(String email) {

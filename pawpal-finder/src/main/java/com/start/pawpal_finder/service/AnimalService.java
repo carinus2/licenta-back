@@ -20,11 +20,10 @@ import static com.start.pawpal_finder.auth.SecurityConfig.getAuthenticatedUserId
 
 @Service
 public class AnimalService {
-
-
     private final AnimalRepository animalRepository;
     private final PetOwnerRepository petOwnerRepository;
 
+    @Autowired
     public AnimalService(AnimalRepository animalRepository, PetOwnerRepository petOwnerRepository) {
         this.animalRepository = animalRepository;
         this.petOwnerRepository = petOwnerRepository;

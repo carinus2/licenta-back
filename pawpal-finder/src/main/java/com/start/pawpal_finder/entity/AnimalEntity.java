@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
 
 import java.util.List;
@@ -14,9 +13,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "animal", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 @ToString(exclude = "petOwner")
+@Entity
 public class AnimalEntity {
 
     @Id
@@ -42,9 +41,6 @@ public class AnimalEntity {
     @JdbcType(VarbinaryJdbcType.class)
     @Column(name = "profile_picture", columnDefinition = "BYTEA")
     private byte[] profilePicture;
-
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
-    private List<ReviewEntity> reviews;
 
     @ManyToOne
     @JoinColumn(name = "pet_owner_id", nullable = false)

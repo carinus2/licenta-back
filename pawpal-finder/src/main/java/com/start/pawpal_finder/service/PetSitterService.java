@@ -16,22 +16,36 @@ public class PetSitterService {
     private final PetSitterRepository petSitterRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public PetSitterService(PetSitterRepository petSitterRepository, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public PetSitterService(PetSitterRepository petSitterRepository,
+                            PasswordEncoder passwordEncoder) {
         this.petSitterRepository = petSitterRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder     = passwordEncoder;
     }
 
-    public boolean hasAnimals(String email) {
-        return petSitterRepository.hasAnimals(email);
-    }
+    /**
+     * Registers a new pet sitter, encoding their password,
+     * saving to the database, and returning a DTO with its generated ID.
+     */
+    public PetSitterDto registerPetSitter(PetSitterDto dto) {
+        // 1) Map DTO → Entity
+        PetSitterEntity entity = Transformer.fromDto(dto);
 
-    public void registerPetSitter(PetSitterDto petSitterDto) {
-        PetSitterEntity petSitter = Transformer.fromDto(petSitterDto);
-        petSitter.setPassword(passwordEncoder.encode(petSitterDto.getPassword()));
-        petSitterRepository.save(petSitter);
+        // 2) Encode the raw password
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        // 3) Persist
+        PetSitterEntity saved = petSitterRepository.save(entity);
+
+        // 4) Map Entity → DTO (with ID) and return
+        return Transformer.toDto(saved);
     }
 
     public Optional<PetSitterEntity> findByEmail(String email) {
         return petSitterRepository.findByEmail(email);
+    }
+
+    public boolean hasAnimals(String email) {
+        return petSitterRepository.hasAnimals(email);
     }
 }

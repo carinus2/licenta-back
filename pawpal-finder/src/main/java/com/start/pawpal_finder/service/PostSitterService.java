@@ -1,17 +1,24 @@
 package com.start.pawpal_finder.service;
 
 import com.start.pawpal_finder.Transformer;
+import com.start.pawpal_finder.dto.PostSitterAvailabilityDto;
 import com.start.pawpal_finder.dto.PostSitterDto;
 import com.start.pawpal_finder.entity.PetSitterEntity;
 import com.start.pawpal_finder.entity.PostSitterAvailabilityEntity;
 import com.start.pawpal_finder.entity.PostSitterEntity;
-import com.start.pawpal_finder.repository.PetSitterRepository;
-import com.start.pawpal_finder.repository.PostSitterAvailabilityRepository;
-import com.start.pawpal_finder.repository.PostSitterRepository;
+import com.start.pawpal_finder.repository.*;
+import com.start.pawpal_finder.representation.SearchPostRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,19 +29,37 @@ public class PostSitterService {
     private final PetSitterRepository petSitterRepository;
 
     private final PostSitterAvailabilityRepository availabilityRepository;
+    private final PostSitterRepositoryCustom postSitterCustom;
 
-    public PostSitterService(PostSitterRepository postSitterRepository, PetSitterRepository petSitterRepository, PostSitterAvailabilityRepository availabilityRepository) {
+    @Autowired
+    public PostSitterService(PostSitterRepository postSitterRepository,
+                             PetSitterRepository petSitterRepository,
+                             PostSitterAvailabilityRepository availabilityRepository,
+                             PostSitterRepositoryCustom postSitterCustom) {
         this.postSitterRepository = postSitterRepository;
         this.petSitterRepository = petSitterRepository;
         this.availabilityRepository = availabilityRepository;
+        this.postSitterCustom = postSitterCustom;
     }
 
+    @Transactional
     public PostSitterDto createPostSitter(PostSitterDto postSitterDto) {
         PetSitterEntity petSitter = petSitterRepository.findById(postSitterDto.getPetSitterId())
                 .orElseThrow(() -> new RuntimeException("Pet Sitter not found with ID: " + postSitterDto.getPetSitterId()));
 
-        PostSitterEntity postSitterEntity = Transformer.toEntity(postSitterDto, petSitter);
-        PostSitterEntity savedPost = postSitterRepository.save(postSitterEntity);
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        for (PostSitterAvailabilityDto avail : postSitterDto.getAvailability()) {
+            DayOfWeek availabilityDay = DayOfWeek.valueOf(avail.getDayOfWeek().toString().toUpperCase());
+            LocalDate nextOccurrence = today.with(TemporalAdjusters.nextOrSame(availabilityDay));
+            LocalTime startTime = LocalTime.parse(avail.getStartTime().toString());
+            if (nextOccurrence.isEqual(today) && startTime.isBefore(now)) {
+                throw new RuntimeException("Cannot select an availability time in the past for today: " + avail);
+            }
+        }
+
+        PostSitterEntity postEntity = Transformer.toEntity(postSitterDto, petSitter);
+        PostSitterEntity savedPost = postSitterRepository.save(postEntity);
 
         List<PostSitterAvailabilityEntity> availabilityEntities = postSitterDto.getAvailability().stream()
                 .map(dto -> {
@@ -45,7 +70,6 @@ public class PostSitterService {
                 .collect(Collectors.toList());
 
         availabilityRepository.saveAll(availabilityEntities);
-
         return Transformer.toDto(savedPost, availabilityEntities);
     }
 
@@ -53,7 +77,7 @@ public class PostSitterService {
         return postSitterRepository.countByPetSitter_Id(sitterId);
     }
     public List<PostSitterDto> getActiveSitterPostsBySitterId(Integer sitterId) {
-        List<PostSitterEntity> activePosts = postSitterRepository.findByPetSitter_IdAndStatus(sitterId, "Active");
+        List<PostSitterEntity> activePosts = postSitterRepository.findByPetSitter_IdAndStatus(sitterId, "ACTIVE");
 
         return activePosts.stream()
                 .map(post -> {
@@ -69,6 +93,19 @@ public class PostSitterService {
                     List<PostSitterAvailabilityEntity> availability = availabilityRepository.findByPostSitter(post);
                     return Transformer.toDto(post, availability);
                 })
+                .collect(Collectors.toList());
+    }
+
+    public List<PostSitterDto> getAllActivePosts() {
+        return postSitterRepository.findAll().stream()
+                // for each post, fetch its ACTIVE availability rows
+                .map(post -> {
+                    List<PostSitterAvailabilityEntity> activeAvail =
+                            availabilityRepository.findByPostSitterAndPostSitter_Status(post, "ACTIVE");
+                    if (activeAvail.isEmpty()) return null;
+                    return Transformer.toDto(post, activeAvail);
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -126,6 +163,69 @@ public class PostSitterService {
 
         post.getAvailabilities().clear();
         postSitterRepository.delete(post);
+    }
+
+    public List<PostSitterDto> searchPosts(SearchPostRepresentation searchPostRepresentation) {
+        List<PostSitterEntity> posts = postSitterCustom.searchPosts(searchPostRepresentation);
+
+        if (searchPostRepresentation.getLevel() != null && !searchPostRepresentation.getLevel().isEmpty()) {
+            posts = posts.stream()
+                    .filter(post -> {
+                        if (post.getPetSitter() == null) {
+                            return false;
+                        }
+                        int experience = post.getPetSitter().getExperience();
+                        String computedLevel;
+                        if (experience <= 1) {
+                            computedLevel = "Junior";
+                        } else if (experience <= 4) {
+                            computedLevel = "Mid";
+                        } else {
+                            computedLevel = "Senior";
+                        }
+                        return searchPostRepresentation.getLevel().equalsIgnoreCase(computedLevel);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        return posts.stream()
+                .map(post -> {
+                    List<PostSitterAvailabilityDto> availabilityDtos =
+                            post.getAvailabilities() == null
+                                    ? Collections.emptyList()
+                                    : post.getAvailabilities().stream()
+                                    .map(av -> new PostSitterAvailabilityDto(
+                                            av.getDayOfWeek(),
+                                            av.getStartTime(),
+                                            av.getEndTime()
+                                    ))
+                                    .collect(Collectors.toList());
+
+                    return new PostSitterDto(
+                            post.getId(),
+                            post.getPetSitter() == null ? null : post.getPetSitter().getId(),
+                            post.getDescription(),
+                            post.getStatus(),
+                            post.getPostDate(),
+                            post.getTasks(),
+                            availabilityDtos,
+                            post.getPricingModel().toString(),
+                            post.getRatePerHour(),
+                            post.getRatePerDay(),
+                            post.getFlatRate()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PostSitterDto updatePostStatus(Integer postId, String status) {
+        PostSitterEntity post = postSitterRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with ID: " + postId));
+        post.setStatus(status);
+        PostSitterEntity updatedPost = postSitterRepository.save(post);
+        List<PostSitterAvailabilityEntity> availability = availabilityRepository.findByPostSitter(updatedPost);
+        return Transformer.toDto(updatedPost, availability);
     }
 
 

@@ -1,6 +1,7 @@
 package com.start.pawpal_finder.controller;
 
 import com.start.pawpal_finder.dto.PostSitterDto;
+import com.start.pawpal_finder.representation.SearchPostRepresentation;
 import com.start.pawpal_finder.service.PostSitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,11 @@ public class PostSitterController {
     @GetMapping("/all")
     public ResponseEntity<List<PostSitterDto>> getAllSitterPosts() {
         return ResponseEntity.ok(postSitterService.getAllSitterPosts());
+    }
+
+    @GetMapping("/all-active")
+    public ResponseEntity<List<PostSitterDto>> getAllActiveSitterPosts() {
+        return ResponseEntity.ok(postSitterService.getAllActivePosts());
     }
 
     @GetMapping("/location")
@@ -61,5 +67,19 @@ public class PostSitterController {
     public ResponseEntity<Long> getPostCountBySitter(@RequestParam Integer sitterId) {
         long count = postSitterService.getPostCountBySitter(sitterId);
         return ResponseEntity.ok(count);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<PostSitterDto>> searchPosts(@RequestBody SearchPostRepresentation searchPostRepresentation) {
+
+        List<PostSitterDto> posts = postSitterService.searchPosts(searchPostRepresentation);
+        return ResponseEntity.ok(posts);
+    }
+    @PatchMapping("/{postId}")
+    public ResponseEntity<PostSitterDto> updatePostStatus(
+            @PathVariable Integer postId,
+            @RequestParam String status) {
+        PostSitterDto updatedPost = postSitterService.updatePostStatus(postId, status);
+        return ResponseEntity.ok(updatedPost);
     }
 }

@@ -7,13 +7,10 @@ import java.util.Collection;
 
 @Getter
 public class CustomUserDetails extends User {
-    private final String firstName;
-    private final String lastName;
 
-    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities,
-                             String firstName, String lastName) {
+    private final Integer id;
+    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, Integer id) {
         super(username, password, authorities);
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.id = id;
     }
 }

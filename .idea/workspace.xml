@@ -5,20 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="refactor">
-      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostSitterController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/PostSitterAvailabilityDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/dto/PostSitterDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PostSitterAvailabilityEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/entity/PostSitterEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostSitterAvailabilityRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostSitterRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostSitterService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/Transformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/Transformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/auth/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/ReservationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/ReservationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetSitterProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetSitterProfileRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/GeocodingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/GeocodingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +22,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -36,7 +30,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="branch" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -53,39 +47,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "feature/my-animals",
-    "last_opened_file_path": "/Users/nistorcarina/Desktop/LICENTA/licenta-back",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "show.migrate.to.gradle.popup": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/my-profile&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/nistorcarina/Desktop/LICENTA/licenta-back&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="PawpalFinderApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <envs>
+        <env name="DB_URL" value="jdbc:postgresql://localhost:5432/licenta " />
+        <env name="DB_USERNAME" value="postgres" />
+        <env name="DB_PASSWORD" value="postgres" />
+      </envs>
       <module name="pawpal-finder" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.start.pawpal_finder.PawpalFinderApplication" />
       <method v="2">
@@ -114,6 +113,13 @@
       <workItem from="1736620446914" duration="4334000" />
       <workItem from="1736801796812" duration="11280000" />
       <workItem from="1738002234585" duration="58184000" />
+      <workItem from="1741973918177" duration="142264000" />
+      <workItem from="1744056750945" duration="93403000" />
+      <workItem from="1745240487077" duration="59125000" />
+      <workItem from="1747423493378" duration="6106000" />
+      <workItem from="1747751423641" duration="3925000" />
+      <workItem from="1748193741935" duration="64417000" />
+      <workItem from="1749831725933" duration="4092000" />
     </task>
     <task id="LOCAL-00001" summary="add login and register feature">
       <option name="closed" value="true" />
@@ -235,7 +241,247 @@
       <option name="project" value="LOCAL" />
       <updated>1741246450911</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="add post sitter functionalities">
+      <option name="closed" value="true" />
+      <created>1741723068207</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1741723068208</updated>
+    </task>
+    <task id="LOCAL-00017" summary="add my profile for owner">
+      <option name="closed" value="true" />
+      <created>1741987440678</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1741987440678</updated>
+    </task>
+    <task id="LOCAL-00018" summary="add edit my profile for owner">
+      <option name="closed" value="true" />
+      <created>1742077395158</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1742077395158</updated>
+    </task>
+    <task id="LOCAL-00019" summary="add edit my profile for sitter">
+      <option name="closed" value="true" />
+      <created>1742132830977</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1742132830977</updated>
+    </task>
+    <task id="LOCAL-00020" summary="add edit my profile for sitter">
+      <option name="closed" value="true" />
+      <created>1742419230289</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1742419230289</updated>
+    </task>
+    <task id="LOCAL-00021" summary="add search page and filtering with days is kind of working">
+      <option name="closed" value="true" />
+      <created>1742681021940</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1742681021940</updated>
+    </task>
+    <task id="LOCAL-00022" summary="filtering done">
+      <option name="closed" value="true" />
+      <created>1742739079011</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1742739079012</updated>
+    </task>
+    <task id="LOCAL-00023" summary="add notifications">
+      <option name="closed" value="true" />
+      <created>1743198836294</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1743198836294</updated>
+    </task>
+    <task id="LOCAL-00024" summary="add my reservations for owner">
+      <option name="closed" value="true" />
+      <created>1743352197332</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1743352197332</updated>
+    </task>
+    <task id="LOCAL-00025" summary="refactor + reservation functionality">
+      <option name="closed" value="true" />
+      <created>1743540532284</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1743540532284</updated>
+    </task>
+    <task id="LOCAL-00026" summary="notification for pet owner done">
+      <option name="closed" value="true" />
+      <created>1743794875073</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1743794875073</updated>
+    </task>
+    <task id="LOCAL-00027" summary="notification and redirecting done">
+      <option name="closed" value="true" />
+      <created>1743882789176</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1743882789176</updated>
+    </task>
+    <task id="LOCAL-00028" summary="refactor and add filtering sorting to my-requests">
+      <option name="closed" value="true" />
+      <created>1743973283016</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1743973283016</updated>
+    </task>
+    <task id="LOCAL-00029" summary="add review">
+      <option name="closed" value="true" />
+      <created>1744140774477</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1744140774477</updated>
+    </task>
+    <task id="LOCAL-00030" summary="refactor review">
+      <option name="closed" value="true" />
+      <created>1744144083921</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1744144083922</updated>
+    </task>
+    <task id="LOCAL-00031" summary="refactor review">
+      <option name="closed" value="true" />
+      <created>1744230375424</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1744230375425</updated>
+    </task>
+    <task id="LOCAL-00032" summary="add search for owners">
+      <option name="closed" value="true" />
+      <created>1744493539842</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1744493539843</updated>
+    </task>
+    <task id="LOCAL-00033" summary="add interest reservation">
+      <option name="closed" value="true" />
+      <created>1744576663613</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1744576663613</updated>
+    </task>
+    <task id="LOCAL-00034" summary="some changes">
+      <option name="closed" value="true" />
+      <created>1744660669661</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1744660669662</updated>
+    </task>
+    <task id="LOCAL-00035" summary="some refactoring">
+      <option name="closed" value="true" />
+      <created>1744928541113</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1744928541113</updated>
+    </task>
+    <task id="LOCAL-00036" summary="some refactoring">
+      <option name="closed" value="true" />
+      <created>1745090020551</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1745090020551</updated>
+    </task>
+    <task id="LOCAL-00037" summary="add geolocation">
+      <option name="closed" value="true" />
+      <created>1745356350427</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1745356350427</updated>
+    </task>
+    <task id="LOCAL-00038" summary="add map">
+      <option name="closed" value="true" />
+      <created>1745441776243</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1745441776243</updated>
+    </task>
+    <task id="LOCAL-00039" summary="see reviews in the info pop up and some refactor">
+      <option name="closed" value="true" />
+      <created>1745750025823</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1745750025823</updated>
+    </task>
+    <task id="LOCAL-00040" summary="little refactor">
+      <option name="closed" value="true" />
+      <created>1745771387423</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1745771387424</updated>
+    </task>
+    <task id="LOCAL-00041" summary="little refactor">
+      <option name="closed" value="true" />
+      <created>1745947838630</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1745947838630</updated>
+    </task>
+    <task id="LOCAL-00042" summary="implement admin dashboard and verification sitter">
+      <option name="closed" value="true" />
+      <created>1746954707476</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1746954707476</updated>
+    </task>
+    <task id="LOCAL-00043" summary="refactor">
+      <option name="closed" value="true" />
+      <created>1746972074449</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1746972074449</updated>
+    </task>
+    <task id="LOCAL-00044" summary="some refactor for register, authentication and authorization">
+      <option name="closed" value="true" />
+      <created>1748863084948</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1748863084948</updated>
+    </task>
+    <task id="LOCAL-00045" summary="refactor">
+      <option name="closed" value="true" />
+      <created>1749067207922</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1749067207922</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -253,30 +499,81 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add login and register feature" />
-    <MESSAGE value="no encoding for password" />
-    <MESSAGE value="add separate jwts for admin and user" />
-    <MESSAGE value="commit" />
-    <MESSAGE value="implemented save animal endpoint" />
-    <MESSAGE value="implemented endpoint" />
-    <MESSAGE value="add some modifications and some endpoints" />
-    <MESSAGE value="add city and county to pet owner dto and entity" />
-    <MESSAGE value="add my animals page" />
-    <MESSAGE value="add edit delete save animal apis" />
-    <MESSAGE value="add api for number of animals for pet owner" />
-    <MESSAGE value="add create post" />
-    <MESSAGE value="add edit post" />
+    <MESSAGE value="add post sitter functionalities" />
+    <MESSAGE value="add my profile for owner" />
+    <MESSAGE value="add edit my profile for owner" />
+    <MESSAGE value="add edit my profile for sitter" />
+    <MESSAGE value="add search page and filtering with days is kind of working" />
+    <MESSAGE value="filtering done" />
+    <MESSAGE value="add notifications" />
+    <MESSAGE value="add my reservations for owner" />
+    <MESSAGE value="refactor + reservation functionality" />
+    <MESSAGE value="notification for pet owner done" />
+    <MESSAGE value="notification and redirecting done" />
+    <MESSAGE value="refactor and add filtering sorting to my-requests" />
+    <MESSAGE value="add review" />
+    <MESSAGE value="refactor review" />
+    <MESSAGE value="add search for owners" />
+    <MESSAGE value="add interest reservation" />
+    <MESSAGE value="some changes" />
+    <MESSAGE value="some refactoring" />
+    <MESSAGE value="add geolocation" />
+    <MESSAGE value="add map" />
+    <MESSAGE value="see reviews in the info pop up and some refactor" />
+    <MESSAGE value="little refactor" />
+    <MESSAGE value="implement admin dashboard and verification sitter" />
+    <MESSAGE value="some refactor for register, authentication and authorization" />
     <MESSAGE value="refactor" />
     <option name="LAST_COMMIT_MESSAGE" value="refactor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <breakpoint enabled="true" type="java-exception">
+        <breakpoint type="java-exception">
           <properties class="java.nio.file.NoSuchFileException" package="java.nio.file" />
           <option name="timeStamp" value="41" />
         </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.RuntimeException" package="java.lang" />
+          <option name="timeStamp" value="65" />
+        </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostSitterController.java</url>
+          <line>34</line>
+          <option name="timeStamp" value="66" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostSitterService.java</url>
+          <line>108</line>
+          <option name="timeStamp" value="72" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/InterestReservationController.java</url>
+          <line>35</line>
+          <option name="timeStamp" value="75" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/InterestReservationController.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="78" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PostSitterAvailabilityRepository.java</url>
+          <line>14</line>
+          <properties class="com.start.pawpal_finder.repository.PostSitterAvailabilityRepository" method="findByPostSitterAndPostSitter_Status">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="dart-exception" />
+      </default-breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

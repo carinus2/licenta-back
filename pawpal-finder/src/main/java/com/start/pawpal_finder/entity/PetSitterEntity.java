@@ -38,14 +38,11 @@ public class PetSitterEntity {
     @Column(name = "county", length = 50, nullable = false)
     private String county;
 
-    @Column(name = "phone_number", length = 11, nullable = false)
+    @Column(name = "phone_number", length = 13, nullable = false)
     private String phoneNumber;
 
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
-
-    @Column(name = "admin", nullable = false)
-    private Boolean admin = false;
 
     @ManyToMany
     @JoinTable(
@@ -55,5 +52,11 @@ public class PetSitterEntity {
     )
     private List<AnimalEntity> animals;
 
+    @OneToOne(mappedBy = "petSitter", cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+    private PetSitterProfileEntity profile;
+
+    public int getExperience() {
+        return (profile == null) ? 0 : profile.getExperience();
+    }
 }
 

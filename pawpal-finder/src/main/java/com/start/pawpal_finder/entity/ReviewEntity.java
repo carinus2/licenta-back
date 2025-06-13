@@ -1,9 +1,9 @@
 package com.start.pawpal_finder.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -13,19 +13,42 @@ import lombok.NoArgsConstructor;
 public class ReviewEntity {
 
     @Id
-    @SequenceGenerator(name = "reviewGenerator", sequenceName = "sq_review_id", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reviewGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "animal_id", nullable = false)
-    private AnimalEntity animal;
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id", nullable = true)
+    private ReservationEntity reservation;
 
-    @ManyToOne
-    @JoinColumn(name = "pet_sitter_id", nullable = false)
-    private PetSitterEntity petSitter;
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "interest_reservation_id", nullable = true)
+    private InterestReservationEntity interestReservation;
 
-    @Column(name = "rating", nullable = false)
-    private Integer rating;
+    @Column(nullable = false, length = 1000)
+    private String content;
+
+    @Column(nullable = false)
+    private int rating;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "written_by_role", nullable = false)
+    private String writtenByRole;
+
+    @Column(name = "written_by_id", nullable = false)
+    private Integer writtenById;
+
+    @Column(name = "reviewed_role", nullable = false)
+    private String reviewedRole;
+
+    @Column(name = "reviewed_id", nullable = false)
+    private Integer reviewedId;
+
+    @Column(name = "written_by_first_name", nullable = false)
+    private String writtenByFirstName;
+
+    @Column(name = "written_by_last_name", nullable = false)
+    private String writtenByLastName;
 
 }

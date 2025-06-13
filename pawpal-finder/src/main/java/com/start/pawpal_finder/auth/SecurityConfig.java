@@ -2,93 +2,49 @@ package com.start.pawpal_finder.auth;
 
 import com.start.pawpal_finder.auth.authorization.AuthorizationTokenFilter;
 import com.start.pawpal_finder.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .cors().and().csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "api/animals/**").authenticated()
-                .requestMatchers(HttpMethod.GET, "api/animals/**").authenticated()
-                .requestMatchers(HttpMethod.PATCH, "api/animals/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "api/animals/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "api/animals/**").authenticated()
-                .requestMatchers(HttpMethod.GET, "api/pet-owner").authenticated()
-                .requestMatchers(HttpMethod.GET, "api/pet-sitter").authenticated()
-                .requestMatchers(HttpMethod.POST, "api/posts/**").authenticated()
-                .requestMatchers(HttpMethod.GET, "api/posts/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "api/posts/**").authenticated()
-                .requestMatchers(HttpMethod.POST, "api/post-sitter**").authenticated()
-                .requestMatchers(HttpMethod.GET, "api/post-sitter**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "api/post-sitter/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "api/post-sitter/**").authenticated()
-                //  .requestMatchers("/api/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                .and()
-                .addFilterBefore(authenticationJwtTokenFilter(), BasicAuthenticationFilter.class);
-
-        return http.build();
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService,
+                          PasswordEncoder passwordEncoder) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(customUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(provider);
     }
 
     @Bean
-    public AuthorizationTokenFilter authenticationJwtTokenFilter() {
-        return new AuthorizationTokenFilter();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
-    }
-
-    public static String getAuthenticatedUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else {
-            return principal.toString();
-        }
+    public UserDetailsService userDetailsService() {
+        return customUserDetailsService;
     }
 
     public static Integer getAuthenticatedUserId() {
@@ -103,6 +59,66 @@ public class SecurityConfig {
         } else {
             throw new IllegalStateException("Principal is not a valid user ID.");
         }
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           AuthorizationTokenFilter authorizationTokenFilter) throws Exception {
+        http
+                // dezactivăm CORS + CSRF (REST stateless JWT)
+                .cors().and().csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.PATCH, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/animals/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/pet-owner").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/pet-sitter").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/post-sitter/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/post-sitter/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/post-sitter/search").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/post-sitter/**").authenticated()
+                .requestMatchers(HttpMethod.PATCH, "/api/post-sitter/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/post-sitter/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/profile/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/profile/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/profile/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/profile/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/pet-sitter-profile/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/pet-sitter-profile/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/pet-sitter-profile/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/pet-sitter-profile/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/reservations/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/reservations/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/reservations/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/reservations/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/notifications/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/notifications/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/notifications/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/notifications/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "api/interest-reservations/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "api/interest-reservations/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "api/interest-reservations/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "api/interest-reservations/**").authenticated()
+                .requestMatchers("/ws-notifications/**").permitAll()
+                .requestMatchers("/api/sitter/verification/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
+
+        http.addFilterBefore(authorizationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 
 }

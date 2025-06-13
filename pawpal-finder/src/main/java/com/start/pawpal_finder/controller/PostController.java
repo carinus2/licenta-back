@@ -1,7 +1,13 @@
 package com.start.pawpal_finder.controller;
 
 import com.start.pawpal_finder.dto.PostDto;
+import com.start.pawpal_finder.representation.SearchOwnerPostRepresentation;
+import com.start.pawpal_finder.representation.SearchPostRepresentation;
 import com.start.pawpal_finder.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,4 +70,22 @@ public class PostController {
         List<PostDto> posts = postService.getPostsByCityAndCounty(city, county);
         return ResponseEntity.ok(posts);
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<PostDto>> searchOwnerPosts(@RequestBody SearchOwnerPostRepresentation searchPostRepresentation) {
+        List<PostDto> posts = postService.searchOwnerPosts(searchPostRepresentation);
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/user/{petOwnerId}/status")
+    public ResponseEntity<Page<PostDto>> getPostsByUserAndStatus(
+            @PathVariable Integer petOwnerId,
+            @RequestParam String status,
+            @PageableDefault(sort = "startDate", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ) {
+        Page<PostDto> page = postService.getPostsByUserAndStatus(petOwnerId, status, pageable);
+        return ResponseEntity.ok(page);
+    }
+
 }

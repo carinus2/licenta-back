@@ -7,12 +7,16 @@ import com.start.pawpal_finder.entity.AnimalEntity;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PostEntity;
 import com.start.pawpal_finder.entity.TaskEntity;
-import com.start.pawpal_finder.repository.AnimalRepository;
-import com.start.pawpal_finder.repository.PetOwnerRepository;
-import com.start.pawpal_finder.repository.PostRepository;
+import com.start.pawpal_finder.repository.*;
+import com.start.pawpal_finder.representation.SearchOwnerPostRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,19 +25,27 @@ public class PostService {
     private final PetOwnerRepository petOwnerRepository;
     private final AnimalRepository animalRepository;
     private final PostRepository postRepository;
-
-    public PostService(PetOwnerRepository petOwnerRepository, AnimalRepository animalRepository, PostRepository postRepository) {
+    private final PostRepositoryCustom postRepositoryCustom;
+    private final InterestReservationRepository interestReservationRepository;
+    @Autowired
+    public PostService(PetOwnerRepository petOwnerRepository, AnimalRepository animalRepository, PostRepository postRepository, PostRepositoryCustom postRepositoryCustom, InterestReservationRepository interestReservationRepository) {
         this.petOwnerRepository = petOwnerRepository;
         this.animalRepository = animalRepository;
         this.postRepository = postRepository;
+        this.postRepositoryCustom = postRepositoryCustom;
+        this.interestReservationRepository = interestReservationRepository;
     }
 
     public PostDto createPost(PostDto postDto) {
         PetOwnerEntity petOwner = petOwnerRepository.findById(postDto.getPetOwnerId())
                 .orElseThrow(() -> new RuntimeException("Pet Owner not found"));
 
-        List<AnimalEntity> animals = animalRepository.findAllById(
-                postDto.getAnimals().stream().map(AnimalDto::getId).collect(Collectors.toList())
+        Set<AnimalEntity> animals = new HashSet<>(
+                animalRepository.findAllById(
+                        postDto.getAnimals().stream()
+                                .map(AnimalDto::getId)
+                                .collect(Collectors.toList())
+                )
         );
 
         PostEntity newPost = Transformer.fromDto(postDto, petOwner, animals);
@@ -44,7 +56,7 @@ public class PostService {
     }
 
     public List<PostDto> getAllActivePosts() {
-        List<PostEntity> activePosts = postRepository.findByStatus("Active");
+        List<PostEntity> activePosts = postRepository.findByStatus("ACTIVE");
         return activePosts.stream().map(Transformer::toDto).collect(Collectors.toList());
     }
 
@@ -63,8 +75,12 @@ public class PostService {
         PetOwnerEntity petOwner = petOwnerRepository.findById(postDto.getPetOwnerId())
                 .orElseThrow(() -> new RuntimeException("Pet Owner not found"));
 
-        List<AnimalEntity> animals = animalRepository.findAllById(
-                postDto.getAnimals().stream().map(AnimalDto::getId).collect(Collectors.toList())
+        Set<AnimalEntity> animals = new HashSet<>(
+                animalRepository.findAllById(
+                        postDto.getAnimals().stream()
+                                .map(AnimalDto::getId)
+                                .collect(Collectors.toList())
+                )
         );
 
         existingPost.setTitle(postDto.getTitle());
@@ -97,20 +113,39 @@ public class PostService {
         PostEntity post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
+        interestReservationRepository.deleteByPostId(postId);
         postRepository.delete(post);
     }
 
     public List<PostDto> getActivePostsByUser(Integer petOwnerId) {
-        List<PostEntity> activePosts = postRepository.findByPetOwnerIdAndStatus(petOwnerId, "Active");
+        List<PostEntity> activePosts = postRepository.findByPetOwnerIdAndStatus(petOwnerId, "ACTIVE");
         return activePosts.stream().map(Transformer::toDto).toList();
     }
 
     public Long getActivePostCountByUser(Integer petOwnerId) {
-        return postRepository.countByPetOwnerIdAndStatus(petOwnerId, "Active");
+        return postRepository.countByPetOwnerIdAndStatus(petOwnerId, "ACTIVE");
     }
 
     public List<PostDto> getPostsByCityAndCounty(String city, String county) {
         return postRepository.findByPetOwner_CityAndPetOwner_CountyAndStatus(city, county, "ACTIVE").stream().map(Transformer::toDto).toList();
+    }
+
+    public List<PostDto> searchOwnerPosts(SearchOwnerPostRepresentation searchPostRepresentation) {
+        List<PostEntity> posts = postRepositoryCustom.searchOwnerPosts(searchPostRepresentation);
+
+        return posts.stream()
+                .map(Transformer::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public Page<PostDto> getPostsByUserAndStatus(
+            Integer petOwnerId,
+            String status,
+            Pageable pageable
+    ) {
+        return postRepository
+                .findByPetOwnerIdAndStatus(petOwnerId, status, pageable)
+                .map(Transformer::toDto);
     }
 
 }

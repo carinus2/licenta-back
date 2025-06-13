@@ -1,12 +1,9 @@
 package com.start.pawpal_finder.service;
 
 import com.start.pawpal_finder.dto.CustomUserDetails;
-import com.start.pawpal_finder.dto.PetOwnerDto;
-import com.start.pawpal_finder.dto.PetSitterDto;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.entity.PetSitterEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,10 +17,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final PetSitterService petSitterService;
     private final PetOwnerService petOwnerService;
 
-    public CustomUserDetailsService(PetSitterService petSitterService, PetOwnerService petOwnerService) {
+    @Autowired
+    public CustomUserDetailsService(PetSitterService petSitterService,
+                                    PetOwnerService petOwnerService) {
         this.petSitterService = petSitterService;
         this.petOwnerService = petOwnerService;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -33,24 +33,24 @@ public class CustomUserDetailsService implements UserDetailsService {
                     petSitter.getEmail(),
                     petSitter.getPassword(),
                     Collections.singleton(() -> "ROLE_PET_SITTER"),
-                    petSitter.getFirstName(),
-                    petSitter.getLastName()
+                    petSitter.getId()
             );
         }
+
         PetOwnerEntity petOwner = petOwnerService.findByEmail(username).orElse(null);
         if (petOwner != null) {
+            String authority = petOwner.getAdmin()
+                    ? "ROLE_ADMIN"
+                    : "ROLE_PET_OWNER";
+
             return new CustomUserDetails(
                     petOwner.getEmail(),
                     petOwner.getPassword(),
-                    Collections.singleton(() -> "ROLE_PET_OWNER"),
-                    petOwner.getFirstName(),
-                    petOwner.getLastName()
+                    Collections.singleton(() -> authority),
+                    petOwner.getId()
             );
         }
-        return new User(
-                "admin@email.com",
-                "admin1234",
-                Collections.singleton(() -> "ROLE_ADMIN"));
-    }
 
+        throw new UsernameNotFoundException("No user found with email: " + username);
+    }
 }

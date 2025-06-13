@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -43,6 +44,7 @@ public class PostEntity {
     private String street;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id ASC")
     private List<TaskEntity> tasks;
 
     @Column(name = "status", length = 20, nullable = false)
@@ -57,7 +59,6 @@ public class PostEntity {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "animal_id")
     )
-    private List<AnimalEntity> animals;
-
+    private Set<AnimalEntity> animals;
 
 }

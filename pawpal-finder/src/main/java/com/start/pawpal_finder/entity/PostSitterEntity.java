@@ -1,5 +1,6 @@
 package com.start.pawpal_finder.entity;
 
+import com.start.pawpal_finder.representation.PricingModel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,6 +44,19 @@ public class PostSitterEntity {
     @Column(name = "task_name")
     private List<String> tasks;
 
-    @OneToMany(mappedBy = "postSitter", cascade = CascadeType.ALL, orphanRemoval = true) // 🔥 Delete availability entries when PostSitter is deleted
+    @OneToMany(mappedBy = "postSitter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostSitterAvailabilityEntity> availabilities;
+
+    @Column(name = "pricing_model", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PricingModel pricingModel;
+
+    @Column(name = "rate_per_hour")
+    private Double ratePerHour;
+
+    @Column(name = "rate_per_day")
+    private Double ratePerDay;
+
+    @Column(name = "flat_rate")
+    private Double flatRate;
 }
