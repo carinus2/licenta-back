@@ -103,7 +103,7 @@ public class ReservationService {
                     "Your reservation status has been updated to: " + status
             );
             webSocketNotificationService.sendNotificationToOwner(notif);
-            persistentNotificationService.saveOwnerNotification(notif, reservation.getPetOwner().getId(), postSitter.getId());
+            persistentNotificationService.saveNotification(notif, reservation.getPetOwner().getId(), postSitter.getId());
         }
 
         return Transformer.toDto(updatedReservation);

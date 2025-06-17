@@ -5,18 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69e269e7-3597-4014-9b16-af78b8bb48cf" name="Changes" comment="refactor">
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/test/java/com/start/pawpal_finder/controller/AnimalControllerIntegrationTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/test/java/com/start/pawpal_finder/service/AnimalServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pawpal-finder/src/test/resources/application-test.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/ReservationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/ReservationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetSitterProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/repository/PetSitterProfileRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/GeocodingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/GeocodingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PetSitterProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/InterestReservationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/InterestReservationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/InterestReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/InterestReservationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PersistentNotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PersistentNotificationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/ReservationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawpal-finder/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/pawpal-finder/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/htmlReport" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -24,6 +29,7 @@
         <option value="Interface" />
         <option value="Enum" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -47,38 +53,99 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/my-profile&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/nistorcarina/Desktop/LICENTA/licenta-back&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "feature/my-profile",
+    "last_opened_file_path": "/Users/nistorcarina/Desktop/LICENTA/licenta-back",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.4651416",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
-  <component name="RunManager">
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.start.pawpal_finder.controller" />
+      <recent name="com.start.pawpal_finder.service" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.AnimalControllerIntegrationTest">
+    <configuration name="AnimalControllerIntegrationTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="pawpal-finder" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.start.pawpal_finder.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.start.pawpal_finder.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.start.pawpal_finder.controller.AnimalControllerIntegrationTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <envs>
+        <env name="DB_URL" value="jdbc:postgresql://localhost:5432/licenta " />
+        <env name="DB_USERNAME" value="postgres" />
+        <env name="DB_PASSWORD" value="postgres" />
+      </envs>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AnimalServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="pawpal-finder" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.start.pawpal_finder.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.start.pawpal_finder.service" />
+      <option name="MAIN_CLASS_NAME" value="com.start.pawpal_finder.service.AnimalServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="com.start.pawpal_finder.service in pawpal-finder" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="pawpal-finder" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.start.pawpal_finder.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.start.pawpal_finder.service" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="PawpalFinderApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <envs>
         <env name="DB_URL" value="jdbc:postgresql://localhost:5432/licenta " />
@@ -91,6 +158,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="JUnit.AnimalControllerIntegrationTest" />
+      <item itemvalue="JUnit.AnimalServiceTest" />
+      <item itemvalue="JUnit.com.start.pawpal_finder.service in pawpal-finder" />
+      <item itemvalue="Spring Boot.PawpalFinderApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.AnimalControllerIntegrationTest" />
+        <item itemvalue="JUnit.com.start.pawpal_finder.service in pawpal-finder" />
+        <item itemvalue="JUnit.AnimalServiceTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SwiftWorkspaceSettings">
@@ -119,7 +199,7 @@
       <workItem from="1747423493378" duration="6106000" />
       <workItem from="1747751423641" duration="3925000" />
       <workItem from="1748193741935" duration="64417000" />
-      <workItem from="1749831725933" duration="4092000" />
+      <workItem from="1749831725933" duration="27220000" />
     </task>
     <task id="LOCAL-00001" summary="add login and register feature">
       <option name="closed" value="true" />
@@ -481,7 +561,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749067207922</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="refactor">
+      <option name="closed" value="true" />
+      <created>1749839534696</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1749839534696</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -538,16 +626,6 @@
           <option name="timeStamp" value="65" />
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/PostSitterController.java</url>
-          <line>34</line>
-          <option name="timeStamp" value="66" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/service/PostSitterService.java</url>
-          <line>108</line>
-          <option name="timeStamp" value="72" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/pawpal-finder/src/main/java/com/start/pawpal_finder/controller/InterestReservationController.java</url>
           <line>35</line>
           <option name="timeStamp" value="75" />
@@ -575,5 +653,16 @@
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/licenta_back$AnimalControllerIntegrationTest.ic" NAME="AnimalControllerIntegrationTest Coverage Results" MODIFIED="1750194965903" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.start.pawpal_finder.controller.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/licenta_back$AnimalServiceTest.ic" NAME="AnimalServiceTest Coverage Results" MODIFIED="1750190542662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.start.pawpal_finder.service.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/licenta_back$com_start_pawpal_finder_service_in_pawpal_finder.ic" NAME="com.start.pawpal_finder.service in pawpal-finder Coverage Results" MODIFIED="1750190691827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.start.pawpal_finder.service.*</FILTER>
+    </SUITE>
   </component>
 </project>

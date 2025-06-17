@@ -63,11 +63,11 @@ public class InterestReservationService {
 
         NotificationMessageDto notif = new NotificationMessageDto(
                 "New Interest in Your Post",
-                petOwner.getFirstName() + " " + petSitter.getLastName() + " is interested in one of your posts."
+                petOwner.getFirstName() + " ," + petSitter.getLastName() + " is interested in one of your posts."
         );
         Integer ownerId = petOwner.getId();
         webSocketNotificationService.sendNotificationToOwner(notif);
-        persistentNotificationService.saveOwnerNotification(notif, ownerId, postId);
+        persistentNotificationService.saveNotification(notif, ownerId, postId);
 
         return toDto(savedInterest);
     }
@@ -112,7 +112,7 @@ public class InterestReservationService {
             );
         } else {
             webSocketNotificationService.sendNotificationToOwner(notif);
-            persistentNotificationService.saveOwnerNotification(
+            persistentNotificationService.saveNotification(
                     notif,
                     interest.getPetOwner().getId(),
                     interest.getPost().getId()
@@ -202,6 +202,29 @@ public class InterestReservationService {
         review.setCreatedAt(LocalDateTime.now());
         review.setWrittenByFirstName(ir.getPetOwner().getFirstName());
         review.setWrittenByLastName(ir.getPetOwner().getLastName());
+        reviewRepository.save(review);
+
+        return toReviewDto(review);
+    }
+
+    public ReviewDto submitReviewOnInterestSitter(int interestId, ReviewDto dto) {
+        InterestReservationEntity ir = interestReservationRepository.findById(interestId)
+                .orElseThrow(() -> new RuntimeException("No interest with ID " + interestId));
+        if (!"COMPLETED".equals(ir.getStatus())) {
+            throw new RuntimeException("Cannot review before completion");
+        }
+
+        ReviewEntity review = new ReviewEntity();
+        review.setContent(dto.getContent());
+        review.setRating(dto.getRating());
+        review.setWrittenByRole(dto.getWrittenByRole());
+        review.setWrittenById(dto.getWrittenById());
+        review.setReviewedRole(dto.getReviewedRole());
+        review.setReviewedId(dto.getReviewedId());
+        review.setInterestReservation(ir);
+        review.setCreatedAt(LocalDateTime.now());
+        review.setWrittenByFirstName(ir.getPetSitter().getFirstName());
+        review.setWrittenByLastName(ir.getPetSitter().getLastName());
         reviewRepository.save(review);
 
         return toReviewDto(review);
