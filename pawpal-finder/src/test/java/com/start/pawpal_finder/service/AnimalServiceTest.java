@@ -1,5 +1,6 @@
 package com.start.pawpal_finder.service;
 
+import com.start.pawpal_finder.auth.SecurityConfig;
 import com.start.pawpal_finder.dto.AnimalDto;
 import com.start.pawpal_finder.entity.AnimalEntity;
 import com.start.pawpal_finder.entity.AnimalProjection;
@@ -53,9 +54,9 @@ class AnimalServiceTest {
         when(petOwnerRepository.findById(1)).thenReturn(Optional.of(ownerEntity));
         when(animalRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
-        try (MockedStatic<com.start.pawpal_finder.auth.SecurityConfig> mockedSecurity =
-                     mockStatic(com.start.pawpal_finder.auth.SecurityConfig.class)) {
-            mockedSecurity.when(com.start.pawpal_finder.auth.SecurityConfig::getAuthenticatedUserId).thenReturn(1);
+        try (MockedStatic<SecurityConfig> mockedSecurity =
+                     mockStatic(SecurityConfig.class)) {
+            mockedSecurity.when(SecurityConfig::getAuthenticatedUserId).thenReturn(1);
 
             AnimalDto result = animalService.saveAnimal(1, dto, file);
 

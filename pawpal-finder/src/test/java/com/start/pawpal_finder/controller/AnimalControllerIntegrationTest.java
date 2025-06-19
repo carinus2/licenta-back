@@ -1,27 +1,32 @@
 package com.start.pawpal_finder.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.start.pawpal_finder.auth.SecurityConfig;
 import com.start.pawpal_finder.dto.AnimalDto;
 import com.start.pawpal_finder.entity.PetOwnerEntity;
 import com.start.pawpal_finder.repository.AnimalRepository;
 import com.start.pawpal_finder.repository.PetOwnerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.mockStatic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@WithMockUser(username = "john.doe@example.com", authorities = {"ROLE_PET_OWNER"})
 class AnimalControllerIntegrationTest {
 
     @Autowired
@@ -44,7 +49,6 @@ class AnimalControllerIntegrationTest {
         petOwnerRepository.deleteAll();
 
         PetOwnerEntity owner = new PetOwnerEntity();
-        owner.setId(1);
         owner.setFirstName("John");
         owner.setLastName("Doe");
         owner.setEmail("john.doe@example.com");
@@ -53,10 +57,10 @@ class AnimalControllerIntegrationTest {
         owner.setCity("Cluj");
         owner.setCounty("Cluj");
 
-        petOwnerRepository.save(owner);
-
-        testOwnerId = owner.getId();
+        PetOwnerEntity savedOwner = petOwnerRepository.save(owner);
+        testOwnerId = savedOwner.getId();
     }
+
 
     @Test
     void testSaveAnimal() throws Exception {
@@ -65,13 +69,17 @@ class AnimalControllerIntegrationTest {
                 objectMapper.writeValueAsBytes(animalDto));
         MockMultipartFile imgPart = new MockMultipartFile("profilePicture", "image.jpg", "image/jpeg", "dummy".getBytes());
 
-        mockMvc.perform(multipart("/api/animals/save/" + testOwnerId)
-                        .file(jsonPart)
-                        .file(imgPart)
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Max"))
-                .andExpect(jsonPath("$.breed").value("Beagle"));
+        try (MockedStatic<SecurityConfig> mocked = mockStatic(SecurityConfig.class)) {
+            mocked.when(SecurityConfig::getAuthenticatedUserId).thenReturn(testOwnerId);
+
+            mockMvc.perform(multipart("/api/animals/save/" + testOwnerId)
+                            .file(jsonPart)
+                            .file(imgPart)
+                            .contentType(MediaType.MULTIPART_FORM_DATA))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.name").value("Max"))
+                    .andExpect(jsonPath("$.breed").value("Beagle"));
+        }
     }
 
     @Test
@@ -100,12 +108,16 @@ class AnimalControllerIntegrationTest {
                 objectMapper.writeValueAsBytes(animalDto));
         MockMultipartFile imgPart = new MockMultipartFile("profilePicture", "image.jpg", "image/jpeg", "bytes".getBytes());
 
-        // Save animal
-        String response = mockMvc.perform(multipart("/api/animals/save/" + testOwnerId)
-                        .file(jsonPart)
-                        .file(imgPart)
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andReturn().getResponse().getContentAsString();
+        String response;
+        try (MockedStatic<SecurityConfig> mocked = mockStatic(SecurityConfig.class)) {
+            mocked.when(SecurityConfig::getAuthenticatedUserId).thenReturn(testOwnerId);
+
+            response = mockMvc.perform(multipart("/api/animals/save/" + testOwnerId)
+                            .file(jsonPart)
+                            .file(imgPart)
+                            .contentType(MediaType.MULTIPART_FORM_DATA))
+                    .andReturn().getResponse().getContentAsString();
+        }
 
         AnimalDto savedAnimal = objectMapper.readValue(response, AnimalDto.class);
 
@@ -113,23 +125,33 @@ class AnimalControllerIntegrationTest {
         MockMultipartFile jsonPartUpdate = new MockMultipartFile("animalDto", "", "application/json",
                 objectMapper.writeValueAsBytes(updatedAnimal));
 
-        mockMvc.perform(multipart("/api/animals/" + savedAnimal.getId())
-                        .file(jsonPartUpdate)
-                        .file(imgPart)
-                        .with(req -> { req.setMethod("PUT"); return req; }))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Rex"))
-                .andExpect(jsonPath("$.breed").value("Husky"));
+        try (MockedStatic<SecurityConfig> mocked = mockStatic(SecurityConfig.class)) {
+            mocked.when(SecurityConfig::getAuthenticatedUserId).thenReturn(testOwnerId);
+
+            mockMvc.perform(multipart("/api/animals/" + savedAnimal.getId())
+                            .file(jsonPartUpdate)
+                            .file(imgPart)
+                            .with(req -> {
+                                req.setMethod("PUT");
+                                return req;
+                            }))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.name").value("Rex"))
+                    .andExpect(jsonPath("$.breed").value("Husky"));
+        }
     }
 
     @Test
     void testDeleteAnimal() throws Exception {
         testSaveAnimal();
-
         Integer animalId = animalRepository.findAll().get(0).getId();
 
-        mockMvc.perform(delete("/api/animals/" + animalId))
-                .andExpect(status().isOk());
+        try (MockedStatic<SecurityConfig> mocked = mockStatic(SecurityConfig.class)) {
+            mocked.when(SecurityConfig::getAuthenticatedUserId).thenReturn(testOwnerId);
+
+            mockMvc.perform(delete("/api/animals/" + animalId))
+                    .andExpect(status().isOk());
+        }
 
         mockMvc.perform(get("/api/animals/count/" + testOwnerId))
                 .andExpect(content().string("0"));
