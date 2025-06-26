@@ -13,9 +13,9 @@ Se va deschide într-un mediu de dezvoltare integrat, cum ar fi Intellij, proiec
 
 De asemenea, trebuie setate variabilele de mediu necesare pentru conectarea la baza de date și alte servicii, precum:
 
-* `SPRING_DATASOURCE_URL`
-* `SPRING_DATASOURCE_USERNAME`
-* `SPRING_DATASOURCE_PASSWORD`
+* `DB_URL`
+* `DB_USERNAME`
+* `DB_PASSWORD`
 
 După configurare, din terminal, în directorul proiectului `licenta-back`, se va rula: **mvn clean install**. Aplicația se pornește prin rularea clasei **PawpalFinderApplication**, fiind disponibilă la portul 8080.
 
