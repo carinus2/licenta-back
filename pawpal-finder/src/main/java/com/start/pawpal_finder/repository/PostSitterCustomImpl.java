@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Repository
 @Transactional
 public class PostSitterCustomImpl implements PostSitterRepositoryCustom {
-
     @PersistenceContext
     private EntityManager em;
 

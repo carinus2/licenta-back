@@ -53,8 +53,6 @@ public class RegistrationController {
                     jwt,
                     List.of("ROLE_PET_SITTER"),
                     dto.getEmail(),
-                    dto.getFirstName(),
-                    dto.getLastName(),
                     dto.getId()
             ));
         } catch (Exception e) {
@@ -76,8 +74,6 @@ public class RegistrationController {
                     jwt,
                     List.of("ROLE_PET_OWNER"),
                     petOwnerDto.getEmail(),
-                    petOwnerDto.getFirstName(),
-                    petOwnerDto.getLastName(),
                     petOwnerDto.getId()
             ));
         } catch (Exception e) {

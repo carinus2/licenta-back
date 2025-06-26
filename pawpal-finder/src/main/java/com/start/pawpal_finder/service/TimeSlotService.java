@@ -56,17 +56,6 @@ public class TimeSlotService {
         repository.save(slot);
     }
 
-    public List<TimeSlotEntity> getBookedSlots() {
-        // Updated to use status instead of booked flag
-        return repository.findByStatus(StatusModelTimeSlot.BOOKED);
-    }
-
-    /**
-     * Returns all booked time slots for admin verification purposes.
-     * Used by the admin dashboard to display all scheduled verification calls.
-     *
-     * @return List of all booked time slots
-     */
     public List<TimeSlotEntity> getAllBookedSlots() {
         return repository.findByStatus(StatusModelTimeSlot.BOOKED);
     }

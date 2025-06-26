@@ -63,6 +63,14 @@ public class InterestReservationController {
         return ResponseEntity.ok(savedReview);
     }
 
+    @PostMapping("/{interestReservationId}/review-interest-sitter")
+    public ResponseEntity<ReviewDto> submitReviewSitter(
+            @PathVariable Integer interestReservationId,
+            @RequestBody ReviewDto reviewDto) {
+        ReviewDto savedReview = interestReservationService.submitReviewOnInterestSitter(interestReservationId, reviewDto);
+        return ResponseEntity.ok(savedReview);
+    }
+
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<Page<InterestReservationDto>> getInterestReservationsForOwner(
             @PathVariable Integer ownerId,

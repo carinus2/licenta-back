@@ -25,9 +25,7 @@ import java.util.stream.Collectors;
 public class PostSitterService {
 
     private final PostSitterRepository postSitterRepository;
-
     private final PetSitterRepository petSitterRepository;
-
     private final PostSitterAvailabilityRepository availabilityRepository;
     private final PostSitterRepositoryCustom postSitterCustom;
 
@@ -47,17 +45,6 @@ public class PostSitterService {
         PetSitterEntity petSitter = petSitterRepository.findById(postSitterDto.getPetSitterId())
                 .orElseThrow(() -> new RuntimeException("Pet Sitter not found with ID: " + postSitterDto.getPetSitterId()));
 
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
-        for (PostSitterAvailabilityDto avail : postSitterDto.getAvailability()) {
-            DayOfWeek availabilityDay = DayOfWeek.valueOf(avail.getDayOfWeek().toString().toUpperCase());
-            LocalDate nextOccurrence = today.with(TemporalAdjusters.nextOrSame(availabilityDay));
-            LocalTime startTime = LocalTime.parse(avail.getStartTime().toString());
-            if (nextOccurrence.isEqual(today) && startTime.isBefore(now)) {
-                throw new RuntimeException("Cannot select an availability time in the past for today: " + avail);
-            }
-        }
-
         PostSitterEntity postEntity = Transformer.toEntity(postSitterDto, petSitter);
         PostSitterEntity savedPost = postSitterRepository.save(postEntity);
 
@@ -67,7 +54,7 @@ public class PostSitterService {
                     entity.setPostSitter(savedPost);
                     return entity;
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         availabilityRepository.saveAll(availabilityEntities);
         return Transformer.toDto(savedPost, availabilityEntities);
@@ -84,7 +71,7 @@ public class PostSitterService {
                     List<PostSitterAvailabilityEntity> availability = availabilityRepository.findByPostSitter(post);
                     return Transformer.toDto(post, availability);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<PostSitterDto> getAllSitterPosts() {
@@ -98,7 +85,6 @@ public class PostSitterService {
 
     public List<PostSitterDto> getAllActivePosts() {
         return postSitterRepository.findAll().stream()
-                // for each post, fetch its ACTIVE availability rows
                 .map(post -> {
                     List<PostSitterAvailabilityEntity> activeAvail =
                             availabilityRepository.findByPostSitterAndPostSitter_Status(post, "ACTIVE");
