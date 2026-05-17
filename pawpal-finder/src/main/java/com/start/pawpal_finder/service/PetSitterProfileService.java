@@ -10,7 +10,6 @@ import com.start.pawpal_finder.entity.ReviewEntity;
 import com.start.pawpal_finder.repository.PetSitterProfileRepository;
 import com.start.pawpal_finder.repository.PetSitterRepository;
 import com.start.pawpal_finder.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -94,7 +93,9 @@ public class PetSitterProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("PetSitter not found"));
 
         sitter.setCity(dto.getCity());
-        sitter.setCounty(dto.getCounty());
+        if(dto.getCounty().equals("TM"))
+            sitter.setCounty("Timis");
+        else sitter.setCounty(dto.getCounty());
         sitter.setPhoneNumber(dto.getPhoneNumber());
         petSitterRepository.save(sitter);
 

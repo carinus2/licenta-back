@@ -6,16 +6,19 @@ import com.start.pawpal_finder.dto.PostSitterDto;
 import com.start.pawpal_finder.entity.PetSitterEntity;
 import com.start.pawpal_finder.entity.PostSitterAvailabilityEntity;
 import com.start.pawpal_finder.entity.PostSitterEntity;
-import com.start.pawpal_finder.repository.*;
+import com.start.pawpal_finder.repository.PetSitterRepository;
+import com.start.pawpal_finder.repository.PostSitterAvailabilityRepository;
+import com.start.pawpal_finder.repository.PostSitterRepository;
+import com.start.pawpal_finder.repository.PostSitterRepositoryCustom;
 import com.start.pawpal_finder.representation.SearchPostRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -63,16 +66,6 @@ public class PostSitterService {
     public long getPostCountBySitter(Integer sitterId) {
         return postSitterRepository.countByPetSitter_Id(sitterId);
     }
-    public List<PostSitterDto> getActiveSitterPostsBySitterId(Integer sitterId) {
-        List<PostSitterEntity> activePosts = postSitterRepository.findByPetSitter_IdAndStatus(sitterId, "ACTIVE");
-
-        return activePosts.stream()
-                .map(post -> {
-                    List<PostSitterAvailabilityEntity> availability = availabilityRepository.findByPostSitter(post);
-                    return Transformer.toDto(post, availability);
-                })
-                .toList();
-    }
 
     public List<PostSitterDto> getAllSitterPosts() {
         return postSitterRepository.findAll().stream()
@@ -111,6 +104,20 @@ public class PostSitterService {
 
         List<PostSitterAvailabilityEntity> availability = availabilityRepository.findByPostSitter(post);
         return Transformer.toDto(post, availability);
+    }
+
+    public Page<PostSitterDto> getActiveSitterPostsBySitterIdPaginated(Integer sitterId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostSitterEntity> activePosts = postSitterRepository.findByPetSitter_IdAndStatus(sitterId, "ACTIVE", pageable);
+
+        List<PostSitterDto> postDtos = activePosts.getContent().stream()
+                .map(post -> {
+                    List<PostSitterAvailabilityEntity> availability = availabilityRepository.findByPostSitter(post);
+                    return Transformer.toDto(post, availability);
+                })
+                .toList();
+
+        return new PageImpl<>(postDtos, pageable, activePosts.getTotalElements());
     }
 
     public PostSitterDto updatePostSitter(Integer postId, PostSitterDto updatedDto) {
