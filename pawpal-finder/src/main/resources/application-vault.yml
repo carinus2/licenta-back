@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: pawpal-finder
+  
+  # JPA Configuration
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  
+  # File Upload Configuration
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+  
+  # Cloud Vault Configuration
+  cloud:
+    vault:
+      enabled: true
+      uri: http://localhost:8200
+      authentication: APPROLE
+      app-role:
+        role-id: ${VAULT_ROLE_ID}
+        secret-id: ${VAULT_SECRET_ID}
+        role: pawpal-finder
+        app-role-path: approle
+      
+      # KV v2 Configuration
+      kv:
+        enabled: true
+        backend: secret
+        default-context: pawpal-finder
+        application-name: pawpal-finder
+      
+      # Fail fast if Vault unavailable
+      fail-fast: true
+      connection-timeout: 5000
+      read-timeout: 15000
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.vault: DEBUG
+    org.springframework.vault: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+
+# Note: The following properties are automatically loaded from Vault:
+# From secret/pawpal-finder/jwt:
+#   - secret.key
+#   - jwt.expirationMs
+# From secret/pawpal-finder/google:
+#   - google.api.key
+# From secret/pawpal-finder/database:
+#   - spring.datasource.url
+#   - spring.datasource.username
+#   - spring.datasource.password
