@@ -11,21 +11,21 @@ vault secrets enable -version=2 -path=secret kv || echo "KV engine already enabl
 # Create secrets for the application
 echo "Creating application secrets..."
 
-# JWT Secret Key - Generate a secure random key
-JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
+# JWT Secret Key - Use a secure static key for demo (in production, generate randomly)
 vault kv put secret/pawpal-finder/jwt \
-  secret.key="$JWT_SECRET" \
+  secret.key="ThisIsASecureRandomJWTSecretKeyGeneratedForVaultDemo123456789" \
   jwt.expirationMs="18000000"
 
-# Google API Key (replace with your actual key or use placeholder)
+# Google API Key (using the existing key from application.properties)
 vault kv put secret/pawpal-finder/google \
-  google.api.key="YOUR_GOOGLE_API_KEY_HERE"
+  google.api.key="AIzaSyDt5jydbk2bY4ft-KS1xJyT9t4Iua3H1wI"
 
-# Database credentials
+# Database credentials (update these with your actual database settings)
+# Default values - you should update these after setup
 vault kv put secret/pawpal-finder/database \
-  spring.datasource.url="jdbc:postgresql://postgres:5432/pawpal_db" \
-  spring.datasource.username="pawpal_user" \
-  spring.datasource.password="pawpal_secure_password_2024"
+  spring.datasource.url="jdbc:postgresql://localhost:5432/licenta" \
+  spring.datasource.username="postgres" \
+  spring.datasource.password="CHANGE_THIS_PASSWORD"
 
 # Create a policy for the application
 echo "Creating application policy..."
