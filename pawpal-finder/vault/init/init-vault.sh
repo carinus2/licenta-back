@@ -14,18 +14,18 @@ echo "Creating application secrets..."
 # JWT Secret Key - Generate a secure random key
 JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
 vault kv put secret/pawpal-finder/jwt \
-  secret-key="$JWT_SECRET" \
-  expiration-ms="18000000"
+  secret.key="$JWT_SECRET" \
+  jwt.expirationMs="18000000"
 
 # Google API Key (replace with your actual key or use placeholder)
 vault kv put secret/pawpal-finder/google \
-  api-key="YOUR_GOOGLE_API_KEY_HERE"
+  google.api.key="YOUR_GOOGLE_API_KEY_HERE"
 
 # Database credentials
 vault kv put secret/pawpal-finder/database \
-  url="jdbc:postgresql://postgres:5432/pawpal_db" \
-  username="pawpal_user" \
-  password="pawpal_secure_password_2024"
+  spring.datasource.url="jdbc:postgresql://postgres:5432/pawpal_db" \
+  spring.datasource.username="pawpal_user" \
+  spring.datasource.password="pawpal_secure_password_2024"
 
 # Create a policy for the application
 echo "Creating application policy..."
