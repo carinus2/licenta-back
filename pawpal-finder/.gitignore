@@ -31,3 +31,20 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Vault & Secrets ###
+# Never commit these files - they contain sensitive credentials!
+.env
+.env.local
+.env.*.local
+vault/data/
+vault/logs/
+vault/init/approle-credentials.txt
+**/secrets/
+**/*-credentials.txt
+**/*.key
+**/*.pem
+
+### Docker ###
+docker-compose.override.yml
+</content>
