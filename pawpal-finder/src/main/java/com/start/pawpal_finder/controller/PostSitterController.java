@@ -3,7 +3,7 @@ package com.start.pawpal_finder.controller;
 import com.start.pawpal_finder.dto.PostSitterDto;
 import com.start.pawpal_finder.representation.SearchPostRepresentation;
 import com.start.pawpal_finder.service.PostSitterService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,8 +47,12 @@ public class PostSitterController {
     }
 
     @GetMapping("/active-posts/{sitterId}")
-    public ResponseEntity<List<PostSitterDto>> getSitterActivePostById(@PathVariable Integer sitterId) {
-        return ResponseEntity.ok(postSitterService.getActiveSitterPostsBySitterId(sitterId));
+    public ResponseEntity<Page<PostSitterDto>> getSitterActivePostById(
+            @PathVariable Integer sitterId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size) {
+        Page<PostSitterDto> posts = postSitterService.getActiveSitterPostsBySitterIdPaginated(sitterId, page, size);
+        return ResponseEntity.ok(posts);
     }
 
     @PutMapping("/update/{postId}")
