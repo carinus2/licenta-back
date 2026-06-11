@@ -1,3 +1,7 @@
+# PawPal Finder - Backend
+
+[![CI Pipeline](https://github.com/carinus2/licenta-back/actions/workflows/ci.yml/badge.svg)](https://github.com/carinus2/licenta-back/actions/workflows/ci.yml)
+
 ## PAȘII DE COMPILARE, INSTALARE ȘI LANSARE AI APLICAȚIEI
 
 #### Adresele repository-urilor de pe github.com:
@@ -28,3 +32,36 @@ Aplicația va fi disponibilă la adresa: [http://localhost:4200](http://localhos
 #### Configurarea bazei de date
 
 Pentru funcționarea completă a aplicației, este necesară configurarea unei baze de date PostgreSQL. Se recomandă instalarea atât a **PostgreSQL**, cât și a interfeței grafice **pgAdmin**.
+
+
+## CI/CD Pipeline
+
+Acest proiect utilizează GitHub Actions pentru integrare continuă.
+
+### Workflow Automat
+
+**CI Pipeline (`ci.yml`)** - Rulează automat la fiecare push sau pull request pe branch-urile `main` și `develop`:
+
+- ✅ Compilează codul sursă folosind Maven
+- ✅ Rulează testele unitare (AnimalServiceTest)
+- ✅ Încarcă rapoartele de testare ca artifacts
+
+### Cum să Rulezi Testele Local
+
+**Teste Unitare (compatibile cu CI):**
+```bash
+cd pawpal-finder
+./mvnw test -Dtest=AnimalServiceTest
+```
+
+**Teste de Integrare (necesită Vault):**
+Testele de integrare necesită HashiCorp Vault să fie pornit. Pentru a le rula local:
+```bash
+# Pornește Vault mai întâi (vezi DEVOPS_SECRETS_MANAGEMENT.md)
+docker-compose up -d vault
+
+# Apoi rulează testele de integrare
+./mvnw test -Dtest=AnimalControllerIntegrationTest
+```
+
+**Notă:** Pipeline-ul CI rulează doar testele unitare care nu necesită dependențe externe precum Vault sau PostgreSQL.

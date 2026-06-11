@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -26,6 +27,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@TestPropertySource(properties = {
+    "spring.cloud.vault.enabled=false",
+    "spring.cloud.bootstrap.enabled=false",
+    "spring.config.import="
+})
 @WithMockUser(username = "john.doe@example.com", authorities = {"ROLE_PET_OWNER"})
 class AnimalControllerIntegrationTest {
 

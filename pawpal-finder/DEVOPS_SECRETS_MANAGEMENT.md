@@ -1,7 +1,7 @@
 # DevOps Project: Implementing Secrets Management with HashiCorp Vault
 
 **Student**: Carina Nistor  
-**Project**: PawPal Finder - Pet Sitting Platform  
+**Project**: PawPal Finder - Pet Sitting Platform https://github.com/carinus2/licenta-back
 **Topic**: DevOps Security and Compliance  
 **Date**: May 2026
 
