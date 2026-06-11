@@ -10,14 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.vault.config.VaultAutoConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -28,7 +27,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@EnableAutoConfiguration(exclude = {VaultAutoConfiguration.class})
+@TestPropertySource(properties = {
+    "spring.cloud.vault.enabled=false",
+    "spring.cloud.bootstrap.enabled=false",
+    "spring.config.import="
+})
 @WithMockUser(username = "john.doe@example.com", authorities = {"ROLE_PET_OWNER"})
 class AnimalControllerIntegrationTest {
 

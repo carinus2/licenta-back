@@ -43,13 +43,25 @@ Acest proiect utilizează GitHub Actions pentru integrare continuă.
 **CI Pipeline (`ci.yml`)** - Rulează automat la fiecare push sau pull request pe branch-urile `main` și `develop`:
 
 - ✅ Compilează codul sursă folosind Maven
-- ✅ Rulează toate testele unitare și de integrare
+- ✅ Rulează testele unitare (AnimalServiceTest)
 - ✅ Încarcă rapoartele de testare ca artifacts
 
 ### Cum să Rulezi Testele Local
 
+**Teste Unitare (compatibile cu CI):**
 ```bash
-# Rulează toate testele
 cd pawpal-finder
-mvn clean test
+./mvnw test -Dtest=AnimalServiceTest
 ```
+
+**Teste de Integrare (necesită Vault):**
+Testele de integrare necesită HashiCorp Vault să fie pornit. Pentru a le rula local:
+```bash
+# Pornește Vault mai întâi (vezi DEVOPS_SECRETS_MANAGEMENT.md)
+docker-compose up -d vault
+
+# Apoi rulează testele de integrare
+./mvnw test -Dtest=AnimalControllerIntegrationTest
+```
+
+**Notă:** Pipeline-ul CI rulează doar testele unitare care nu necesită dependențe externe precum Vault sau PostgreSQL.

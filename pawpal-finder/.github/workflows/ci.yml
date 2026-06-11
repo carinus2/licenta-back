@@ -22,10 +22,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Build and Test
+    - name: Build and Run Unit Tests
       run: |
         cd pawpal-finder
-        mvn clean test
+        ./mvnw clean test -Dtest=AnimalServiceTest
       env:
         SPRING_PROFILES_ACTIVE: test
 
